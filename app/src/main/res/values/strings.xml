@@ -2,6 +2,8 @@
     <string name="app_name">FlickrClient</string>
 
     <string name="action_settings">Settings</string>
+    <string name="action_download">Download</string>
+    <string name="action_share">Share</string>
 
     <string name="network_problem_message">Network Error Occurred</string>
     <string name="no_data">No image found…</string>
