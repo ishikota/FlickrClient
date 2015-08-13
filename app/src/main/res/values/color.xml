@@ -8,6 +8,8 @@
     <color name="accent">#00BFA5</color>
     <color name="text_primary">#FFF</color>
 
+    <color name="white_bg">#FAFAFA</color>
+
     <color name="swipe_color_1">#B6DB49</color>
     <color name="swipe_color_2">#99CC00</color>
     <color name="swipe_color_3">#8ABD00</color>

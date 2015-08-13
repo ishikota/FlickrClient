@@ -18,7 +18,7 @@
             android:numColumns="2"
             android:paddingBottom="1dp"
             android:verticalSpacing="4dp"
-            android:background="#000"/>
+            android:background="@color/white_bg"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
