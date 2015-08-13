@@ -5,11 +5,13 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.graphics.Palette;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
@@ -29,6 +31,7 @@ public class ImageDetailFragment extends Fragment {
     private DisplayMetrics mDisplayInfo = new DisplayMetrics();
 
     private ImageView mItemImage;
+    private TextView mTitleText;
 
     public static ImageDetailFragment newInstance(String json) {
         ImageDetailFragment fragment = new ImageDetailFragment();
@@ -51,6 +54,7 @@ public class ImageDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_image_detail, container, false);
         mItemImage = (ImageView) root.findViewById(R.id.image);
+        mTitleText = (TextView) root.findViewById(R.id.title);
 
         // get content
         Gson gson = new Gson();
@@ -63,16 +67,16 @@ public class ImageDetailFragment extends Fragment {
 
     private void setupContent(FlickerListItem content) {
         // set item information which already we know
-        String url = content.generatePhotoURL(NetUtils.isWifiConnected(getActivity()) ? "z":"q");
+        mTitleText.setText(content.title);
+        String url = content.generatePhotoURL(NetUtils.isWifiConnected(getActivity()) ? "z" : "q");
         ImageLoader imageLoader = MySingleton.getInstance(getActivity()).getImageLoader();
         imageLoader.get(url, new ImageLoader.ImageListener() {
             @Override
             public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                 Bitmap cached_image = response.getBitmap();
                 if (cached_image != null) {
-                    adjustViewHeight(mItemImage, mDisplayInfo.widthPixels,
-                            cached_image.getWidth(), cached_image.getHeight());
-                    mItemImage.setBackgroundDrawable(new BitmapDrawable(cached_image));
+                    setCachedImage(cached_image);
+                    adjustColorScheme(cached_image);
                 }
             }
 
@@ -81,6 +85,32 @@ public class ImageDetailFragment extends Fragment {
                 error.printStackTrace();
             }
         });
+    }
+
+    private void setCachedImage(Bitmap image) {
+        adjustViewHeight(mItemImage, mDisplayInfo.widthPixels,
+                image.getWidth(), image.getHeight());
+        mItemImage.setBackgroundDrawable(new BitmapDrawable(image));
+    }
+
+    private void adjustColorScheme(Bitmap image) {
+        Palette.generateAsync(image,
+                new Palette.PaletteAsyncListener() {
+                    @Override
+                    public void onGenerated(Palette palette) {
+                        Palette.Swatch vibrant = palette.getVibrantSwatch();
+                        if (vibrant != null) {
+                            mTitleText.setBackgroundColor(vibrant.getRgb());
+                            mTitleText.setTextColor(vibrant.getTitleTextColor());
+//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                                Window window = getActivity().getWindow();
+//                                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//                                window.setStatusBarColor(vibrant.get());
+//                            }
+                        }
+                    }
+                }
+        );
     }
 
     private void adjustViewHeight(View target, int disp_w, int img_w, int img_h) {

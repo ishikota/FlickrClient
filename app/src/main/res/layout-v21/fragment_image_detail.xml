@@ -11,4 +11,18 @@
         android:contentDescription="@string/image"
         android:transitionName="list2detail"/>
 
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/image"
+        android:textColor="#FFF"
+        android:textSize="24sp"
+        android:text="Treats at Dandelion \nChocolate"
+        android:background="@color/actionbar_color"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="56dp"/>
+
 </RelativeLayout>
