@@ -69,5 +69,12 @@ public class FlickerApiCaller extends BaseApiCaller {
         get(context, url, null, null, listener);
     }
 
+    public void getDetailInfo(Context context, String id, ApiListener listener) {
+        String method = "flickr.photos.getInfo";
+        String SEARCH_PHOTO_ID = "&photo_id="+id;
+        String url = BASE_URL + method + SEARCH_PHOTO_ID + FORMAT_JSON + JSON_CALLBACK + APIKEY_SEARCH_STRING + AUTO_TOKEN_STRING + APISIG_STRING;
+        get(context, url,null, null, listener);
+    }
+
 
 }

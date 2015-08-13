@@ -16,6 +16,8 @@ public class ImageDetailActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_detail);
 
+
+
         if (savedInstanceState == null) {
             String json = getIntent().getStringExtra(EXTRA_CONTENT);
             getSupportFragmentManager().beginTransaction()
