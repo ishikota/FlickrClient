@@ -1,8 +1,15 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <!-- Theme for -->
+    <style name="ToolbarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/actionbar_color</item><!-- default action bar background -->
+        <item name="colorPrimaryDark">@color/primary_dark</item> <!-- used for the status bar -->
+        <item name="colorAccent">@color/accent</item> <!-- accent color is also used to tint widgets -->
+        <item name="android:textColorPrimary">@color/text_primary</item> <!-- the color of the tile text-->
     </style>
+
+    <!-- this style is used in toolbar xml -->
+    <style name ="LightPopupMenu" parent="android:Theme.Holo.Light"/>
+
 
 </resources>

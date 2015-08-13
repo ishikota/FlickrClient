@@ -24,7 +24,7 @@ public class PopularListFragment extends BaseImageListFragment {
 
     @Override
     public boolean addPadding() {
-        return false;
+        return true;
     }
 
     @Override
