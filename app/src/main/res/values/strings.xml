@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">FlickrClient</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="network_problem_message">Network Error Occurred</string>
+    <string name="no_data">no image found…</string>
+    <string name="image">Image</string>
+
+</resources>
