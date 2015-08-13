@@ -2,7 +2,7 @@
 <resources>
 
     <color name="theme_color">#009688</color>
-    <color name="actionbar_color">#212121</color>
+    <color name="actionbar_color">#0D0F14</color>
     <color name="actionbtn_color">#FFFFFF</color>
     <color name="primary_dark">#000000</color>
     <color name="accent">#00BFA5</color>

@@ -14,12 +14,11 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:gravity="center"
-            android:horizontalSpacing="1dp"
+            android:horizontalSpacing="4dp"
             android:numColumns="2"
             android:paddingBottom="1dp"
-            android:paddingLeft="1dp"
-            android:paddingRight="1dp"
-            android:verticalSpacing="1dp" />
+            android:verticalSpacing="4dp"
+            android:background="#000"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
