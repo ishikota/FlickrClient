@@ -1,9 +1,12 @@
 package com.ikota.flickrclient.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -86,13 +89,22 @@ public abstract class BaseImageListFragment extends Fragment {
         }
     };
 
-
-    RecyclerView.OnScrollListener scroll_lister = new RecyclerView.OnScrollListener() {
-
+    private ImageAdapter.OnClickCallback mItemClickListener = new ImageAdapter.OnClickCallback() {
         @Override
-        public void onScrollStateChanged(RecyclerView view, int scrollState) {
-            // do nothing here
+        public void onClick(View v, FlickerListItem data) {
+            Gson gson = new Gson();
+            String parsed_json = gson.toJson(data);
+            Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
+            intent.putExtra(ImageDetailActivity.EXTRA_CONTENT, parsed_json);
+
+            ActivityOptionsCompat options =
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            getActivity(), v, "list2detail");
+            ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
         }
+    };
+
+    private RecyclerView.OnScrollListener scroll_lister = new RecyclerView.OnScrollListener() {
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -251,7 +263,8 @@ public abstract class BaseImageListFragment extends Fragment {
             try {
                 retrieveJson(json);
                 //cache_top_id = mItemList.isEmpty() ? "-1" : mItemList.get(0).id;
-                mAdapter = new ImageAdapter(mAppContext, mItemList, getColumnNum());
+                mAdapter = new ImageAdapter(
+                        mAppContext, mItemList, mItemClickListener, getColumnNum());
                 mRecyclerView.setAdapter(mAdapter);
                 mRecyclerView.addOnScrollListener(scroll_lister);
             } catch (JSONException e) {
@@ -294,7 +307,8 @@ public abstract class BaseImageListFragment extends Fragment {
                         }
 
                         if (refresh_list) {
-                            mAdapter = new ImageAdapter(mAppContext, mItemList, getColumnNum());
+                            mAdapter = new ImageAdapter(
+                                    mAppContext, mItemList, mItemClickListener, getColumnNum());
                             mRecyclerView.setAdapter(mAdapter);
                             mRecyclerView.addOnScrollListener(scroll_lister);
                             mSwipeRefreshLayout.setRefreshing(false);

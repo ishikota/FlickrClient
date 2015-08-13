@@ -3,7 +3,6 @@ package com.ikota.flickrclient.ui;
 import android.content.Context;
 import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,6 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.android.volley.toolbox.ImageLoader;
-import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.model.FlickerListItem;
 import com.ikota.flickrclient.network.MySingleton;
@@ -26,8 +24,7 @@ import java.util.List;
  */
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
     private List<FlickerListItem> mDataSet;
-    private final Gson mGson;
-    //private final Context mContext;
+    private final OnClickCallback mClickCallback;
     private final LayoutInflater mInflater;
     private final ImageLoader mImageLoader;
     private final int view_size;
@@ -35,6 +32,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     public void setIfWifiConnected(boolean wifi_connected) {
         is_wifi_connected = wifi_connected;
+    }
+
+    public interface OnClickCallback {
+        void onClick(View v, FlickerListItem data);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -47,10 +48,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     }
 
 
-    public ImageAdapter(Context context, List<FlickerListItem> myDataset, int column) {
+    public ImageAdapter(Context context, List<FlickerListItem> myDataset,
+                        OnClickCallback listener, int column) {
         mDataSet = myDataset;
-        mGson = new Gson();
-        //mContext = context;
+        mClickCallback = listener;
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mImageLoader = MySingleton.getInstance(context).getImageLoader();
@@ -81,11 +82,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
             @Override
             public void onClick(View v) {
                 int position = (Integer) v.getTag(R.integer.list_pos_key);
-                String parsed_json = mGson.toJson(mDataSet.get(position));
-//                Intent intent = new Intent(mContext, DetailActivity.class);
-//                intent.putExtra(DetailActivity.EXTRA_CONTENT, parsed_json);
-//                mContext.startActivity(intent);
-                Log.i("onClick", parsed_json);
+                if(mClickCallback != null) {
+                    mClickCallback.onClick(v, mDataSet.get(position));
+                }
             }
         });
         return new ImageAdapter.ViewHolder(v);

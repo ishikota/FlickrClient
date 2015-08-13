@@ -7,4 +7,6 @@
     <string name="no_data">no image found…</string>
     <string name="image">Image</string>
 
+    <string name="detail">Detail</string>
+
 </resources>
