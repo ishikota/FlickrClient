@@ -6,15 +6,13 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -51,13 +49,14 @@ public abstract class BaseImageListFragment extends Fragment {
 
     private Context mAppContext;
 
-    private GridView mGridView;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+
     private View mEmptyView;
     private ProgressBar mProgress;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private ArrayList<FlickerListItem> mItemList;
-    private ArrayAdapter<FlickerListItem> mAdapter;
 
     private boolean end_flg;
     private AtomicBoolean busy = new AtomicBoolean(false);
@@ -88,16 +87,21 @@ public abstract class BaseImageListFragment extends Fragment {
     };
 
 
-    AbsListView.OnScrollListener scroll_lister = new AbsListView.OnScrollListener() {
+    RecyclerView.OnScrollListener scroll_lister = new RecyclerView.OnScrollListener() {
 
         @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState) {
+        public void onScrollStateChanged(RecyclerView view, int scrollState) {
             // do nothing here
         }
 
         @Override
-        public void onScroll(AbsListView view, int firstVisibleItem,
-                             int visibleItemCount, int totalItemCount) {
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            GridLayoutManager layoutManager = (GridLayoutManager)recyclerView.getLayoutManager();
+            int visibleItemCount = layoutManager.getChildCount();
+            int totalItemCount = layoutManager.getItemCount();
+            int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
 
             int LOAD_ITEM_NUM = 20;
             //load next item
@@ -182,10 +186,14 @@ public abstract class BaseImageListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_image_list, container, false);
 
-        mGridView = (GridView) root.findViewById(android.R.id.list);
+        mRecyclerView = (RecyclerView) root.findViewById(android.R.id.list);
         mEmptyView = root.findViewById(android.R.id.empty);
         mProgress = (ProgressBar) root.findViewById(R.id.progress);
         mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh);
+
+        mRecyclerView.setHasFixedSize(true);
+        GridLayoutManager layoutManager = new GridLayoutManager(mAppContext, getColumnNum());
+        mRecyclerView.setLayoutManager(layoutManager);
 
         mSwipeRefreshLayout.setColorSchemeColors(
                 getResources().getColor(R.color.swipe_color_1),
@@ -229,24 +237,10 @@ public abstract class BaseImageListFragment extends Fragment {
      * And starts download task of list item.
      */
     private void initList() {
-        mGridView.setNumColumns(getColumnNum());
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                FlickerListItem bean = mAdapter.getItem(position);
-//                Gson gson = new Gson();
-//                String parsed_json = gson.toJson(bean);
-//                Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
-//                intent.putExtra(ImageDetailActivity.EXTRA_CONTENT, parsed_json);
-//                startActivity(intent);
-//                getActivity().overridePendingTransition(
-//                        R.anim.slide_in_from_right, R.anim.fade_out_depth );
-            }
-        });
 
         // this condition is occur when this fragment is re-created.(like created by PagerAdapter again)
         if (mItemList != null && !mItemList.isEmpty()) {
-            mGridView.setAdapter(mAdapter);
+            mRecyclerView.setAdapter(mAdapter);
             return;
         }
         mItemList = new ArrayList<>();
@@ -258,8 +252,8 @@ public abstract class BaseImageListFragment extends Fragment {
                 retrieveJson(json);
                 //cache_top_id = mItemList.isEmpty() ? "-1" : mItemList.get(0).id;
                 mAdapter = new ImageAdapter(mAppContext, mItemList, getColumnNum());
-                mGridView.setAdapter(mAdapter);
-                mGridView.setOnScrollListener(scroll_lister);
+                mRecyclerView.setAdapter(mAdapter);
+                mRecyclerView.addOnScrollListener(scroll_lister);
             } catch (JSONException e) {
                 Log.e("Read cache", String.format("Failed to read cache list data.\n json : %s", json));
             }
@@ -301,8 +295,8 @@ public abstract class BaseImageListFragment extends Fragment {
 
                         if (refresh_list) {
                             mAdapter = new ImageAdapter(mAppContext, mItemList, getColumnNum());
-                            mGridView.setAdapter(mAdapter);
-                            mGridView.setOnScrollListener(scroll_lister);
+                            mRecyclerView.setAdapter(mAdapter);
+                            mRecyclerView.addOnScrollListener(scroll_lister);
                             mSwipeRefreshLayout.setRefreshing(false);
                         } else if (mAdapter != null) {
                             mAdapter.notifyDataSetChanged();

@@ -8,16 +8,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <GridView
+        <android.support.v7.widget.RecyclerView
             android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:gravity="center"
-            android:horizontalSpacing="4dp"
-            android:numColumns="2"
-            android:paddingBottom="1dp"
-            android:verticalSpacing="4dp"
             android:background="@color/white_bg"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>

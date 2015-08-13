@@ -2,15 +2,17 @@ package com.ikota.flickrclient.ui;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.android.volley.toolbox.ImageLoader;
+import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.model.FlickerListItem;
 import com.ikota.flickrclient.network.MySingleton;
@@ -22,7 +24,10 @@ import java.util.List;
  * Created by kota on 2015/08/11.
  * This adapter is used in BaseImageListFragment
  */
-public class ImageAdapter extends ArrayAdapter<FlickerListItem> {
+public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
+    private List<FlickerListItem> mDataSet;
+    private final Gson mGson;
+    //private final Context mContext;
     private final LayoutInflater mInflater;
     private final ImageLoader mImageLoader;
     private final int view_size;
@@ -32,9 +37,20 @@ public class ImageAdapter extends ArrayAdapter<FlickerListItem> {
         is_wifi_connected = wifi_connected;
     }
 
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public ImageView imageview;
 
-    public ImageAdapter(Context context, List<FlickerListItem> objects, int column) {
-        super(context, 0, objects);
+        public ViewHolder(View v) {
+            super(v);
+            imageview = (ImageView) v.findViewById(R.id.image);
+        }
+    }
+
+
+    public ImageAdapter(Context context, List<FlickerListItem> myDataset, int column) {
+        mDataSet = myDataset;
+        mGson = new Gson();
+        //mContext = context;
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mImageLoader = MySingleton.getInstance(context).getImageLoader();
@@ -51,47 +67,59 @@ public class ImageAdapter extends ArrayAdapter<FlickerListItem> {
     }
 
     @Override
-    public View getView(int position, View convertView,
-                        ViewGroup parent) {
-        ViewHolder holder;
+    public ImageAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        // Create a new view.
+        View v = mInflater.inflate(R.layout.row_image_list, viewGroup, false);
 
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.row_image_list, parent, false);
-            holder = new ViewHolder();
-            holder.imageView = (ImageView) convertView.findViewById(R.id.image);
-            // init image view size
-            ViewGroup.LayoutParams params = holder.imageView.getLayoutParams();
-            params.height = view_size;
-            holder.imageView.setLayoutParams(params);
+        // set view size here
+        ViewGroup.LayoutParams params = v.getLayoutParams();
+        params.height = view_size;
+        v.setLayoutParams(params);
 
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
+        ImageView imageview = (ImageView)v.findViewById(R.id.image);
+        imageview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = (Integer) v.getTag(R.integer.list_pos_key);
+                String parsed_json = mGson.toJson(mDataSet.get(position));
+//                Intent intent = new Intent(mContext, DetailActivity.class);
+//                intent.putExtra(DetailActivity.EXTRA_CONTENT, parsed_json);
+//                mContext.startActivity(intent);
+                Log.i("onClick", parsed_json);
+            }
+        });
+        return new ImageAdapter.ViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+
+        // set list position as tag
+        holder.imageview.setTag(R.integer.list_pos_key, position);
 
         // if last load request is alive, cancel it.
         ImageLoader.ImageContainer imageContainer =
-                (ImageLoader.ImageContainer) holder.imageView.getTag();
+                (ImageLoader.ImageContainer) holder.imageview.getTag();
         if (imageContainer != null) {
             imageContainer.cancelRequest();
         }
 
-        // load image with ImageLoader
-        FlickerListItem item = getItem(position);
-
         // change image quality by checking network state
         String quality_flg = is_wifi_connected ? "z": "q";
+
+        FlickerListItem item = mDataSet.get(position);
         String url = item.generatePhotoURL(quality_flg);
 
         ImageLoader.ImageListener listener =
-                ImageLoader.getImageListener(holder.imageView,
+                ImageLoader.getImageListener(holder.imageview,
                         R.drawable.loading_default, R.drawable.ic_image_broken);
-        holder.imageView.setTag(mImageLoader.get(url, listener));
-
-        return convertView;
+        holder.imageview.setTag(mImageLoader.get(url, listener));
     }
 
-    private class ViewHolder {
-        ImageView imageView;
+    @Override
+    public int getItemCount() {
+        return mDataSet.size();
     }
+
+
 }
