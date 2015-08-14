@@ -2,7 +2,6 @@ package com.ikota.flickrclient.ui;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.graphics.Palette;
@@ -102,7 +101,7 @@ public class ImageDetailFragment extends Fragment {
     private void setCachedImage(Bitmap image) {
         adjustViewHeight(mItemImage, mDisplayInfo.widthPixels,
                 image.getWidth(), image.getHeight());
-        mItemImage.setBackgroundDrawable(new BitmapDrawable(image));
+        mItemImage.setImageBitmap(image);
     }
 
     private void adjustViewHeight(View target, int disp_w, int img_w, int img_h) {
@@ -166,7 +165,6 @@ public class ImageDetailFragment extends Fragment {
      * @param bean : photo info holder object
      * @throws org.json.JSONException : caused by unexpected server response
      */
-    @SuppressWarnings("deprecation")
     private void setDetailInfo(FlickerPhotoInfo bean) throws JSONException{
         // this is image
         String original_img_url = bean.generatePhotoURL("b");
@@ -177,7 +175,7 @@ public class ImageDetailFragment extends Fragment {
                 if(response.getBitmap()!=null) {
                     Bitmap bmp = response.getBitmap();
                     adjustViewHeight(mItemImage, mDisplayInfo.widthPixels, bmp.getWidth(), bmp.getHeight());
-                    mItemImage.setBackgroundDrawable(new BitmapDrawable(response.getBitmap()));
+                    mItemImage.setImageBitmap(bmp);
                 }
             }
 
