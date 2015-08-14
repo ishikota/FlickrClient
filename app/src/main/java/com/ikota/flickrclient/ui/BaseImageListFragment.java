@@ -1,12 +1,9 @@
 package com.ikota.flickrclient.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,6 +13,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -92,15 +90,7 @@ public abstract class BaseImageListFragment extends Fragment {
     private ImageAdapter.OnClickCallback mItemClickListener = new ImageAdapter.OnClickCallback() {
         @Override
         public void onClick(View v, FlickerListItem data) {
-            Gson gson = new Gson();
-            String parsed_json = gson.toJson(data);
-            Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
-            intent.putExtra(ImageDetailActivity.EXTRA_CONTENT, parsed_json);
-
-            ActivityOptionsCompat options =
-                    ActivityOptionsCompat.makeSceneTransitionAnimation(
-                            getActivity(), v, getString(R.string.trans_list2detail));
-            ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
+            ImageDetailActivity.launch(getActivity(), data, (ImageView)v);
         }
     };
 
