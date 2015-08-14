@@ -1,15 +1,28 @@
 <resources>
+
     <string name="app_name">FlickrClient</string>
 
+    <!-- activity transition keyword -->
+    <string name="trans_list2detail">list2detail</string>
+
+    <!-- activity labels -->
+    <string name="detail">Detail</string>
+
+
+    <!-- menu actions -->
     <string name="action_settings">Settings</string>
     <string name="action_download">Download</string>
     <string name="action_share">Share</string>
 
-    <string name="network_problem_message">Network Error Occurred</string>
-    <string name="no_data">No image found…</string>
+
+    <!-- content descriptions -->
     <string name="image">Image</string>
     <string name="icon">Icon</string>
 
-    <string name="detail">Detail</string>
+
+    <!-- others -->
+    <string name="network_problem_message">Network Error Occurred</string>
+    <string name="no_data">No image found…</string>
+
 
 </resources>
