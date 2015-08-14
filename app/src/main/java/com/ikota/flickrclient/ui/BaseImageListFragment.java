@@ -273,7 +273,10 @@ public abstract class BaseImageListFragment extends Fragment {
      */
     void updateList(final int page, final boolean refresh_list) {
         busy.set(true);
-        if (refresh_list) mProgress.setVisibility(View.VISIBLE);
+        if (refresh_list && !mSwipeRefreshLayout.isRefreshing()) {
+            mProgress.setVisibility(View.VISIBLE);  // do not show double progress
+        }
+
         loadByContentType(getActivity(), page,
                 new BaseApiCaller.ApiListener() {
                     @Override

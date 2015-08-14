@@ -2,7 +2,6 @@
 
     <style name="AppTheme" parent="AppTheme.Base" />
 
-    <!-- Theme for -->
     <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textColorPrimary">@color/text_color_primary</item>
         <item name="android:windowBackground">@color/base</item>
