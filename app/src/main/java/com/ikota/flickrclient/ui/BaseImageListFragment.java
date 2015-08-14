@@ -99,7 +99,7 @@ public abstract class BaseImageListFragment extends Fragment {
 
             ActivityOptionsCompat options =
                     ActivityOptionsCompat.makeSceneTransitionAnimation(
-                            getActivity(), v, "list2detail");
+                            getActivity(), v, getString(R.string.trans_list2detail));
             ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
         }
     };

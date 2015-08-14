@@ -7,6 +7,6 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:contentDescription="@string/image"
-        android:transitionName="list2detail"/>
+        android:transitionName="@string/trans_list2detail"/>
 
 </merge>
