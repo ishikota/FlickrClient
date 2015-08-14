@@ -111,7 +111,7 @@ public class ImageDetailFragment extends Fragment {
     }
 
     private void adjustColorScheme(Bitmap image) {
-        Palette.generateAsync(image,
+        Palette.from(image).generate(
                 new Palette.PaletteAsyncListener() {
                     @Override
                     public void onGenerated(Palette palette) {
