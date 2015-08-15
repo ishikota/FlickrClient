@@ -14,8 +14,9 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
+            String tag = PopularListFragment.class.getSimpleName();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PopularListFragment())
+                    .add(R.id.container, new PopularListFragment(), tag)
                     .commit();
         }
     }
