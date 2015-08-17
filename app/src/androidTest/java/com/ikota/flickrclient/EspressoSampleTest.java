@@ -2,6 +2,7 @@ package com.ikota.flickrclient;
 
 import android.app.Activity;
 import android.app.Instrumentation;
+import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.IdlingResource;
@@ -11,6 +12,8 @@ import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.v7.widget.RecyclerView;
 import android.test.ActivityInstrumentationTestCase2;
 
+import com.google.gson.Gson;
+import com.ikota.flickrclient.model.FlickerListItem;
 import com.ikota.flickrclient.ui.ImageDetailActivity;
 import com.ikota.flickrclient.ui.MainActivity;
 import com.ikota.flickrclient.ui.PopularListFragment;
@@ -22,12 +25,12 @@ import org.junit.Before;
  * Created by kota on 2015/08/15.
  * First Espresso test.
  */
-public class MyEspressoTest extends ActivityInstrumentationTestCase2<MainActivity>{
+public class EspressoSampleTest extends ActivityInstrumentationTestCase2<MainActivity>{
 
     private PopularListFragment fragment;
     private RecyclerView recyclerView;
 
-    public MyEspressoTest() {
+    public EspressoSampleTest() {
         super(MainActivity.class);
     }
 
@@ -58,7 +61,7 @@ public class MyEspressoTest extends ActivityInstrumentationTestCase2<MainActivit
                 getInstrumentation().addMonitor(ImageDetailActivity.class.getName(),null, false);
 
         // wait until list item is loaded
-        IdlingResource idlingResource = new ListLoadIdlingResource(recyclerView);
+        IdlingResource idlingResource = new LoadingIdlingResource(recyclerView);
         Espresso.registerIdlingResources(idlingResource);
 
         // start DetailActivity by clicking RecyclerView item.
@@ -68,31 +71,42 @@ public class MyEspressoTest extends ActivityInstrumentationTestCase2<MainActivit
         // unregister idling resources
         Espresso.unregisterIdlingResources(idlingResource);
 
+        // Remove the ActivityMonitor
+        getInstrumentation().removeMonitor(receiverActivityMonitor);
+
         // assertion to DetailActivity
         Activity activity = receiverActivityMonitor.waitForActivityWithTimeout(1000);
         assertNotNull("DetailActivity is not null", activity);
         assertEquals("Launched Activity is not ImageDetailActivity", ImageDetailActivity.class, activity.getClass());
+
+        Intent intent = activity.getIntent();
+        String json = intent.getStringExtra(ImageDetailActivity.EXTRA_CONTENT);
+        Gson gson = new Gson();
+        FlickerListItem content = gson.fromJson(json, FlickerListItem.class);
+        assertNotNull(content.id);
+        assertNotNull(content.owner);
+        assertNotNull(content.secret);
+        assertNotNull(content.server);
     }
 
-    private class ListLoadIdlingResource implements IdlingResource {
+    private class LoadingIdlingResource implements IdlingResource {
 
         private ResourceCallback resourceCallback;
         private RecyclerView recyclerView;
 
-        private ListLoadIdlingResource(RecyclerView recyclerView) {
+        private LoadingIdlingResource(RecyclerView recyclerView) {
             this.recyclerView = recyclerView;
         }
 
         @Override
         public String getName() {
-            return ListLoadIdlingResource.class.getSimpleName();
+            return LoadingIdlingResource.class.getSimpleName();
         }
 
         @Override
         public boolean isIdleNow() {
             // check if recyclerView is set loaded items
-            boolean idle = recyclerView.getAdapter()!=null &&
-                    recyclerView.getAdapter().getItemCount() != 0;
+            boolean idle = isItemLoaded(recyclerView);
             if (idle && resourceCallback != null) {
                 resourceCallback.onTransitionToIdle();
             }
@@ -102,6 +116,10 @@ public class MyEspressoTest extends ActivityInstrumentationTestCase2<MainActivit
         @Override
         public void registerIdleTransitionCallback(ResourceCallback resourceCallback) {
             this.resourceCallback = resourceCallback;
+        }
+
+        private boolean isItemLoaded(RecyclerView list) {
+            return list.getAdapter()!=null && list.getAdapter().getItemCount() != 0;
         }
     }
 
