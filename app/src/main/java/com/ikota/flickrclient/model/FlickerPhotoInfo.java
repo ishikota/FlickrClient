@@ -19,7 +19,8 @@ import java.util.List;
 public class FlickerPhotoInfo {
     public Photo photo;
     public Owner owner;
-    public String description, dates, comments;
+    public String title, description, dates;
+    public int views, comments;
     public ArrayList<Tag> tags;
 
     public FlickerPhotoInfo(String json) {
@@ -46,9 +47,11 @@ public class FlickerPhotoInfo {
         JSONObject photo_json = root.getJSONObject("photo");
         this.photo = gson.fromJson(photo_json.toString(), Photo.class);
         this.owner = gson.fromJson(photo_json.getJSONObject("owner").toString(), Owner.class);
+        this.title = photo_json.getJSONObject("title").getString("_content");
         this.description = photo_json.getJSONObject("description").getString("_content");
         this.dates = photo_json.getJSONObject("dates").getString("taken");
-        this.comments = photo_json.getJSONObject("comments").getString("_content");
+        this.views = photo_json.getInt("views");
+        this.comments = photo_json.getJSONObject("comments").getInt("_content");
         JSONArray tag_array = photo_json.getJSONObject("tags").getJSONArray("tag");
         Type listType = new TypeToken<List<Tag>>() {}.getType();
         tags = gson.fromJson(tag_array.toString(), listType);

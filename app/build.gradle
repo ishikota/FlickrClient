@@ -36,6 +36,13 @@ dependencies {
     compile 'com.android.support.test:rules:0.3'
     compile 'com.android.support.test.espresso:espresso-core:2.2'
 
+    // for UnitTest
+    testCompile 'junit:junit:4.12'
+    testCompile "org.mockito:mockito-core:1.9.5"
+
+    // for Robolectric
+    testCompile 'org.robolectric:robolectric:3.0-rc2'
+
     androidTestCompile 'com.android.support.test:runner:0.3'
     androidTestCompile 'com.android.support.test:rules:0.3'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
