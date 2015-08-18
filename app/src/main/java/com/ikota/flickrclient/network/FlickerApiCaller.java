@@ -1,9 +1,6 @@
 package com.ikota.flickrclient.network;
 
 import android.content.Context;
-import android.util.Log;
-
-import com.android.volley.VolleyError;
 
 /**
  * Created by kota on 2014/10/05.
@@ -46,20 +43,10 @@ public class FlickerApiCaller extends BaseApiCaller {
 
 
     @SuppressWarnings("unused")
-    public void testEcho(Context context, String param) {
-        String[] keys = {"hoge"};
-        String[] vals = {param};
-        post(context, BASE_URL + "flickr.test.echo" + APIKEY_SEARCH_STRING, keys, vals, new ApiListener() {
-            @Override
-            public void onPostExecute(String response) {
-                Log.i("testEcho", response);
-            }
-
-            @Override
-            public void onErrorListener(VolleyError error) {
-                Log.e("testEcho", error.toString());
-            }
-        });
+    public void testEcho(Context context, String key, String val, ApiListener listener) {
+        String[] keys = {key};
+        String[] vals = {val};
+        post(context, BASE_URL + "flickr.test.echo" + FORMAT_JSON + JSON_CALLBACK + APIKEY_SEARCH_STRING + APISIG_STRING, keys, vals, listener);
     }
 
     public void getImageList(Context context, int page, ApiListener listener) {
