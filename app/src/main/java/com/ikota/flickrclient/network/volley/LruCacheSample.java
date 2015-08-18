@@ -1,4 +1,4 @@
-package com.ikota.flickrclient.network;
+package com.ikota.flickrclient.network.volley;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;

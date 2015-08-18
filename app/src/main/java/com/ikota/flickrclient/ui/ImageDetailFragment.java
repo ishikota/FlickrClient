@@ -19,9 +19,9 @@ import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.model.FlickerListItem;
 import com.ikota.flickrclient.model.FlickerPhotoInfo;
-import com.ikota.flickrclient.network.BaseApiCaller;
-import com.ikota.flickrclient.network.FlickerApiCaller;
-import com.ikota.flickrclient.network.MySingleton;
+import com.ikota.flickrclient.network.volley.BaseApiCaller;
+import com.ikota.flickrclient.network.volley.FlickerApiCaller;
+import com.ikota.flickrclient.network.volley.MySingleton;
 import com.ikota.flickrclient.util.NetUtils;
 
 import org.json.JSONException;

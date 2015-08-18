@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import com.android.volley.toolbox.ImageLoader;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.model.FlickerListItem;
-import com.ikota.flickrclient.network.MySingleton;
+import com.ikota.flickrclient.network.volley.MySingleton;
 import com.ikota.flickrclient.util.NetUtils;
 
 import java.util.List;

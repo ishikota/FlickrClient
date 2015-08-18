@@ -2,8 +2,8 @@ package com.ikota.flickrclient.ui;
 
 import android.content.Context;
 
-import com.ikota.flickrclient.network.BaseApiCaller;
-import com.ikota.flickrclient.network.FlickerApiCaller;
+import com.ikota.flickrclient.network.volley.BaseApiCaller;
+import com.ikota.flickrclient.network.volley.FlickerApiCaller;
 
 
 /**

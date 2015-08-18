@@ -3,6 +3,8 @@ package com.ikota.flickrclient.network;
 import android.content.Context;
 
 import com.android.volley.VolleyError;
+import com.ikota.flickrclient.network.volley.BaseApiCaller;
+import com.ikota.flickrclient.network.volley.FlickerApiCaller;
 
 import junit.framework.TestCase;
 

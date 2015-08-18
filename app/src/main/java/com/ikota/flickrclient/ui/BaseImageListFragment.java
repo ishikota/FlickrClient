@@ -21,7 +21,7 @@ import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.model.FlickerListItem;
-import com.ikota.flickrclient.network.BaseApiCaller;
+import com.ikota.flickrclient.network.volley.BaseApiCaller;
 import com.ikota.flickrclient.util.NetworkReceiver;
 
 import org.json.JSONArray;

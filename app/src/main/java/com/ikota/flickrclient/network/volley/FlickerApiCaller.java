@@ -1,4 +1,4 @@
-package com.ikota.flickrclient.network;
+package com.ikota.flickrclient.network.volley;
 
 import android.content.Context;
 
