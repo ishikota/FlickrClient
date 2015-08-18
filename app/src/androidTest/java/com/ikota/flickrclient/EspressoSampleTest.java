@@ -9,6 +9,7 @@ import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.matcher.ViewMatchers;
+import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
 import android.test.ActivityInstrumentationTestCase2;
 
@@ -20,11 +21,14 @@ import com.ikota.flickrclient.ui.PopularListFragment;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * Created by kota on 2015/08/15.
  * First Espresso test.
  */
+@RunWith(AndroidJUnit4.class)
 public class EspressoSampleTest extends ActivityInstrumentationTestCase2<MainActivity>{
 
     private PopularListFragment fragment;
@@ -50,12 +54,14 @@ public class EspressoSampleTest extends ActivityInstrumentationTestCase2<MainAct
         super.tearDown();
     }
 
+    @Test
     public void testPreconditions() {
         assertNotNull("fragment is null", fragment);
         assertNotNull("recyclerView is null", recyclerView);
     }
 
-    public void testRecyclerView_click() {
+    @Test
+    public void clickList_go_detail() {
         // Set up an ActivityMonitor
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(ImageDetailActivity.class.getName(),null, false);
