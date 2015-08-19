@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.model.FlickerListItem;
+import com.ikota.flickrclient.model.Interestingness;
 
 /**
  * Created by kota on 2015/08/14.
@@ -20,7 +20,7 @@ import com.ikota.flickrclient.model.FlickerListItem;
 public class ImageDetailActivity extends BaseActivity{
     public static final String EXTRA_CONTENT = "content";
 
-    public static void launch(Activity activity, FlickerListItem data, ImageView transitionView) {
+    public static void launch(Activity activity, Interestingness.Photo data, ImageView transitionView) {
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 activity,
                 transitionView,

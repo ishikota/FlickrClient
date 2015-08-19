@@ -1,9 +1,8 @@
 package com.ikota.flickrclient.ui;
 
-import android.content.Context;
+import com.ikota.flickrclient.model.Interestingness;
 
-import com.ikota.flickrclient.network.volley.BaseApiCaller;
-import com.ikota.flickrclient.network.volley.FlickerApiCaller;
+import retrofit.Callback;
 
 
 /**
@@ -13,8 +12,8 @@ import com.ikota.flickrclient.network.volley.FlickerApiCaller;
 public class PopularListFragment extends BaseImageListFragment {
 
     @Override
-    public void loadByContentType(Context context, int page, BaseApiCaller.ApiListener callback) {
-        FlickerApiCaller.getInstance().getImageList(context, page, callback);
+    public void loadByContentType(int page, Callback<Interestingness> callback) {
+        MainApplication.API.getPopularPhotos(page, callback);
     }
 
     @Override

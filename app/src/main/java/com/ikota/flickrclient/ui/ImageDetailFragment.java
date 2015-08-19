@@ -17,14 +17,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.model.FlickerListItem;
-import com.ikota.flickrclient.model.FlickerPhotoInfo;
-import com.ikota.flickrclient.network.volley.BaseApiCaller;
-import com.ikota.flickrclient.network.volley.FlickerApiCaller;
+import com.ikota.flickrclient.model.Interestingness;
+import com.ikota.flickrclient.model.PhotoInfo;
 import com.ikota.flickrclient.network.volley.MySingleton;
 import com.ikota.flickrclient.util.NetUtils;
 
-import org.json.JSONException;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by kota on 2015/08/14.
@@ -68,7 +68,7 @@ public class ImageDetailFragment extends Fragment {
         // get content
         Gson gson = new Gson();
         String json = getArguments().getString(ImageDetailActivity.EXTRA_CONTENT);
-        FlickerListItem content = gson.fromJson(json, FlickerListItem.class);
+        Interestingness.Photo content = gson.fromJson(json, Interestingness.Photo.class);
 
         setupContent(content);
         loadDetailInfo(content);
@@ -76,7 +76,7 @@ public class ImageDetailFragment extends Fragment {
         return root;
     }
 
-    private void setupContent(FlickerListItem content) {
+    private void setupContent(Interestingness.Photo content) {
         // set item information which already we know
         mTitleText.setText(content.title);
         String url = content.generatePhotoURL(NetUtils.isWifiConnected(getActivity()) ? "z" : "q");
@@ -130,44 +130,34 @@ public class ImageDetailFragment extends Fragment {
         );
     }
 
-    private void loadDetailInfo(FlickerListItem content) {
-
-        FlickerApiCaller.getInstance().getDetailInfo(getActivity(), content.id, new BaseApiCaller.ApiListener() {
+    private void loadDetailInfo(Interestingness.Photo content) {
+        MainApplication.API.getPhotoInfo(content.id, new Callback<PhotoInfo>() {
             @Override
-            public void onPostExecute(String response) {
-                try {
-                    // check if this fragment attached to Activity
-                    if (isAdded()) {
-                        FlickerPhotoInfo info = new FlickerPhotoInfo(response);
-                        setDetailInfo(info);
-                    }
-                } catch (JSONException e) {
-                    // server error
-                    if (isAdded()) {
-                        Toast.makeText(
-                                getActivity(),
-                                getResources().getString(R.string.network_problem_message),
-                                Toast.LENGTH_SHORT).show();
-                    }
+            public void success(PhotoInfo photoInfo, Response response) {
+                if(isAdded()) {
+                    setDetailInfo(photoInfo);
                 }
             }
 
             @Override
-            public void onErrorListener(VolleyError error) {
-                error.printStackTrace();
+            public void failure(RetrofitError error) {
+                // server error
+                if (isAdded()) {
+                    Toast.makeText(
+                            getActivity(),
+                            getResources().getString(R.string.network_problem_message),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
-
     }
 
     /**
      * Read json data and set image
-     * @param bean : photo info holder object
-     * @throws org.json.JSONException : caused by unexpected server response
+     * @param info : photo info holder object
      */
-    private void setDetailInfo(FlickerPhotoInfo bean) throws JSONException{
-        // this is image
-        String original_img_url = bean.generatePhotoURL("b");
+    private void setDetailInfo(PhotoInfo info){
+        String original_img_url = info.photo.generatePhotoURL("b");
         ImageLoader imageLoader = MySingleton.getInstance(getActivity()).getImageLoader();
         imageLoader.get(original_img_url, new ImageLoader.ImageListener() {
             @Override
@@ -191,10 +181,10 @@ public class ImageDetailFragment extends Fragment {
         ImageLoader.ImageListener listener =
                 ImageLoader.getImageListener(mUserImage,
                         R.drawable.loading_default, R.drawable.ic_image_broken);
-        mUserImage.setTag(imageLoader.get(bean.generateOwnerIconURL(), listener));
-        mUserText.setText(bean.owner.username);
-        mDateText.setText(bean.dates);
-        mDescriptText.setText(bean.description);
+        mUserImage.setTag(imageLoader.get(info.photo.owner.generateOwnerIconURL(), listener));
+        mUserText.setText(info.photo.owner.username);
+        mDateText.setText(info.photo.dates.taken);
+        mDescriptText.setText(info.photo.description._content);
     }
 
 

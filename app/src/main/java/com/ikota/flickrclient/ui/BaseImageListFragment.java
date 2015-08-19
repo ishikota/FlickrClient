@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,20 +16,17 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.model.FlickerListItem;
-import com.ikota.flickrclient.network.volley.BaseApiCaller;
+import com.ikota.flickrclient.model.Interestingness;
 import com.ikota.flickrclient.util.NetworkReceiver;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.DuplicateFormatFlagsException;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by kota on 2015/08/11.
@@ -57,7 +53,7 @@ public abstract class BaseImageListFragment extends Fragment {
     private ProgressBar mProgress;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private ArrayList<FlickerListItem> mItemList;
+    private ArrayList<Interestingness.Photo> mItemList;
 
     private boolean end_flg;
     private AtomicBoolean busy = new AtomicBoolean(false);
@@ -89,7 +85,7 @@ public abstract class BaseImageListFragment extends Fragment {
 
     private ImageAdapter.OnClickCallback mItemClickListener = new ImageAdapter.OnClickCallback() {
         @Override
-        public void onClick(View v, FlickerListItem data) {
+        public void onClick(View v, Interestingness.Photo data) {
             ImageDetailActivity.launch(getActivity(), data, (ImageView)v);
         }
     };
@@ -121,26 +117,15 @@ public abstract class BaseImageListFragment extends Fragment {
 
     /**
      * Concrete class must implements this method.
-     * In this method, just call proper api method
+     * In this method, concrete class just calls proper api method
      * by using passed parameters
-     * <p/>
-     * Ex.) Flicker API implementation
-     * if (type == POPULAR) {
-     * FlickerApiCaller.getInstance().getImageList(context, page, listener);
-     * } else if (type == TAG) {
-     * FlickerApiCaller.getInstance().getImageListByTag(context, page, paramm listener);
-     * } else if (type == ...) {
-     * FlickerApiCaller.getInstance().get...
-     * }
      *
-     * @param context  app context
-     * @param page     the page to download
+     * @param page     the page to request
      * @param callback callback method which is called after loading data
      */
     public abstract void loadByContentType(
-            Context context,
             int page,
-            BaseApiCaller.ApiListener callback
+            Callback<Interestingness> callback
     );
 
     /**
@@ -250,16 +235,16 @@ public abstract class BaseImageListFragment extends Fragment {
         // if cache found then display it.
         String json = null; //mCacheUtil.getCacheJson(getActivity(), CONTENT_TYPE, CONTENT_PARAM1);
         if (json != null && !json.isEmpty()) {
-            try {
-                retrieveJson(json);
-                //cache_top_id = mItemList.isEmpty() ? "-1" : mItemList.get(0).id;
-                mAdapter = new ImageAdapter(
-                        mAppContext, mItemList, mItemClickListener, getColumnNum());
-                mRecyclerView.setAdapter(mAdapter);
-                mRecyclerView.addOnScrollListener(scroll_lister);
-            } catch (JSONException e) {
-                Log.e("Read cache", String.format("Failed to read cache list data.\n json : %s", json));
+            Gson gson = new Gson();
+            Interestingness item = gson.fromJson(json, Interestingness.class);
+            //cache_top_id = mItemList.isEmpty() ? "-1" : mItemList.get(0).id;
+            for(Interestingness.Photo photo : item.photos.photo) {
+                mItemList.add(photo);
             }
+            mAdapter = new ImageAdapter(
+                    mAppContext, mItemList, mItemClickListener, getColumnNum());
+            mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.addOnScrollListener(scroll_lister);
         }
         // if cache found (json!=null) then do not need to refresh list
         updateList(0, json == null || json.isEmpty());
@@ -277,86 +262,48 @@ public abstract class BaseImageListFragment extends Fragment {
             mProgress.setVisibility(View.VISIBLE);  // do not show double progress
         }
 
-        loadByContentType(getActivity(), page,
-                new BaseApiCaller.ApiListener() {
-                    @Override
-                    public void onPostExecute(String response) {
-                        // update cache json
-                        if (!isAdded()) return;
-                        //mCacheUtil.putCacheJson(getActivity(), CONTENT_TYPE, CONTENT_PARAM1, response);
+        loadByContentType(page + 1, new Callback<Interestingness>() {
+            @Override
+            public void success(Interestingness interestingness, Response response) {
+                if (!isAdded()) return;
+                //mCacheUtil.putCacheJson(getActivity(), CONTENT_TYPE, CONTENT_PARAM1, response);
+                if (refresh_list) mItemList.clear();
 
-                        if (refresh_list) mItemList.clear();
-                        try {
-                            retrieveJson(response);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            onErrorListener(new VolleyError(e));
-                            return;
-                        } catch (DuplicateFormatFlagsException e) {
-                            e.printStackTrace();
-                            mProgress.setVisibility(View.GONE);
-                            updateList(page + 1, refresh_list);
-                            return;
-                        }
+                for(Interestingness.Photo photo : interestingness.photos.photo) {
+                    mItemList.add(photo);
+                }
 
-                        if (refresh_list) {
-                            mAdapter = new ImageAdapter(
-                                    mAppContext, mItemList, mItemClickListener, getColumnNum());
-                            mRecyclerView.setAdapter(mAdapter);
-                            mRecyclerView.addOnScrollListener(scroll_lister);
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        } else if (mAdapter != null) {
-                            mAdapter.notifyDataSetChanged();
-                        }
-                        busy.set(false);
-                        mProgress.setVisibility(View.GONE);
-                    }
+                if (mItemList.isEmpty()) {
+                    mEmptyView.setVisibility(View.VISIBLE);
+                } else {
+                    mEmptyView.setVisibility(View.GONE);
+                }
 
-                    @Override
-                    public void onErrorListener(VolleyError error) {
-                        if (!isAdded()) return;
-                        error.printStackTrace();
-                        if (page == 0 && mItemList.size() == 0)
-                            mEmptyView.setVisibility(View.VISIBLE);
-                        String message = getResources().getString(R.string.network_problem_message);
-                        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-                        mProgress.setVisibility(View.GONE);
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+                if (refresh_list) {
+                    mAdapter = new ImageAdapter(
+                            mAppContext, mItemList, mItemClickListener, getColumnNum());
+                    mRecyclerView.setAdapter(mAdapter);
+                    mRecyclerView.addOnScrollListener(scroll_lister);
+                    mSwipeRefreshLayout.setRefreshing(false);
+                } else if (mAdapter != null) {
+                    mAdapter.notifyDataSetChanged();
+                }
+                busy.set(false);
+                mProgress.setVisibility(View.GONE);
+            }
 
+            @Override
+            public void failure(RetrofitError error) {
+                if (!isAdded()) return;
+                error.printStackTrace();
+                if (page == 0 && mItemList.size() == 0)
+                    mEmptyView.setVisibility(View.VISIBLE);
+                String message = getResources().getString(R.string.network_problem_message);
+                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                mProgress.setVisibility(View.GONE);
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
-
-    /**
-     * convert json into FlickerListItem
-     *
-     * @param response : json string to convert.
-     * @throws JSONException                  : server returns json of unexpected format
-     * @throws DuplicateFormatFlagsException : throw if loaded data is the same page to cached data.
-     */
-    private void retrieveJson(String response) throws JSONException, DuplicateFormatFlagsException {
-        JSONObject root_jo = new JSONObject(response);
-        JSONObject photos_jo = root_jo.getJSONObject("photos");
-        JSONArray itemArray = photos_jo.getJSONArray("photo");
-        int load_item_num = itemArray.length();
-        if (load_item_num < getItemPerPage()) end_flg = true;
-        Gson gson = new Gson();
-        for (int i = 0; i < load_item_num; i++) {
-            JSONObject json = itemArray.getJSONObject(i);
-            FlickerListItem item = gson.fromJson(json.toString(), FlickerListItem.class);
-//            if(i==0 && item.id.equals(cache_top_id)) {
-//                throw new DuplicateFormatFlagsException("This data is the same data to cached one.");
-//            }
-            mItemList.add(item);
-        }
-        Log.i("test", "list size is " + mItemList.size());
-
-        if (mItemList.isEmpty()) {
-            mEmptyView.setVisibility(View.VISIBLE);
-        } else {
-            mEmptyView.setVisibility(View.GONE);
-        }
-    }
-
 
 }

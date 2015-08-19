@@ -23,6 +23,11 @@ public class PhotoInfo {
         public int views;
         public Comments comments;
         public Tags tags;
+
+        public String generatePhotoURL(String size) {
+            return "https://farm"+farm+".staticflickr.com/"
+                    + server+"/"+id+"_"+secret+"_"+size+".jpg";
+        }
     }
 
     public static class Owner {
@@ -33,6 +38,10 @@ public class PhotoInfo {
         public String iconserver;
         public String iconfarm;
         public String path_alias;
+
+        public String generateOwnerIconURL() {
+            return "https://flickr.com/buddyicons/"+nsid+".jpg";
+        }
     }
 
     public static class Title {

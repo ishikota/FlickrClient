@@ -12,7 +12,7 @@ import android.widget.ImageView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.model.FlickerListItem;
+import com.ikota.flickrclient.model.Interestingness;
 import com.ikota.flickrclient.network.volley.MySingleton;
 import com.ikota.flickrclient.util.NetUtils;
 
@@ -23,7 +23,7 @@ import java.util.List;
  * This adapter is used in BaseImageListFragment
  */
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
-    private List<FlickerListItem> mDataSet;
+    private List<Interestingness.Photo> mDataSet;
     private final OnClickCallback mClickCallback;
     private final LayoutInflater mInflater;
     private final ImageLoader mImageLoader;
@@ -35,7 +35,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     }
 
     public interface OnClickCallback {
-        void onClick(View v, FlickerListItem data);
+        void onClick(View v, Interestingness.Photo data);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -48,7 +48,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     }
 
 
-    public ImageAdapter(Context context, List<FlickerListItem> myDataset,
+    public ImageAdapter(Context context, List<Interestingness.Photo> myDataset,
                         OnClickCallback listener, int column) {
         mDataSet = myDataset;
         mClickCallback = listener;
@@ -106,7 +106,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         // change image quality by checking network state
         String quality_flg = is_wifi_connected ? "z": "q";
 
-        FlickerListItem item = mDataSet.get(position);
+        Interestingness.Photo item = mDataSet.get(position);
         String url = item.generatePhotoURL(quality_flg);
 
         ImageLoader.ImageListener listener =
