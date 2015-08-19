@@ -1,9 +1,7 @@
-package com.ikota.flickrclient;
+package com.ikota.flickrclient.model;
 
-/**
- * Created by kota on 2015/08/17.
- * Sample json data of Flickr API
- */
+
+/** Sample json data of Flickr API */
 public class DataHolder {
 
     // return of GET(https://api.flickr.com/services/rest/?method=flickr.interestingness.getList&page=1&per_page=20&format=json&nojsoncallback=1&api_key=84434e44ac54eb2853b6b4492daf863e)

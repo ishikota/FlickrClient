@@ -1,7 +1,6 @@
 package com.ikota.flickrclient.ui;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.ikota.flickrclient.network.retrofit.FlickrService;
 
@@ -20,19 +19,26 @@ public class MainApplication extends Application {
 
     private static final String TAG = MainApplication.class.getSimpleName();
 
+    private ObjectGraph objectGraph = null;
+
     @Inject FlickrService flickrService;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.v(TAG, "CustomApplication class is used");
+        if(objectGraph == null) {
+            List<FlickrAPIModule> modules = Collections.singletonList(new FlickrAPIModule());
+            objectGraph = ObjectGraph.create(modules.toArray());
+        }
     }
 
-    public void injectModule(Object module) {
-        if(flickrService != null) return;
-        List<Object> modules = Collections.singletonList(module);
-        ObjectGraph objectGraph = ObjectGraph.create(modules.toArray());
-        objectGraph.inject(this);
+    // used to set ObjectGraph for test
+    public void setObjectGraph(ObjectGraph graph) {
+        objectGraph = graph;
+    }
+
+    public ObjectGraph objectGraph() {
+        return objectGraph;
     }
 
     public FlickrService api() {

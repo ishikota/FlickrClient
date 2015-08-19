@@ -1,6 +1,8 @@
 package com.ikota.flickrclient;
 
+import android.app.Instrumentation;
 import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.espresso.action.ViewActions;
@@ -14,8 +16,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.ikota.flickrclient.ui.BaseActivity;
-import com.ikota.flickrclient.ui.FlickrAPIModule;
+import com.ikota.flickrclient.ui.DummyAPIModule;
 import com.ikota.flickrclient.ui.MainActivity;
 import com.ikota.flickrclient.ui.MainApplication;
 import com.ikota.flickrclient.ui.PopularListFragment;
@@ -25,18 +26,19 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-/**
- * Created by kota on 2015/08/20.
- *
- */
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
+import dagger.ObjectGraph;
+import retrofit.client.Client;
+import retrofit.client.Request;
+import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
+
+
 @RunWith(AndroidJUnit4.class)
 public class ImageListFragmentTest extends ActivityInstrumentationTestCase2<MainActivity> {
-
-    private RecyclerView recyclerView;
-    private ProgressBar progressBar;
-    private TextView emptyView;
-
-    private MainApplication app;
 
     public ImageListFragmentTest() {
         super(MainActivity.class);
@@ -51,63 +53,59 @@ public class ImageListFragmentTest extends ActivityInstrumentationTestCase2<Main
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+        MainApplication app =
+                (MainApplication) instrumentation.getTargetContext().getApplicationContext();
+
+        // set objectGraph to inject Mock API
+        List modules = Collections.singletonList(new DummyAPIModule());
+        ObjectGraph graph = ObjectGraph.create(modules.toArray());
+        app.setObjectGraph(graph);
+        app.objectGraph().inject(app);
     }
 
     @Test
     public void testProgress_show() {
-        Intent intent = new Intent();
-        intent.putExtra(BaseActivity.KEY_REAL_SERVER, false);
-        MainActivity activity = activityRule.launchActivity(intent);
-        activity.injectApiModule(new FlickrAPIModule());
+        // start Activity manually
+        MainActivity activity = activityRule.launchActivity(new Intent());
 
         PopularListFragment fragment = (PopularListFragment)activity.getSupportFragmentManager()
                 .findFragmentByTag(PopularListFragment.class.getSimpleName());
-        recyclerView = (RecyclerView)fragment.getView().findViewById(android.R.id.list);
-        progressBar = (ProgressBar)fragment.getView().findViewById(R.id.progress);
-        emptyView = (TextView)fragment.getView().findViewById(android.R.id.empty);
+        @SuppressWarnings("ConstantConditions")
+        RecyclerView recyclerView = (RecyclerView)fragment.getView().findViewById(android.R.id.list);
+        ProgressBar progressBar = (ProgressBar)fragment.getView().findViewById(R.id.progress);
+        TextView emptyView = (TextView)fragment.getView().findViewById(android.R.id.empty);
 
         assertEquals(View.VISIBLE, progressBar.getVisibility());
         IdlingResource idlingResource = new LoadingIdlingResource(recyclerView);
         Espresso.registerIdlingResources(idlingResource);
         Espresso.onView(ViewMatchers.withId(android.R.id.list)).perform(
-                RecyclerViewActions.actionOnItemAtPosition(0, ViewActions.swipeLeft()));
+                RecyclerViewActions.actionOnItemAtPosition(0, ViewActions.scrollTo()));
         Espresso.unregisterIdlingResources(idlingResource);
         assertEquals(View.GONE, progressBar.getVisibility());
         assertEquals(View.GONE, emptyView.getVisibility());
     }
 
-    private class LoadingIdlingResource implements IdlingResource {
+    public class MockClient implements Client {
 
-        private ResourceCallback resourceCallback;
-        private RecyclerView recyclerView;
+        private static final int HTTP_OK_STATUS = 200;
+        private final String RESPONSE_JSON;
 
-        private LoadingIdlingResource(RecyclerView recyclerView) {
-            this.recyclerView = recyclerView;
+        MockClient(String responce_json) {
+            RESPONSE_JSON = responce_json;
         }
 
         @Override
-        public String getName() {
-            return LoadingIdlingResource.class.getSimpleName();
+        public Response execute(Request request) throws IOException {
+            return createResponseWithCodeAndJson(request.getUrl(), HTTP_OK_STATUS, RESPONSE_JSON);
         }
 
-        @Override
-        public boolean isIdleNow() {
-            // check if recyclerView is set loaded items
-            boolean idle = isItemLoaded(recyclerView);
-            if (idle && resourceCallback != null) {
-                resourceCallback.onTransitionToIdle();
-            }
-            return idle;
+        @SuppressWarnings("unchecked")
+        private Response createResponseWithCodeAndJson(String url, int responseCode, String json) {
+            return new Response(url,responseCode, "nothing", Collections.EMPTY_LIST,
+                    new TypedByteArray("application/json", json.getBytes()));
         }
 
-        @Override
-        public void registerIdleTransitionCallback(ResourceCallback resourceCallback) {
-            this.resourceCallback = resourceCallback;
-        }
-
-        private boolean isItemLoaded(RecyclerView list) {
-            return list.getAdapter()!=null && list.getAdapter().getItemCount() != 0;
-        }
     }
 
 }
