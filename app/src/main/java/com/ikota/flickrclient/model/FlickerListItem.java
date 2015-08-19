@@ -4,7 +4,7 @@ package com.ikota.flickrclient.model;
  * Created by kota on 2015/06/17.
  * This is a holder object of each list item in the form of Flicker API.
  */
-@SuppressWarnings("unused")
+@Deprecated
 public class FlickerListItem {
     public String id;
     public String owner;

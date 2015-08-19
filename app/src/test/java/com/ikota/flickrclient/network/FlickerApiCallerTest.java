@@ -1,20 +1,21 @@
 package com.ikota.flickrclient.network;
 
-import android.content.Context;
-
-import com.android.volley.VolleyError;
-import com.ikota.flickrclient.network.volley.BaseApiCaller;
-import com.ikota.flickrclient.network.volley.FlickerApiCaller;
+import com.ikota.flickrclient.model.Interestingness;
+import com.ikota.flickrclient.model.PhotoInfo;
+import com.ikota.flickrclient.ui.MainApplication;
 
 import junit.framework.TestCase;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
 
 /**
  * Created by kota on 2015/08/19.
@@ -23,29 +24,20 @@ import org.robolectric.RuntimeEnvironment;
 @RunWith(RobolectricTestRunner.class)
 public class FlickerApiCallerTest extends TestCase {
 
-    private Context context;
-    private FlickerApiCaller api;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        api = FlickerApiCaller.getInstance();
-        context = RuntimeEnvironment.application.getApplicationContext();
-    }
-
-    @Test
-    public void testGetInstance() throws Exception {
-        FlickerApiCaller api2 = FlickerApiCaller.getInstance();
-        assertEquals(api, api2);
     }
 
     @Test
     public void testTestEcho() throws Exception {
-        FlickerApiCaller.getInstance().testEcho(context, "hoge", "fuga", new BaseApiCaller.ApiListener() {
+        MainApplication.API.testEcho("fuga", new Callback<Response>() {
             @Override
-            public void onPostExecute(String response) {
+            public void success(Response response, Response response2) {
+                String str = new String(((TypedByteArray) response.getBody()).getBytes());
                 try {
-                    JSONObject jo = new JSONObject(response);
+                    JSONObject jo = new JSONObject(str);
                     assertEquals("ok", jo.getString("stat"));
                     assertEquals("fuga", jo.getString("hoge"));
                 } catch (Exception e) {
@@ -54,31 +46,27 @@ public class FlickerApiCallerTest extends TestCase {
             }
 
             @Override
-            public void onErrorListener(VolleyError error) {
+            public void failure(RetrofitError error) {
                 fail("Error on testEcho API");
             }
         });
+
     }
 
     @Test
     public void testGetImageList() throws Exception {
-        FlickerApiCaller.getInstance().getImageList(context, 0, new BaseApiCaller.ApiListener() {
+        MainApplication.API.getPopularPhotos(1, new Callback<Interestingness>() {
+
             @Override
-            public void onPostExecute(String response) {
-                try {
-                    JSONObject root = new JSONObject(response);
-                    JSONObject photos = root.getJSONObject("photos");
-                    JSONArray photo = photos.getJSONArray("photo");
-                    assertEquals(1, photos.getInt("page"));
-                    assertEquals("ok", root.getString("stat"));
-                    assertEquals(20, photo.length());
-                } catch (Exception e) {
-                    fail("json error on getIamgeList API");
-                }
+            public void success(Interestingness popularPhotos, Response response) {
+                assertEquals("ok", popularPhotos.stat);
+                assertEquals(1, popularPhotos.photos.page);
+                assertEquals(20, popularPhotos.photos.perpage);
+                assertEquals(20, popularPhotos.photos.photo.size());
             }
 
             @Override
-            public void onErrorListener(VolleyError error) {
+            public void failure(RetrofitError error) {
                 fail("Error on getImageList API");
             }
         });
@@ -86,22 +74,15 @@ public class FlickerApiCallerTest extends TestCase {
 
     @Test
     public void testGetDetailInfo() throws Exception {
-        FlickerApiCaller.getInstance().getDetailInfo(context, "20623135501", new BaseApiCaller.ApiListener() {
+        MainApplication.API.getPhotoInfo("20623135501", new Callback<PhotoInfo>() {
             @Override
-            public void onPostExecute(String response) {
-                try {
-                    JSONObject root = new JSONObject(response);
-                    JSONObject photo = root.getJSONObject("photo");
-                    JSONObject owner = root.getJSONObject("owner");
-                    assertEquals("20623135501", photo.getString("id"));
-                    assertEquals("30179751@N06", owner.getString("nsid"));
-                } catch (Exception e) {
-                    fail("json error on getDetailInfo API");
-                }
+            public void success(PhotoInfo photoInfo, Response response) {
+                assertEquals("20623135501", photoInfo.photo.id);
+                assertEquals("30179751@N06", photoInfo.photo.owner.nsid);
             }
 
             @Override
-            public void onErrorListener(VolleyError error) {
+            public void failure(RetrofitError error) {
                 fail("Error on getDetailInfo API");
             }
         });

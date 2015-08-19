@@ -15,7 +15,7 @@ import java.util.List;
  * Created by kota on 2015/06/17.
  * holder object of detail page information
  */
-@SuppressWarnings("unused")
+@Deprecated
 public class FlickerPhotoInfo {
     public Photo photo;
     public Owner owner;
