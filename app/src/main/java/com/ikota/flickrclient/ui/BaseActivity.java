@@ -12,13 +12,20 @@ import com.ikota.flickrclient.R;
  * - Inflates Toolbar if found in xml. ( So you must set id of toolbar as "R.id.toolbar_actionbar" )
  */
 public class BaseActivity extends AppCompatActivity{
-
+    public static final String KEY_REAL_SERVER = "real_server";
     private Toolbar mActionBarToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        boolean use_real_server = getIntent().getBooleanExtra(KEY_REAL_SERVER, true);
+        if(use_real_server) {
+            injectApiModule(new FlickrAPIModule());
+        }
+    }
 
+    public void injectApiModule(Object module) {
+        ((MainApplication)getApplication()).injectModule(module);
     }
 
     @Override
@@ -32,7 +39,6 @@ public class BaseActivity extends AppCompatActivity{
         super.onBackPressed();
         supportFinishAfterTransition();
     }
-
 
     protected Toolbar getActionBarToolbar() {
         if (mActionBarToolbar == null) {
