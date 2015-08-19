@@ -2,6 +2,7 @@ package com.ikota.flickrclient.ui;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.graphics.Palette;
@@ -13,14 +14,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.model.Interestingness;
 import com.ikota.flickrclient.model.PhotoInfo;
-import com.ikota.flickrclient.network.volley.MySingleton;
 import com.ikota.flickrclient.util.NetUtils;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -77,31 +77,32 @@ public class ImageDetailFragment extends Fragment {
     }
 
     private void setupContent(Interestingness.Photo content) {
-        // set item information which already we know
+        // set item information which we got from list data
         mTitleText.setText(content.title);
         String url = content.generatePhotoURL(NetUtils.isWifiConnected(getActivity()) ? "z" : "q");
-        ImageLoader imageLoader = MySingleton.getInstance(getActivity()).getImageLoader();
-        imageLoader.get(url, new ImageLoader.ImageListener() {
+        Picasso.with(getActivity()).load(url).into(new Target() {
             @Override
-            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                Bitmap cached_image = response.getBitmap();
-                if (cached_image != null) {
-                    setCachedImage(cached_image);
-                    adjustColorScheme(cached_image);
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                if (bitmap != null) {
+                    adjustViewHeight(mItemImage,
+                            mDisplayInfo.widthPixels,
+                            bitmap.getWidth(),
+                            bitmap.getHeight());
+                    mItemImage.setImageBitmap(bitmap);
+                    adjustColorScheme(bitmap);
                 }
             }
 
             @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
+            public void onBitmapFailed(Drawable errorDrawable) {
+                // do nothing
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+                // do nothing
             }
         });
-    }
-
-    private void setCachedImage(Bitmap image) {
-        adjustViewHeight(mItemImage, mDisplayInfo.widthPixels,
-                image.getWidth(), image.getHeight());
-        mItemImage.setImageBitmap(image);
     }
 
     private void adjustViewHeight(View target, int disp_w, int img_w, int img_h) {
@@ -134,14 +135,13 @@ public class ImageDetailFragment extends Fragment {
         MainApplication.API.getPhotoInfo(content.id, new Callback<PhotoInfo>() {
             @Override
             public void success(PhotoInfo photoInfo, Response response) {
-                if(isAdded()) {
+                if (isAdded()) {
                     setDetailInfo(photoInfo);
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
-                // server error
                 if (isAdded()) {
                     Toast.makeText(
                             getActivity(),
@@ -158,30 +158,31 @@ public class ImageDetailFragment extends Fragment {
      */
     private void setDetailInfo(PhotoInfo info){
         String original_img_url = info.photo.generatePhotoURL("b");
-        ImageLoader imageLoader = MySingleton.getInstance(getActivity()).getImageLoader();
-        imageLoader.get(original_img_url, new ImageLoader.ImageListener() {
+        Picasso.with(getActivity()).load(original_img_url).into(new Target() {
             @Override
-            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
-                if(response.getBitmap()!=null) {
-                    Bitmap bmp = response.getBitmap();
-                    adjustViewHeight(mItemImage, mDisplayInfo.widthPixels, bmp.getWidth(), bmp.getHeight());
-                    mItemImage.setImageBitmap(bmp);
-                }
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                adjustViewHeight(mItemImage,
+                        mDisplayInfo.widthPixels,
+                        bitmap.getWidth(),
+                        bitmap.getHeight());
+                mItemImage.setImageBitmap(bitmap);
             }
 
             @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
+            public void onBitmapFailed(Drawable errorDrawable) {
+                // do nothing
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+                // do nothing
             }
         });
 //        int comment_num = Integer.valueOf(bean.comments);
 //        mLikeNum.setText(comment_num + " like");
 //        mLikeNum.setTag(comment_num);
 //        setTag(bean.tags);
-        ImageLoader.ImageListener listener =
-                ImageLoader.getImageListener(mUserImage,
-                        R.drawable.loading_default, R.drawable.ic_image_broken);
-        mUserImage.setTag(imageLoader.get(info.photo.owner.generateOwnerIconURL(), listener));
+        Picasso.with(getActivity()).load(info.photo.owner.generateOwnerIconURL()).into(mUserImage);
         mUserText.setText(info.photo.owner.username);
         mDateText.setText(info.photo.dates.taken);
         mDescriptText.setText(info.photo.description._content);

@@ -101,10 +101,9 @@ public abstract class BaseImageListFragment extends Fragment {
             int totalItemCount = layoutManager.getItemCount();
             int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
 
-            int LOAD_ITEM_NUM = 20;
             //load next item
-            if (!end_flg && !busy.get() && totalItemCount - firstVisibleItem <= LOAD_ITEM_NUM) {
-                int page = totalItemCount / LOAD_ITEM_NUM;
+            if (!end_flg && !busy.get() && totalItemCount - firstVisibleItem <= getItemPerPage()) {
+                int page = totalItemCount / getItemPerPage();
                 updateList(page, false);
             }
 
@@ -273,11 +272,7 @@ public abstract class BaseImageListFragment extends Fragment {
                     mItemList.add(photo);
                 }
 
-                if (mItemList.isEmpty()) {
-                    mEmptyView.setVisibility(View.VISIBLE);
-                } else {
-                    mEmptyView.setVisibility(View.GONE);
-                }
+                mEmptyView.setVisibility(mItemList.isEmpty() ? View.VISIBLE : View.GONE);
 
                 if (refresh_list) {
                     mAdapter = new ImageAdapter(
@@ -299,9 +294,11 @@ public abstract class BaseImageListFragment extends Fragment {
                 if (page == 0 && mItemList.size() == 0)
                     mEmptyView.setVisibility(View.VISIBLE);
                 String message = getResources().getString(R.string.network_problem_message);
-                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mAppContext, message, Toast.LENGTH_SHORT).show();
                 mProgress.setVisibility(View.GONE);
                 mSwipeRefreshLayout.setRefreshing(false);
+                end_flg = true;
+                busy.set(false);
             }
         });
     }

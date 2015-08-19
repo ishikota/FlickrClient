@@ -10,11 +10,10 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.android.volley.toolbox.ImageLoader;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.model.Interestingness;
-import com.ikota.flickrclient.network.volley.MySingleton;
 import com.ikota.flickrclient.util.NetUtils;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -23,10 +22,10 @@ import java.util.List;
  * This adapter is used in BaseImageListFragment
  */
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
+    private Context mContext;
     private List<Interestingness.Photo> mDataSet;
     private final OnClickCallback mClickCallback;
     private final LayoutInflater mInflater;
-    private final ImageLoader mImageLoader;
     private final int view_size;
     private boolean is_wifi_connected;
 
@@ -50,11 +49,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     public ImageAdapter(Context context, List<Interestingness.Photo> myDataset,
                         OnClickCallback listener, int column) {
+        mContext = context;
         mDataSet = myDataset;
         mClickCallback = listener;
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        mImageLoader = MySingleton.getInstance(context).getImageLoader();
 
         // init grid size (grid size = display_width/column_num).
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -96,23 +95,17 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         // set list position as tag
         holder.imageview.setTag(R.integer.list_pos_key, position);
 
-        // if last load request is alive, cancel it.
-        ImageLoader.ImageContainer imageContainer =
-                (ImageLoader.ImageContainer) holder.imageview.getTag();
-        if (imageContainer != null) {
-            imageContainer.cancelRequest();
-        }
-
         // change image quality by checking network state
         String quality_flg = is_wifi_connected ? "z": "q";
 
         Interestingness.Photo item = mDataSet.get(position);
-        String url = item.generatePhotoURL(quality_flg);
 
-        ImageLoader.ImageListener listener =
-                ImageLoader.getImageListener(holder.imageview,
-                        R.drawable.loading_default, R.drawable.ic_image_broken);
-        holder.imageview.setTag(mImageLoader.get(url, listener));
+        String url = item.generatePhotoURL(quality_flg);
+        Picasso.with(mContext)
+                .load(url)
+                .placeholder(R.drawable.loading_default)
+                .error(R.drawable.ic_image_broken)
+                .into(holder.imageview);
     }
 
     @Override
