@@ -13,7 +13,7 @@ public class PopularListFragment extends BaseImageListFragment {
 
     @Override
     public void loadByContentType(int page, Callback<Interestingness> callback) {
-        MainApplication.API.getPopularPhotos(page, callback);
+        ((MainApplication)getActivity().getApplication()).api().getPopularPhotos(page, callback);
     }
 
     @Override

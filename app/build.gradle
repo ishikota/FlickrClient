@@ -34,8 +34,8 @@ dependencies {
     compile 'com.makeramen:roundedimageview:2.0.1'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile "com.google.dagger:dagger:2.0"
-    apt "com.google.dagger:dagger-compiler:2.0"
+    compile 'com.squareup.dagger:dagger:1.2.+'
+    apt 'com.squareup.dagger:dagger-compiler:1.2.+'
 
     compile 'com.android.support.test:runner:0.3'
     compile 'com.android.support.test:rules:0.3'
@@ -51,6 +51,7 @@ dependencies {
     androidTestCompile 'com.android.support.test:runner:0.3'
     androidTestCompile 'com.android.support.test:rules:0.3'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
+    androidTestCompile "org.mockito:mockito-core:1.9.5"
     // below code help you from erro around RecyclerView conflicts.
     androidTestCompile ('com.android.support.test.espresso:espresso-contrib:2.2'){
         exclude group: 'com.android.support', module: 'appcompat'

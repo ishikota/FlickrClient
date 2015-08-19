@@ -132,7 +132,7 @@ public class ImageDetailFragment extends Fragment {
     }
 
     private void loadDetailInfo(Interestingness.Photo content) {
-        MainApplication.API.getPhotoInfo(content.id, new Callback<PhotoInfo>() {
+        ((MainApplication)getActivity().getApplication()).api().getPhotoInfo(content.id, new Callback<PhotoInfo>() {
             @Override
             public void success(PhotoInfo photoInfo, Response response) {
                 if (isAdded()) {
