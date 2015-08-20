@@ -10,6 +10,7 @@ import retrofit.mime.TypedByteArray;
 
 
 public class MockClient implements Client{
+
     private static final int HTTP_OK_STATUS = 200;
     private final String LIST_RESPONSE;
 

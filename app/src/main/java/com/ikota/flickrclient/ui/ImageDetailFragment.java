@@ -26,13 +26,9 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-/**
- * Created by kota on 2015/08/14.
- * Detail page fragment
- */
+
 public class ImageDetailFragment extends Fragment {
 
-    //private Context mAppContext;
     private DisplayMetrics mDisplayInfo = new DisplayMetrics();
 
     private ImageView mItemImage, mUserImage;
@@ -178,10 +174,7 @@ public class ImageDetailFragment extends Fragment {
                 // do nothing
             }
         });
-//        int comment_num = Integer.valueOf(bean.comments);
-//        mLikeNum.setText(comment_num + " like");
-//        mLikeNum.setTag(comment_num);
-//        setTag(bean.tags);
+
         Picasso.with(getActivity()).load(info.photo.owner.generateOwnerIconURL()).into(mUserImage);
         mUserText.setText(info.photo.owner.username);
         mDateText.setText(info.photo.dates.taken);

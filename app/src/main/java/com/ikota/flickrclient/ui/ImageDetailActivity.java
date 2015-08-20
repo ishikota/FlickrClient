@@ -13,10 +13,7 @@ import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.model.Interestingness;
 
-/**
- * Created by kota on 2015/08/14.
- * Activity of detail page.
- */
+
 public class ImageDetailActivity extends BaseActivity{
     public static final String EXTRA_CONTENT = "content";
 

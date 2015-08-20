@@ -33,11 +33,10 @@ import retrofit.client.Response;
  * <p/>
  * UI of basic image list page.
  * <p/>
- * This fragment would be used for multiple pages like
+ * This fragment would be used in various pages like
  * tag list page, user upload list, popular item list ...
  * <p/>
- * So you need to set what page does this fragment represents.
- * Then this fragment adjusts
+ * you can adjust,
  * - whether to add padding on top for ActionBar
  * - the number of column
  * - the base url to fetch json data of images
@@ -48,12 +47,12 @@ public abstract class BaseImageListFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
+    private ArrayList<Interestingness.Photo> mItemList;
 
     private View mEmptyView;
     private ProgressBar mProgress;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private ArrayList<Interestingness.Photo> mItemList;
 
     private boolean end_flg;
     private AtomicBoolean busy = new AtomicBoolean(false);
@@ -240,8 +239,7 @@ public abstract class BaseImageListFragment extends Fragment {
             for(Interestingness.Photo photo : item.photos.photo) {
                 mItemList.add(photo);
             }
-            mAdapter = new ImageAdapter(
-                    mAppContext, mItemList, mItemClickListener, getColumnNum());
+            mAdapter = new ImageAdapter(mAppContext, mItemList, mItemClickListener, getColumnNum());
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.addOnScrollListener(scroll_lister);
         }

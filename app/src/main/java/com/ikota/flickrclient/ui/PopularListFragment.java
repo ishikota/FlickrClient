@@ -7,7 +7,7 @@ import retrofit.Callback;
 
 /**
  * Created by kota on 2015/08/11.
- * ImageFragment which displays popular images.
+ * Start screen page.
  */
 public class PopularListFragment extends BaseImageListFragment {
 

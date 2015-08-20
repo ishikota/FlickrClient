@@ -11,10 +11,7 @@ import javax.inject.Inject;
 
 import dagger.ObjectGraph;
 
-/**
- * Created by kota on 2015/08/19.
- *
- */
+
 public class MainApplication extends Application {
 
     private static final String TAG = MainApplication.class.getSimpleName();

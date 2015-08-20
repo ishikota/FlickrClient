@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * Created by kota on 2015/06/17.
- * holder object of detail page information
+ * This POJO is replaced by PhotoInfo class.
  */
 @Deprecated
 public class FlickerPhotoInfo {

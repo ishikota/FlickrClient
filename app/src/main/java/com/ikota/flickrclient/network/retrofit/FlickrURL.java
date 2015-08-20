@@ -1,9 +1,5 @@
 package com.ikota.flickrclient.network.retrofit;
 
-/**
- * Created by kota on 2015/08/19.
- *
- */
 @SuppressWarnings("unused")
 public class FlickrURL {
     public static final String END_POINT = "https://api.flickr.com/services";

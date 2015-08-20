@@ -17,12 +17,10 @@ import static com.ikota.flickrclient.network.retrofit.FlickrURL.JSON_CALLBACK;
 import static com.ikota.flickrclient.network.retrofit.FlickrURL.METHOD_PREFIX;
 import static com.ikota.flickrclient.network.retrofit.FlickrURL.PER_PAGE;
 
-/**
- * Created by kota on 2015/08/19.
- *
- */
+
 public interface FlickrService {
 
+    @SuppressWarnings("unused")
     @POST(METHOD_PREFIX+"flickr.test.echo" + FORMAT_JSON + JSON_CALLBACK + APIKEY_SEARCH_STRING + APISIG_STRING)
     void testEcho(@Query("hoge") String fuga, Callback<Response> cb);
 
@@ -31,4 +29,5 @@ public interface FlickrService {
 
     @GET(METHOD_PREFIX + "flickr.photos.getInfo" + FORMAT_JSON + JSON_CALLBACK + APIKEY_SEARCH_STRING + AUTO_TOKEN_STRING + APISIG_STRING)
     void getPhotoInfo(@Query("photo_id") String id, Callback<PhotoInfo> cb);
+
 }

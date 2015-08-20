@@ -2,7 +2,7 @@ package com.ikota.flickrclient.model;
 
 /**
  * Created by kota on 2015/06/17.
- * This is a holder object of each list item in the form of Flicker API.
+ * This POJO is replaced by interestingness class
  */
 @Deprecated
 public class FlickerListItem {

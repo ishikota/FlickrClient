@@ -95,38 +95,4 @@ public class EspressoSampleTest extends ActivityInstrumentationTestCase2<MainAct
         assertNotNull(content.server);
     }
 
-    private class LoadingIdlingResource implements IdlingResource {
-
-        private ResourceCallback resourceCallback;
-        private RecyclerView recyclerView;
-
-        private LoadingIdlingResource(RecyclerView recyclerView) {
-            this.recyclerView = recyclerView;
-        }
-
-        @Override
-        public String getName() {
-            return LoadingIdlingResource.class.getSimpleName();
-        }
-
-        @Override
-        public boolean isIdleNow() {
-            // check if recyclerView is set loaded items
-            boolean idle = isItemLoaded(recyclerView);
-            if (idle && resourceCallback != null) {
-                resourceCallback.onTransitionToIdle();
-            }
-            return idle;
-        }
-
-        @Override
-        public void registerIdleTransitionCallback(ResourceCallback resourceCallback) {
-            this.resourceCallback = resourceCallback;
-        }
-
-        private boolean isItemLoaded(RecyclerView list) {
-            return list.getAdapter()!=null && list.getAdapter().getItemCount() != 0;
-        }
-    }
-
 }
