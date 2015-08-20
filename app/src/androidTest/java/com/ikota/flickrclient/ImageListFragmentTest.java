@@ -12,10 +12,8 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
 import android.test.ActivityInstrumentationTestCase2;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
+import com.ikota.flickrclient.data.DataHolder;
 import com.ikota.flickrclient.di.DummyAPIModule;
 import com.ikota.flickrclient.ui.AndroidApplication;
 import com.ikota.flickrclient.ui.MainActivity;
@@ -26,15 +24,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 import dagger.ObjectGraph;
-import retrofit.client.Client;
-import retrofit.client.Request;
-import retrofit.client.Response;
-import retrofit.mime.TypedByteArray;
+
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -53,59 +51,50 @@ public class ImageListFragmentTest extends ActivityInstrumentationTestCase2<Main
     @Before
     public void setUp() throws Exception {
         super.setUp();
+    }
+
+    private void setupMockServer(String response) {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         AndroidApplication app =
                 (AndroidApplication) instrumentation.getTargetContext().getApplicationContext();
 
-        // set objectGraph to inject Mock API
-        List modules = Collections.singletonList(new DummyAPIModule());
+        // setup objectGraph to inject Mock API
+        List modules = Collections.singletonList(new DummyAPIModule(response));
         ObjectGraph graph = ObjectGraph.create(modules.toArray());
         app.setObjectGraph(graph);
-        app.objectGraph().inject(app);
+        app.getObjectGraph().inject(app);
     }
 
     @Test
     public void testProgress_show() {
-        // start Activity manually
+        setupMockServer(DataHolder.LIST_JSON);
         MainActivity activity = activityRule.launchActivity(new Intent());
-
         PopularListFragment fragment = (PopularListFragment)activity.getSupportFragmentManager()
                 .findFragmentByTag(PopularListFragment.class.getSimpleName());
         @SuppressWarnings("ConstantConditions")
         RecyclerView recyclerView = (RecyclerView)fragment.getView().findViewById(android.R.id.list);
-        ProgressBar progressBar = (ProgressBar)fragment.getView().findViewById(R.id.progress);
-        TextView emptyView = (TextView)fragment.getView().findViewById(android.R.id.empty);
 
-        assertEquals(View.VISIBLE, progressBar.getVisibility());
+        onView(withId(R.id.progress)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
         IdlingResource idlingResource = new LoadingIdlingResource(recyclerView);
         Espresso.registerIdlingResources(idlingResource);
-        Espresso.onView(ViewMatchers.withId(android.R.id.list)).perform(
-                RecyclerViewActions.actionOnItemAtPosition(0, ViewActions.scrollTo()));
+        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(0, ViewActions.scrollTo()));
         Espresso.unregisterIdlingResources(idlingResource);
-        assertEquals(View.GONE, progressBar.getVisibility());
-        assertEquals(View.GONE, emptyView.getVisibility());
+        onView(withId(R.id.progress)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
+        onView(withId(R.id.progress)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
     }
 
-    public class MockClient implements Client {
+    @Test
+    public void testEmptyView_show() {
+        String empty_response = "{\"photos\":{\"page\":1,\"pages\":25,\"perpage\":20,\"total\":500,\"photo\":[],\"stat\":\"ok\"}";
+        setupMockServer(empty_response);
+        activityRule.launchActivity(new Intent());
 
-        private static final int HTTP_OK_STATUS = 200;
-        private final String RESPONSE_JSON;
-
-        MockClient(String responce_json) {
-            RESPONSE_JSON = responce_json;
-        }
-
-        @Override
-        public Response execute(Request request) throws IOException {
-            return createResponseWithCodeAndJson(request.getUrl(), HTTP_OK_STATUS, RESPONSE_JSON);
-        }
-
-        @SuppressWarnings("unchecked")
-        private Response createResponseWithCodeAndJson(String url, int responseCode, String json) {
-            return new Response(url,responseCode, "nothing", Collections.EMPTY_LIST,
-                    new TypedByteArray("application/json", json.getBytes()));
-        }
-
+        onView(withId(android.R.id.empty)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
+        onView(withId(R.id.progress)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        TimingIdlingResource idlingResource = new TimingIdlingResource(1000);
+        Espresso.registerIdlingResources(idlingResource);
+        onView(withId(android.R.id.empty)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        Espresso.unregisterIdlingResources(idlingResource);
     }
 
 }

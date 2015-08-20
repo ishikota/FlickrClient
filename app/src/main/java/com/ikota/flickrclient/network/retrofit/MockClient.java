@@ -12,10 +12,10 @@ import retrofit.mime.TypedByteArray;
 public class MockClient implements Client{
 
     private static final int HTTP_OK_STATUS = 200;
-    private final String LIST_RESPONSE;
+    private final String RESPONSE_JSON;
 
     public MockClient(String responce_json) {
-        this.LIST_RESPONSE = responce_json;
+        this.RESPONSE_JSON = responce_json;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class MockClient implements Client{
             e.printStackTrace();
         }
 
-        return createResponseWithCodeAndJson(HTTP_OK_STATUS, LIST_RESPONSE);
+        return createResponseWithCodeAndJson(HTTP_OK_STATUS, RESPONSE_JSON);
     }
 
     private Response createResponseWithCodeAndJson(int responseCode, String json) {

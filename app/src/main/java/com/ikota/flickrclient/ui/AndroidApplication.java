@@ -23,7 +23,7 @@ public class AndroidApplication extends Application {
     public void onCreate() {
         super.onCreate();
         if(objectGraph == null) {
-            List<FlickrAPIModule> modules = Collections.singletonList(new FlickrAPIModule());
+            List modules = Collections.singletonList(new FlickrAPIModule());
             objectGraph = ObjectGraph.create(modules.toArray());
         }
     }
@@ -33,7 +33,7 @@ public class AndroidApplication extends Application {
         objectGraph = graph;
     }
 
-    public ObjectGraph objectGraph() {
+    public ObjectGraph getObjectGraph() {
         return objectGraph;
     }
 

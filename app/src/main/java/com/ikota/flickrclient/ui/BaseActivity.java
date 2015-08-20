@@ -19,7 +19,7 @@ public class BaseActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((AndroidApplication)getApplication())
-                .objectGraph()
+                .getObjectGraph()
                 .inject(getApplication());
     }
 
