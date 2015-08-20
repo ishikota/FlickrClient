@@ -39,6 +39,7 @@ public class BaseActivity extends AppCompatActivity{
         if (mActionBarToolbar == null) {
             mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
             if (mActionBarToolbar != null) {
+                mActionBarToolbar.setTitle("");
                 setSupportActionBar(mActionBarToolbar);
             }
         }
