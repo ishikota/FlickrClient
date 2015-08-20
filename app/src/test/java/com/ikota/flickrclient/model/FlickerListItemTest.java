@@ -1,6 +1,7 @@
-package com.ikota.flickrclient.model;
+package com.ikota.flickrclient.data;
 
 import com.google.gson.Gson;
+import com.ikota.flickrclient.data.model.FlickerListItem;
 
 import junit.framework.TestCase;
 

@@ -1,4 +1,4 @@
-package com.ikota.flickrclient.model;
+package com.ikota.flickrclient.data;
 
 
 /** Sample json data of Flickr API */

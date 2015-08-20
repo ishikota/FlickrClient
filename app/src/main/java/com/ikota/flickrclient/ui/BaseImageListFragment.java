@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.model.Interestingness;
+import com.ikota.flickrclient.data.model.Interestingness;
 import com.ikota.flickrclient.util.NetworkReceiver;
 
 import java.util.ArrayList;

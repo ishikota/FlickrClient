@@ -2,6 +2,7 @@ package com.ikota.flickrclient.ui;
 
 import android.app.Application;
 
+import com.ikota.flickrclient.di.FlickrAPIModule;
 import com.ikota.flickrclient.network.retrofit.FlickrService;
 
 import java.util.Collections;
@@ -12,9 +13,7 @@ import javax.inject.Inject;
 import dagger.ObjectGraph;
 
 
-public class MainApplication extends Application {
-
-    private static final String TAG = MainApplication.class.getSimpleName();
+public class AndroidApplication extends Application {
 
     private ObjectGraph objectGraph = null;
 

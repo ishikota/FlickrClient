@@ -1,9 +1,10 @@
-package com.ikota.flickrclient.ui;
+package com.ikota.flickrclient.di;
 
-import com.ikota.flickrclient.model.DataHolder;
+import com.ikota.flickrclient.data.DataHolder;
 import com.ikota.flickrclient.network.retrofit.FlickrService;
 import com.ikota.flickrclient.network.retrofit.FlickrURL;
 import com.ikota.flickrclient.network.retrofit.MockClient;
+import com.ikota.flickrclient.ui.AndroidApplication;
 
 import javax.inject.Singleton;
 
@@ -13,7 +14,7 @@ import retrofit.RestAdapter;
 
 
 @Module(
-        injects = MainApplication.class,
+        injects = AndroidApplication.class,
         library = true
 )
 public class DummyAPIModule {

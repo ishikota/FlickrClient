@@ -1,7 +1,7 @@
 package com.ikota.flickrclient.network.retrofit;
 
-import com.ikota.flickrclient.model.Interestingness;
-import com.ikota.flickrclient.model.PhotoInfo;
+import com.ikota.flickrclient.data.model.Interestingness;
+import com.ikota.flickrclient.data.model.PhotoInfo;
 
 import retrofit.Callback;
 import retrofit.client.Response;

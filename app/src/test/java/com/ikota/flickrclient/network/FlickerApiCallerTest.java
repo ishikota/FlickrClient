@@ -1,8 +1,8 @@
 package com.ikota.flickrclient.network;
 
-import com.ikota.flickrclient.model.Interestingness;
-import com.ikota.flickrclient.model.PhotoInfo;
-import com.ikota.flickrclient.ui.MainApplication;
+import com.ikota.flickrclient.data.model.Interestingness;
+import com.ikota.flickrclient.data.model.PhotoInfo;
+import com.ikota.flickrclient.ui.AndroidApplication;
 
 import junit.framework.TestCase;
 
@@ -32,7 +32,7 @@ public class FlickerApiCallerTest extends TestCase {
 
     @Test
     public void testTestEcho() throws Exception {
-        MainApplication.API.testEcho("fuga", new Callback<Response>() {
+        AndroidApplication.API.testEcho("fuga", new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {
                 String str = new String(((TypedByteArray) response.getBody()).getBytes());
@@ -55,7 +55,7 @@ public class FlickerApiCallerTest extends TestCase {
 
     @Test
     public void testGetImageList() throws Exception {
-        MainApplication.API.getPopularPhotos(1, new Callback<Interestingness>() {
+        AndroidApplication.API.getPopularPhotos(1, new Callback<Interestingness>() {
 
             @Override
             public void success(Interestingness popularPhotos, Response response) {
@@ -74,7 +74,7 @@ public class FlickerApiCallerTest extends TestCase {
 
     @Test
     public void testGetDetailInfo() throws Exception {
-        MainApplication.API.getPhotoInfo("20623135501", new Callback<PhotoInfo>() {
+        AndroidApplication.API.getPhotoInfo("20623135501", new Callback<PhotoInfo>() {
             @Override
             public void success(PhotoInfo photoInfo, Response response) {
                 assertEquals("20623135501", photoInfo.photo.id);

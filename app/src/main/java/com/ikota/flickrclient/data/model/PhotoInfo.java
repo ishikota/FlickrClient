@@ -1,4 +1,4 @@
-package com.ikota.flickrclient.model;
+package com.ikota.flickrclient.data.model;
 
 import java.util.List;
 

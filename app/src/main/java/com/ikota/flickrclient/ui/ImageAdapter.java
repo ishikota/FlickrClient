@@ -11,7 +11,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.model.Interestingness;
+import com.ikota.flickrclient.data.model.Interestingness;
 import com.ikota.flickrclient.util.NetUtils;
 import com.squareup.picasso.Picasso;
 

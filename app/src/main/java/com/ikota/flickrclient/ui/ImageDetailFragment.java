@@ -16,8 +16,8 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.model.Interestingness;
-import com.ikota.flickrclient.model.PhotoInfo;
+import com.ikota.flickrclient.data.model.Interestingness;
+import com.ikota.flickrclient.data.model.PhotoInfo;
 import com.ikota.flickrclient.util.NetUtils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -128,7 +128,7 @@ public class ImageDetailFragment extends Fragment {
     }
 
     private void loadDetailInfo(Interestingness.Photo content) {
-        ((MainApplication)getActivity().getApplication()).api().getPhotoInfo(content.id, new Callback<PhotoInfo>() {
+        ((AndroidApplication)getActivity().getApplication()).api().getPhotoInfo(content.id, new Callback<PhotoInfo>() {
             @Override
             public void success(PhotoInfo photoInfo, Response response) {
                 if (isAdded()) {

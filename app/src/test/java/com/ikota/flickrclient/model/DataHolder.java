@@ -1,4 +1,4 @@
-package com.ikota.flickrclient.model;
+package com.ikota.flickrclient.data;
 
 /**
  * Created by kota on 2015/08/17.

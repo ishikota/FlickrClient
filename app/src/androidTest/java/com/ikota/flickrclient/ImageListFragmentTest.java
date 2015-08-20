@@ -16,9 +16,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.ikota.flickrclient.ui.DummyAPIModule;
+import com.ikota.flickrclient.di.DummyAPIModule;
+import com.ikota.flickrclient.ui.AndroidApplication;
 import com.ikota.flickrclient.ui.MainActivity;
-import com.ikota.flickrclient.ui.MainApplication;
 import com.ikota.flickrclient.ui.PopularListFragment;
 
 import org.junit.Before;
@@ -54,8 +54,8 @@ public class ImageListFragmentTest extends ActivityInstrumentationTestCase2<Main
     public void setUp() throws Exception {
         super.setUp();
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
-        MainApplication app =
-                (MainApplication) instrumentation.getTargetContext().getApplicationContext();
+        AndroidApplication app =
+                (AndroidApplication) instrumentation.getTargetContext().getApplicationContext();
 
         // set objectGraph to inject Mock API
         List modules = Collections.singletonList(new DummyAPIModule());

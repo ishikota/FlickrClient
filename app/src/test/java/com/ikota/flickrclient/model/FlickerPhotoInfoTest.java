@@ -1,4 +1,6 @@
-package com.ikota.flickrclient.model;
+package com.ikota.flickrclient.data;
+
+import com.ikota.flickrclient.data.model.FlickerPhotoInfo;
 
 import junit.framework.TestCase;
 

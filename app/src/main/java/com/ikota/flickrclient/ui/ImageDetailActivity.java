@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.model.Interestingness;
+import com.ikota.flickrclient.data.model.Interestingness;
 
 
 public class ImageDetailActivity extends BaseActivity{
