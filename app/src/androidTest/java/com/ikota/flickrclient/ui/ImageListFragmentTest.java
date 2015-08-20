@@ -1,4 +1,4 @@
-package com.ikota.flickrclient;
+package com.ikota.flickrclient.ui;
 
 import android.app.Instrumentation;
 import android.content.Intent;
@@ -13,11 +13,11 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
 import android.test.ActivityInstrumentationTestCase2;
 
+import com.ikota.flickrclient.LoadingIdlingResource;
+import com.ikota.flickrclient.R;
+import com.ikota.flickrclient.TimingIdlingResource;
 import com.ikota.flickrclient.data.DataHolder;
 import com.ikota.flickrclient.di.DummyAPIModule;
-import com.ikota.flickrclient.ui.AndroidApplication;
-import com.ikota.flickrclient.ui.MainActivity;
-import com.ikota.flickrclient.ui.PopularListFragment;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -74,7 +74,7 @@ public class ImageListFragmentTest extends ActivityInstrumentationTestCase2<Main
         @SuppressWarnings("ConstantConditions")
         RecyclerView recyclerView = (RecyclerView)fragment.getView().findViewById(android.R.id.list);
 
-        onView(withId(R.id.progress)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        onView(ViewMatchers.withId(R.id.progress)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
         IdlingResource idlingResource = new LoadingIdlingResource(recyclerView);
         Espresso.registerIdlingResources(idlingResource);
         onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(0, ViewActions.scrollTo()));
