@@ -15,6 +15,7 @@ import android.test.ActivityInstrumentationTestCase2;
 
 import com.google.gson.Gson;
 import com.ikota.flickrclient.data.model.FlickerListItem;
+import com.ikota.flickrclient.idling_resource.LoadingIdlingResource;
 import com.ikota.flickrclient.ui.ImageDetailActivity;
 import com.ikota.flickrclient.ui.MainActivity;
 import com.ikota.flickrclient.ui.PopularListFragment;

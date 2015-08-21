@@ -1,9 +1,11 @@
-package com.ikota.flickrclient;
+package com.ikota.flickrclient.idling_resource;
 
 import android.support.test.espresso.IdlingResource;
 import android.support.v7.widget.RecyclerView;
 
-
+/**
+ * Wait next action until passed RecyclerView's item count is not 0.
+ */
 public class LoadingIdlingResource implements IdlingResource {
 
     private ResourceCallback resourceCallback;

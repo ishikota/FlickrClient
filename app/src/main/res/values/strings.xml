@@ -18,6 +18,7 @@
     <!-- content descriptions -->
     <string name="image">Image</string>
     <string name="icon">Icon</string>
+    <string name="detail_container">detail_container</string>
 
 
     <!-- others -->
