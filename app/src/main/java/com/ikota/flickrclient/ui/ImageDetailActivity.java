@@ -40,9 +40,10 @@ public class ImageDetailActivity extends BaseActivity{
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_arrow);
 
         if (savedInstanceState == null) {
+            String tag = ImageDetailFragment.class.getSimpleName();
             String json = getIntent().getStringExtra(EXTRA_CONTENT);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, ImageDetailFragment.newInstance(json))
+                    .add(R.id.container, ImageDetailFragment.newInstance(json), tag)
                     .commit();
         }
     }
