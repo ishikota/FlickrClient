@@ -64,7 +64,7 @@ public class PhotoInfo {
     }
 
     public static class Tags {
-        List<Tag> tag;
+        public List<Tag> tag;
     }
 
     public static class Tag {
