@@ -1,4 +1,4 @@
-package com.ikota.flickrclient;
+package com.ikota.flickrclient.IdlingResource;
 
 import android.support.test.espresso.IdlingResource;
 import android.widget.TextView;

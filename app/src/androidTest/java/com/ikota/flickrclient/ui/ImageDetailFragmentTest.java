@@ -12,7 +12,7 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.widget.TextView;
 
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.TextIdlingResource;
+import com.ikota.flickrclient.IdlingResource.TextIdlingResource;
 import com.ikota.flickrclient.data.DataHolder;
 
 import org.junit.Before;
