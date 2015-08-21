@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.IdlingResource;
-import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
@@ -13,6 +12,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
 import android.test.ActivityInstrumentationTestCase2;
 
+import com.ikota.flickrclient.ListCountIdlingResource;
 import com.ikota.flickrclient.LoadingIdlingResource;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.TimingIdlingResource;
@@ -30,6 +30,7 @@ import java.util.List;
 import dagger.ObjectGraph;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -77,7 +78,7 @@ public class ImageListFragmentTest extends ActivityInstrumentationTestCase2<Main
         onView(ViewMatchers.withId(R.id.progress)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
         IdlingResource idlingResource = new LoadingIdlingResource(recyclerView);
         Espresso.registerIdlingResources(idlingResource);
-        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(0, ViewActions.scrollTo()));
+        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(0, scrollTo()));
         Espresso.unregisterIdlingResources(idlingResource);
         onView(withId(R.id.progress)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
         onView(withId(R.id.progress)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
@@ -96,6 +97,31 @@ public class ImageListFragmentTest extends ActivityInstrumentationTestCase2<Main
         Espresso.registerIdlingResources(idlingResource);
         onView(withId(android.R.id.empty)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
         Espresso.unregisterIdlingResources(idlingResource);
+    }
+
+    @Test
+    public void loadNextItems() {
+        MainActivity activity = activityRule.launchActivity(new Intent());
+        PopularListFragment fragment = (PopularListFragment)activity.getSupportFragmentManager()
+                .findFragmentByTag(PopularListFragment.class.getSimpleName());
+        @SuppressWarnings("ConstantConditions")
+        RecyclerView recyclerView = (RecyclerView)fragment.getView().findViewById(android.R.id.list);
+
+        ListCountIdlingResource idlingResource_20 = new ListCountIdlingResource(recyclerView, 20);
+        Espresso.registerIdlingResources(idlingResource_20);
+        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(18, scrollTo()));
+        Espresso.unregisterIdlingResources(idlingResource_20);
+        assertEquals(40, recyclerView.getAdapter().getItemCount());
+
+        ListCountIdlingResource idlingResource_40 = new ListCountIdlingResource(recyclerView, 40);
+        Espresso.registerIdlingResources(idlingResource_40);
+        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(30, scrollTo()));
+        Espresso.unregisterIdlingResources(idlingResource_40);
+
+        ListCountIdlingResource idlingResource_60 = new ListCountIdlingResource(recyclerView, 60);
+        Espresso.registerIdlingResources(idlingResource_60);
+        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(0, scrollTo()));
+        assertEquals(60, recyclerView.getAdapter().getItemCount());
     }
 
 }
