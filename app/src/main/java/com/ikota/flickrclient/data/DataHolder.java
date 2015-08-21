@@ -33,10 +33,6 @@ public class DataHolder {
                     "]" +
                     "},\"stat\":\"ok\"}";
 
-    public static final String LIST_ITEM_JSON =
-            "{\"farm\":1,\"id\":\"20697268356\",\"isfamily\":0,\"isfriend\":0,\"ispublic\":1,\"owner\":\"123449478@N07\",\"secret\":\"c173eb3ebc\",\"server\":\"644\",\"title\":\"A Quiet Evening\"}";
-
-
     // return of GET(https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&photo_id=20623135501&format=json&nojsoncallback=1&api_key=84434e44ac54eb2853b6b4492daf863e)
     public static final String DETAIL_JSON =
             "{\"photo\":" +

@@ -12,10 +12,10 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.ikota.flickrclient.idling_resource.ListCountIdlingResource;
-import com.ikota.flickrclient.idling_resource.LoadingIdlingResource;
+import com.ikota.flickrclient.ListCountIdlingResource;
+import com.ikota.flickrclient.LoadingIdlingResource;
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.idling_resource.TimingIdlingResource;
+import com.ikota.flickrclient.TimingIdlingResource;
 import com.ikota.flickrclient.data.DataHolder;
 import com.ikota.flickrclient.di.DummyAPIModule;
 
