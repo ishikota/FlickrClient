@@ -83,6 +83,7 @@ public class ImageListFragmentTest extends ActivityInstrumentationTestCase2<Main
         onView(withId(R.id.progress)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
     }
 
+    // TODO : add test to check if toast is displayed.
     @Test
     public void testEmptyView_show() {
         String empty_response = "{\"photos\":{\"page\":1,\"pages\":25,\"perpage\":20,\"total\":500,\"photo\":[],\"stat\":\"ok\"}";
