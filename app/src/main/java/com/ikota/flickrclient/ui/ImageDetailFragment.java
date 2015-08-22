@@ -79,14 +79,12 @@ public class ImageDetailFragment extends Fragment {
         Picasso.with(getActivity()).load(url).into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                if (bitmap != null) {
-                    adjustViewHeight(mItemImage,
-                            mDisplayInfo.widthPixels,
-                            bitmap.getWidth(),
-                            bitmap.getHeight());
-                    mItemImage.setImageBitmap(bitmap);
-                    adjustColorScheme(bitmap);
-                }
+                adjustViewHeight(mItemImage,
+                        mDisplayInfo.widthPixels,
+                        bitmap.getWidth(),
+                        bitmap.getHeight());
+                mItemImage.setImageBitmap(bitmap);
+                adjustColorScheme(bitmap);
             }
 
             @Override
