@@ -8,7 +8,7 @@ android:
     # m2repository is needed to install espresso and other support libs
     - extra-android-m2repository
     # Specify at least one system image to run emulator
-    - sys-img-x86-android-22
+    - sys-img-armeabi-v7a-android-22
   # Emulator Management: Create, Start and Wait
   before_script:
     - echo yes | android create avd --force -n test -t android-22 --abi x86
