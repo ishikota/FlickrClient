@@ -77,4 +77,41 @@ public class DataHolder {
                         "}," +
                     "\"media\":\"photo\"}" +
                     ",\"stat\":\"ok\"}";
+
+    public static final String PEOPLE_INFO =
+            "{\"person\":" +
+                    "{\"id\":\"133363540@N06\"," +
+                    "\"nsid\":\"133363540@N06\"," +
+                    "\"ispro\":0," +
+                    "\"can_buy_pro\":0," +
+                    "\"iconserver\":\"562\"," +
+                    "\"iconfarm\":1," +
+                    "\"path_alias\":null," +
+                    "\"has_stats\":\"0\"," +
+                    "\"username\":" +
+                            "{\"_content\":\"kota_ishimoto\"}," +
+                    "\"realname\":" +
+                            "{\"_content\":\"Kota Ishimoto\"}," +
+                    "\"mbox_sha1sum\":" +
+                            "{\"_content\":\"db7538a4b6c2c45fc9912725327d66c4b8bb2b27\"}," +
+                    "\"location\":" +
+                            "{\"_content\":\"\"}," +
+                    "\"description\":" +
+                            "{\"_content\":\"\"}," +
+                    "\"photosurl\":" +
+                            "{\"_content\":\"https:\\/\\/www.flickr.com\\/photos\\/133363540@N06\\/\"}," +
+                    "\"profileurl\":" +
+                            "{\"_content\":\"https:\\/\\/www.flickr.com\\/people\\/133363540@N06\\/\"}," +
+                    "\"mobileurl\":" +
+                            "{\"_content\":\"https:\\/\\/m.flickr.com\\/photostream.gne?id=133318218\"}," +
+                    "\"photos\":" +
+                            "{\"firstdatetaken\":" +
+                                "{\"_content\":\"2007-07-09 09:16:08\"}," +
+                                "\"firstdate\":{\"_content\":\"1434723851\"}," +
+                                "\"count\":{\"_content\":53}," +
+                                "\"views\":{\"_content\":\"0\"}" +
+                                "}" +
+                            "}" +
+                    ",\"stat\":\"ok\"" +
+                    "}";
 }

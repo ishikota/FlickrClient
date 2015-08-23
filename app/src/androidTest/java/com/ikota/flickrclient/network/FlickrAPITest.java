@@ -8,6 +8,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.ikota.flickrclient.data.model.Interestingness;
+import com.ikota.flickrclient.data.model.PeopleInfo;
 import com.ikota.flickrclient.data.model.PhotoInfo;
 import com.ikota.flickrclient.ui.AndroidApplication;
 import com.ikota.flickrclient.ui.MainActivity;
@@ -114,6 +115,35 @@ public class FlickrAPITest extends ActivityInstrumentationTestCase2<MainActivity
             @Override
             public void failure(RetrofitError error) {
                 fail("Error on getDetailInfo API");
+            }
+        });
+        lock.await(10000, TimeUnit.MILLISECONDS);
+        assertEquals(0, lock.getCount());
+    }
+
+    @Test
+    public void getPeopleInfo() throws Exception {
+        app.api().getPeopleInfo("133363540@N06", new Callback<PeopleInfo>() {
+            @Override
+            public void success(PeopleInfo info, Response response) {
+                assertEquals("133363540@N06", info.person.id);
+                assertEquals("133363540@N06", info.person.nsid);
+                assertEquals(0, info.person.ispro);
+                assertEquals(0, info.person.can_buy_pro);
+                assertEquals("562", info.person.iconserver);
+                assertEquals(1, info.person.iconfarm);
+                // assertEquals("null", info.person.path_alias); cause assertion error
+                assertEquals("0", info.person.has_stats);
+                assertEquals("kota_ishimoto", info.person.username._content);
+                assertEquals("Kota Ishimoto", info.person.realname._content);
+                assertEquals("", info.person.location._content);
+                assertEquals("I like Giraffe !!!", info.person.description._content);
+                lock.countDown();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fail("Error o getPeopleInfo API");
             }
         });
         lock.await(10000, TimeUnit.MILLISECONDS);
