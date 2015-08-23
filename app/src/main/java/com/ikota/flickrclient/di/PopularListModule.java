@@ -15,7 +15,7 @@ import retrofit.Callback;
         injects = ImageListFragment.class,
         library = true
 )
-public class LoadPopularListModule {
+public class PopularListModule {
 
     @Provides
     @Named("portrait col")

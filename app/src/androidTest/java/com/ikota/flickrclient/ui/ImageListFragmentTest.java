@@ -37,15 +37,15 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 
 @RunWith(AndroidJUnit4.class)
-public class ImageListFragmentTest extends ActivityInstrumentationTestCase2<MainActivity> {
+public class ImageListFragmentTest extends ActivityInstrumentationTestCase2<PopularListActivity> {
 
     public ImageListFragmentTest() {
-        super(MainActivity.class);
+        super(PopularListActivity.class);
     }
 
     @Rule
-    public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(
-            MainActivity.class,
+    public ActivityTestRule<PopularListActivity> activityRule = new ActivityTestRule<>(
+            PopularListActivity.class,
             true,     // initialTouchMode
             false);   // launchActivity. False so we can customize the intent per test method
 
@@ -69,7 +69,7 @@ public class ImageListFragmentTest extends ActivityInstrumentationTestCase2<Main
     @Test
     public void testProgress_show() {
         setupMockServer(DataHolder.LIST_JSON);
-        MainActivity activity = activityRule.launchActivity(new Intent());
+        PopularListActivity activity = activityRule.launchActivity(new Intent());
         ImageListFragment fragment = (ImageListFragment)activity.getSupportFragmentManager()
                 .findFragmentByTag(ImageListFragment.class.getSimpleName());
         @SuppressWarnings("ConstantConditions")
@@ -101,7 +101,7 @@ public class ImageListFragmentTest extends ActivityInstrumentationTestCase2<Main
 
     @Test
     public void loadNextItems() {
-        MainActivity activity = activityRule.launchActivity(new Intent());
+        PopularListActivity activity = activityRule.launchActivity(new Intent());
         ImageListFragment fragment = (ImageListFragment)activity.getSupportFragmentManager()
                 .findFragmentByTag(ImageListFragment.class.getSimpleName());
         @SuppressWarnings("ConstantConditions")

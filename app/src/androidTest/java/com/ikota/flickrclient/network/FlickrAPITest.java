@@ -11,7 +11,7 @@ import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.data.model.PeopleInfo;
 import com.ikota.flickrclient.data.model.PhotoInfo;
 import com.ikota.flickrclient.ui.AndroidApplication;
-import com.ikota.flickrclient.ui.MainActivity;
+import com.ikota.flickrclient.ui.PopularListActivity;
 
 import org.json.JSONObject;
 import org.junit.Before;
@@ -29,18 +29,18 @@ import retrofit.mime.TypedByteArray;
 
 
 @RunWith(AndroidJUnit4.class)
-public class FlickrAPITest extends ActivityInstrumentationTestCase2<MainActivity> {
+public class FlickrAPITest extends ActivityInstrumentationTestCase2<PopularListActivity> {
 
     AndroidApplication app;
     private CountDownLatch lock;
 
     public FlickrAPITest() {
-        super(MainActivity.class);
+        super(PopularListActivity.class);
     }
 
     @Rule
-    public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(
-            MainActivity.class,
+    public ActivityTestRule<PopularListActivity> activityRule = new ActivityTestRule<>(
+            PopularListActivity.class,
             true,     // initialTouchMode
             true);   // launchActivity. False so we can customize the intent per test method
 
@@ -49,7 +49,7 @@ public class FlickrAPITest extends ActivityInstrumentationTestCase2<MainActivity
         super.setUp();
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         injectInstrumentation(instrumentation);
-        MainActivity activity = activityRule.launchActivity(new Intent());
+        PopularListActivity activity = activityRule.launchActivity(new Intent());
         app = (AndroidApplication)activity.getApplication();
         lock = new CountDownLatch(1);
     }

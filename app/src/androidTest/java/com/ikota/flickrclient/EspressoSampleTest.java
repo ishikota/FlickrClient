@@ -18,7 +18,7 @@ import com.ikota.flickrclient.IdlingResource.LoadingIdlingResource;
 import com.ikota.flickrclient.data.model.FlickerListItem;
 import com.ikota.flickrclient.ui.ImageDetailActivity;
 import com.ikota.flickrclient.ui.ImageListFragment;
-import com.ikota.flickrclient.ui.MainActivity;
+import com.ikota.flickrclient.ui.PopularListActivity;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,13 +30,13 @@ import org.junit.runner.RunWith;
  * First Espresso test.
  */
 @RunWith(AndroidJUnit4.class)
-public class EspressoSampleTest extends ActivityInstrumentationTestCase2<MainActivity>{
+public class EspressoSampleTest extends ActivityInstrumentationTestCase2<PopularListActivity>{
 
     private ImageListFragment fragment;
     private RecyclerView recyclerView;
 
     public EspressoSampleTest() {
-        super(MainActivity.class);
+        super(PopularListActivity.class);
     }
 
     @Before
@@ -44,7 +44,7 @@ public class EspressoSampleTest extends ActivityInstrumentationTestCase2<MainAct
         super.setUp();
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         injectInstrumentation(instrumentation);
-        MainActivity activity = getActivity();
+        PopularListActivity activity = getActivity();
         fragment = (ImageListFragment)activity.getSupportFragmentManager().
                 findFragmentByTag(ImageListFragment.class.getSimpleName());
         recyclerView = (RecyclerView)fragment.getView().findViewById(android.R.id.list);

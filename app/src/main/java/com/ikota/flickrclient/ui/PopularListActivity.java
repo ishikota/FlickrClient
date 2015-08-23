@@ -6,12 +6,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.di.LoadPopularListModule;
+import com.ikota.flickrclient.di.PopularListModule;
 
 import dagger.ObjectGraph;
 
 
-public class MainActivity extends BaseActivity {
+public class PopularListActivity extends BaseActivity {
 
     ImageListFragment fragment;
 
@@ -26,7 +26,7 @@ public class MainActivity extends BaseActivity {
 
         if (fragment == null) {
             fragment = new ImageListFragment();
-            ObjectGraph graph = ObjectGraph.create(new LoadPopularListModule());
+            ObjectGraph graph = ObjectGraph.create(new PopularListModule());
             graph.inject(fragment);
             String tag = ImageListFragment.class.getSimpleName();
             fm.beginTransaction().add(R.id.container, fragment, tag).commit();
