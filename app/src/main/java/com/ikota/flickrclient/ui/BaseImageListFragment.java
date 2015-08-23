@@ -193,14 +193,7 @@ public abstract class BaseImageListFragment extends Fragment {
                 getResources().getColor(R.color.swipe_color_4)
         );
 
-        return root;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        if (addPadding()) addPaddingToTop(view);
+        if (addPadding()) addPaddingToTop(root);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -209,6 +202,8 @@ public abstract class BaseImageListFragment extends Fragment {
             }
         });
         initList();
+
+        return root;
     }
 
     /**
