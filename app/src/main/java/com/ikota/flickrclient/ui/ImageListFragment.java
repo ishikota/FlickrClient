@@ -19,10 +19,14 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.model.ListData;
+import com.ikota.flickrclient.di.LoadMethod;
 import com.ikota.flickrclient.util.NetworkReceiver;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -41,7 +45,13 @@ import retrofit.client.Response;
  * - the number of column
  * - the base url to fetch json data of images
  */
-public abstract class BaseImageListFragment extends Fragment {
+public class ImageListFragment extends Fragment {
+
+    @Inject @Named("portrait col") public int PORTRAIT_COL_NUM;
+    @Inject @Named("horizontal col") public int HORIZONTAL_COL_NUM;
+    @Inject @Named("item per page") public int ITEM_PER_PAGE;
+    @Inject public boolean ADD_PADDING;
+    @Inject public LoadMethod LOAD_METHOD;
 
     private Context mAppContext;
 
@@ -101,9 +111,9 @@ public abstract class BaseImageListFragment extends Fragment {
             int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
 
             //load next item
-            if (!end_flg && !busy.get() && totalItemCount - firstVisibleItem <= getItemPerPage()) {
-                int page = totalItemCount / getItemPerPage();
-                updateList(page, false);
+            if (!end_flg && !busy.get() && totalItemCount - firstVisibleItem <= ITEM_PER_PAGE) {
+                int page = totalItemCount / ITEM_PER_PAGE;
+                if(isAdded()) updateList(page, false);
             }
 
             // if it's loading and reached to bottom of the list, then show loading animation.
@@ -113,33 +123,6 @@ public abstract class BaseImageListFragment extends Fragment {
         }
     };
 
-    /**
-     * Concrete class must implements this method.
-     * In this method, concrete class just calls proper api method
-     * by using passed parameters
-     *
-     * @param page     the page to request
-     * @param callback callback method which is called after loading data
-     */
-    public abstract void loadByContentType(
-            int page,
-            Callback<ListData> callback
-    );
-
-    /**
-     * return the number of column of list
-     */
-    public abstract int getColumnNum();
-
-    /**
-     * return if need top padding for ActionBar
-     */
-    public abstract boolean addPadding();
-
-    /**
-     * return item num per one page
-     */
-    public abstract int getItemPerPage();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -183,7 +166,7 @@ public abstract class BaseImageListFragment extends Fragment {
         mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh);
 
         mRecyclerView.setHasFixedSize(true);
-        GridLayoutManager layoutManager = new GridLayoutManager(mAppContext, getColumnNum());
+        GridLayoutManager layoutManager = new GridLayoutManager(mAppContext, PORTRAIT_COL_NUM);
         mRecyclerView.setLayoutManager(layoutManager);
 
         mSwipeRefreshLayout.setColorSchemeColors(
@@ -193,7 +176,7 @@ public abstract class BaseImageListFragment extends Fragment {
                 getResources().getColor(R.color.swipe_color_4)
         );
 
-        if (addPadding()) addPaddingToTop(root);
+        if (ADD_PADDING) addPaddingToTop(root);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -240,12 +223,12 @@ public abstract class BaseImageListFragment extends Fragment {
             for(ListData.Photo photo : item.photos.photo) {
                 mItemList.add(photo);
             }
-            mAdapter = new ImageAdapter(mAppContext, mItemList, mItemClickListener, getColumnNum());
+            mAdapter = new ImageAdapter(mAppContext, mItemList, mItemClickListener, PORTRAIT_COL_NUM);
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.addOnScrollListener(scroll_lister);
         }
         // if cache found (json!=null) then do not need to refresh list
-        updateList(0, json == null || json.isEmpty());
+        if(isAdded()) updateList(0, json == null || json.isEmpty());
     }
 
     /**
@@ -260,7 +243,7 @@ public abstract class BaseImageListFragment extends Fragment {
             mProgress.setVisibility(View.VISIBLE);  // do not show double progress
         }
 
-        loadByContentType(page + 1, new Callback<ListData>() {
+        LOAD_METHOD.loadItem((AndroidApplication)getActivity().getApplication(), page + 1, new Callback<ListData>() {
             @Override
             public void success(ListData listData, Response response) {
                 if (!isAdded()) return;
@@ -275,7 +258,7 @@ public abstract class BaseImageListFragment extends Fragment {
 
                 if (refresh_list) {
                     mAdapter = new ImageAdapter(
-                            mAppContext, mItemList, mItemClickListener, getColumnNum());
+                            mAppContext, mItemList, mItemClickListener, PORTRAIT_COL_NUM);
                     mRecyclerView.setAdapter(mAdapter);
                     mRecyclerView.addOnScrollListener(scroll_lister);
                     mSwipeRefreshLayout.setRefreshing(false);

@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * Created by kota on 2015/08/11.
- * This adapter is used in BaseImageListFragment
+ * This adapter is used in ImageListFragment
  */
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
     private Context mContext;

@@ -17,8 +17,8 @@ import com.google.gson.Gson;
 import com.ikota.flickrclient.IdlingResource.LoadingIdlingResource;
 import com.ikota.flickrclient.data.model.FlickerListItem;
 import com.ikota.flickrclient.ui.ImageDetailActivity;
+import com.ikota.flickrclient.ui.ImageListFragment;
 import com.ikota.flickrclient.ui.MainActivity;
-import com.ikota.flickrclient.ui.PopularListFragment;
 
 import org.junit.After;
 import org.junit.Before;
@@ -32,7 +32,7 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class EspressoSampleTest extends ActivityInstrumentationTestCase2<MainActivity>{
 
-    private PopularListFragment fragment;
+    private ImageListFragment fragment;
     private RecyclerView recyclerView;
 
     public EspressoSampleTest() {
@@ -45,8 +45,8 @@ public class EspressoSampleTest extends ActivityInstrumentationTestCase2<MainAct
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         injectInstrumentation(instrumentation);
         MainActivity activity = getActivity();
-        fragment = (PopularListFragment)activity.getSupportFragmentManager().
-                findFragmentByTag(PopularListFragment.class.getSimpleName());
+        fragment = (ImageListFragment)activity.getSupportFragmentManager().
+                findFragmentByTag(ImageListFragment.class.getSimpleName());
         recyclerView = (RecyclerView)fragment.getView().findViewById(android.R.id.list);
     }
 

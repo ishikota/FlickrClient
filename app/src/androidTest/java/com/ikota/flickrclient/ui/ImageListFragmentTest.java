@@ -70,8 +70,8 @@ public class ImageListFragmentTest extends ActivityInstrumentationTestCase2<Main
     public void testProgress_show() {
         setupMockServer(DataHolder.LIST_JSON);
         MainActivity activity = activityRule.launchActivity(new Intent());
-        PopularListFragment fragment = (PopularListFragment)activity.getSupportFragmentManager()
-                .findFragmentByTag(PopularListFragment.class.getSimpleName());
+        ImageListFragment fragment = (ImageListFragment)activity.getSupportFragmentManager()
+                .findFragmentByTag(ImageListFragment.class.getSimpleName());
         @SuppressWarnings("ConstantConditions")
         RecyclerView recyclerView = (RecyclerView)fragment.getView().findViewById(android.R.id.list);
 
@@ -102,8 +102,8 @@ public class ImageListFragmentTest extends ActivityInstrumentationTestCase2<Main
     @Test
     public void loadNextItems() {
         MainActivity activity = activityRule.launchActivity(new Intent());
-        PopularListFragment fragment = (PopularListFragment)activity.getSupportFragmentManager()
-                .findFragmentByTag(PopularListFragment.class.getSimpleName());
+        ImageListFragment fragment = (ImageListFragment)activity.getSupportFragmentManager()
+                .findFragmentByTag(ImageListFragment.class.getSimpleName());
         @SuppressWarnings("ConstantConditions")
         RecyclerView recyclerView = (RecyclerView)fragment.getView().findViewById(android.R.id.list);
 

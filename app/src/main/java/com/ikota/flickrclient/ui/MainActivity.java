@@ -6,11 +6,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ikota.flickrclient.R;
+import com.ikota.flickrclient.di.LoadPopularListModule;
+
+import dagger.ObjectGraph;
 
 
 public class MainActivity extends BaseActivity {
 
-    PopularListFragment fragment;
+    ImageListFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,11 +22,14 @@ public class MainActivity extends BaseActivity {
 
         // find the retained fragment on activity restarts
         FragmentManager fm = getSupportFragmentManager();
-        fragment = (PopularListFragment) fm.findFragmentByTag(PopularListFragment.class.getSimpleName());
+        fragment = (ImageListFragment) fm.findFragmentByTag(ImageListFragment.class.getSimpleName());
 
         if (fragment == null) {
-            String tag = PopularListFragment.class.getSimpleName();
-            fm.beginTransaction().add(R.id.container, new PopularListFragment(), tag).commit();
+            fragment = new ImageListFragment();
+            ObjectGraph graph = ObjectGraph.create(new LoadPopularListModule());
+            graph.inject(fragment);
+            String tag = ImageListFragment.class.getSimpleName();
+            fm.beginTransaction().add(R.id.container, fragment, tag).commit();
         }
     }
 
