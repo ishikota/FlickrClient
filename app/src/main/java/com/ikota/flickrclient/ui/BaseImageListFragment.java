@@ -142,6 +142,12 @@ public abstract class BaseImageListFragment extends Fragment {
     public abstract int getItemPerPage();
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if(isAdded()) {
