@@ -7,7 +7,7 @@ import java.util.List;
  * Model of flickr.interestingness.getList return item.
  */
 @SuppressWarnings("unused")
-public class Interestingness {
+public class ListData {
     public Photos photos;
     public String stat;
 

@@ -7,7 +7,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 
-import com.ikota.flickrclient.data.model.Interestingness;
+import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.data.model.PeopleInfo;
 import com.ikota.flickrclient.data.model.PhotoInfo;
 import com.ikota.flickrclient.ui.AndroidApplication;
@@ -82,10 +82,10 @@ public class FlickrAPITest extends ActivityInstrumentationTestCase2<MainActivity
 
     @Test
     public void popularPhotoList() throws Exception {
-        app.api().getPopularPhotos(1, new Callback<Interestingness>() {
+        app.api().getPopularPhotos(1, new Callback<ListData>() {
 
             @Override
-            public void success(Interestingness popularPhotos, Response response) {
+            public void success(ListData popularPhotos, Response response) {
                 assertEquals("ok", popularPhotos.stat);
                 assertEquals(1, popularPhotos.photos.page);
                 assertEquals(20, popularPhotos.photos.perpage);

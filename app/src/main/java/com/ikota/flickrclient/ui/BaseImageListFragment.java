@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.data.model.Interestingness;
+import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.util.NetworkReceiver;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public abstract class BaseImageListFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    private ArrayList<Interestingness.Photo> mItemList;
+    private ArrayList<ListData.Photo> mItemList;
 
     private View mEmptyView;
     private ProgressBar mProgress;
@@ -84,7 +84,7 @@ public abstract class BaseImageListFragment extends Fragment {
 
     private ImageAdapter.OnClickCallback mItemClickListener = new ImageAdapter.OnClickCallback() {
         @Override
-        public void onClick(View v, Interestingness.Photo data) {
+        public void onClick(View v, ListData.Photo data) {
             ImageDetailActivity.launch(getActivity(), data, (ImageView)v);
         }
     };
@@ -123,7 +123,7 @@ public abstract class BaseImageListFragment extends Fragment {
      */
     public abstract void loadByContentType(
             int page,
-            Callback<Interestingness> callback
+            Callback<ListData> callback
     );
 
     /**
@@ -235,9 +235,9 @@ public abstract class BaseImageListFragment extends Fragment {
         String json = null; //mCacheUtil.getCacheJson(getActivity(), CONTENT_TYPE, CONTENT_PARAM1);
         if (json != null && !json.isEmpty()) {
             Gson gson = new Gson();
-            Interestingness item = gson.fromJson(json, Interestingness.class);
+            ListData item = gson.fromJson(json, ListData.class);
             //cache_top_id = mItemList.isEmpty() ? "-1" : mItemList.get(0).id;
-            for(Interestingness.Photo photo : item.photos.photo) {
+            for(ListData.Photo photo : item.photos.photo) {
                 mItemList.add(photo);
             }
             mAdapter = new ImageAdapter(mAppContext, mItemList, mItemClickListener, getColumnNum());
@@ -260,14 +260,14 @@ public abstract class BaseImageListFragment extends Fragment {
             mProgress.setVisibility(View.VISIBLE);  // do not show double progress
         }
 
-        loadByContentType(page + 1, new Callback<Interestingness>() {
+        loadByContentType(page + 1, new Callback<ListData>() {
             @Override
-            public void success(Interestingness interestingness, Response response) {
+            public void success(ListData listData, Response response) {
                 if (!isAdded()) return;
                 //mCacheUtil.putCacheJson(getActivity(), CONTENT_TYPE, CONTENT_PARAM1, response);
                 if (refresh_list) mItemList.clear();
 
-                for(Interestingness.Photo photo : interestingness.photos.photo) {
+                for(ListData.Photo photo : listData.photos.photo) {
                     mItemList.add(photo);
                 }
 

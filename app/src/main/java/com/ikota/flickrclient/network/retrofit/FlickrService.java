@@ -1,6 +1,6 @@
 package com.ikota.flickrclient.network.retrofit;
 
-import com.ikota.flickrclient.data.model.Interestingness;
+import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.data.model.PeopleInfo;
 import com.ikota.flickrclient.data.model.PhotoInfo;
 
@@ -26,7 +26,7 @@ public interface FlickrService {
     void testEcho(@Query("hoge") String fuga, Callback<Response> cb);
 
     @GET(METHOD_PREFIX + "flickr.interestingness.getList" + PER_PAGE + 20 + FORMAT_JSON + JSON_CALLBACK + APIKEY_SEARCH_STRING + AUTO_TOKEN_STRING + APISIG_STRING)
-    void getPopularPhotos(@Query("page") int page, Callback<Interestingness> cb);
+    void getPopularPhotos(@Query("page") int page, Callback<ListData> cb);
 
     @GET(METHOD_PREFIX + "flickr.photos.getInfo" + FORMAT_JSON + JSON_CALLBACK + APIKEY_SEARCH_STRING + AUTO_TOKEN_STRING + APISIG_STRING)
     void getPhotoInfo(@Query("photo_id") String id, Callback<PhotoInfo> cb);

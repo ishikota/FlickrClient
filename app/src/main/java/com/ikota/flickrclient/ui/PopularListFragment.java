@@ -1,6 +1,6 @@
 package com.ikota.flickrclient.ui;
 
-import com.ikota.flickrclient.data.model.Interestingness;
+import com.ikota.flickrclient.data.model.ListData;
 
 import retrofit.Callback;
 
@@ -12,7 +12,7 @@ import retrofit.Callback;
 public class PopularListFragment extends BaseImageListFragment {
 
     @Override
-    public void loadByContentType(int page, Callback<Interestingness> callback) {
+    public void loadByContentType(int page, Callback<ListData> callback) {
         ((AndroidApplication)getActivity().getApplication()).api().getPopularPhotos(page, callback);
     }
 

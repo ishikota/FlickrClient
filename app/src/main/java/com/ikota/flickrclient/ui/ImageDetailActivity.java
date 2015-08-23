@@ -11,13 +11,13 @@ import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.data.model.Interestingness;
+import com.ikota.flickrclient.data.model.ListData;
 
 
 public class ImageDetailActivity extends BaseActivity{
     public static final String EXTRA_CONTENT = "content";
 
-    public static void launch(Activity activity, Interestingness.Photo data, ImageView transitionView) {
+    public static void launch(Activity activity, ListData.Photo data, ImageView transitionView) {
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 activity,
                 transitionView,

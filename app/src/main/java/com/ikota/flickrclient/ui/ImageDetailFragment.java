@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.data.model.Interestingness;
+import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.data.model.PhotoInfo;
 import com.ikota.flickrclient.util.NetUtils;
 import com.squareup.picasso.Picasso;
@@ -64,7 +64,7 @@ public class ImageDetailFragment extends Fragment {
         // get content
         Gson gson = new Gson();
         String json = getArguments().getString(ImageDetailActivity.EXTRA_CONTENT);
-        Interestingness.Photo content = gson.fromJson(json, Interestingness.Photo.class);
+        ListData.Photo content = gson.fromJson(json, ListData.Photo.class);
 
         setupContent(content);
         loadDetailInfo(content);
@@ -72,7 +72,7 @@ public class ImageDetailFragment extends Fragment {
         return root;
     }
 
-    private void setupContent(Interestingness.Photo content) {
+    private void setupContent(ListData.Photo content) {
         // set item information which we got from list data
         mTitleText.setText(content.title);
         String url = content.generatePhotoURL(NetUtils.isWifiConnected(getActivity()) ? "z" : "q");
@@ -125,7 +125,7 @@ public class ImageDetailFragment extends Fragment {
         );
     }
 
-    private void loadDetailInfo(Interestingness.Photo content) {
+    private void loadDetailInfo(ListData.Photo content) {
         ((AndroidApplication)getActivity().getApplication()).api().getPhotoInfo(content.id, new Callback<PhotoInfo>() {
             @Override
             public void success(PhotoInfo photoInfo, Response response) {

@@ -11,7 +11,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.data.model.Interestingness;
+import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.util.NetUtils;
 import com.squareup.picasso.Picasso;
 
@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
     private Context mContext;
-    private List<Interestingness.Photo> mDataSet;
+    private List<ListData.Photo> mDataSet;
     private final OnClickCallback mClickCallback;
     private final LayoutInflater mInflater;
     private final int view_size;
@@ -34,7 +34,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     }
 
     public interface OnClickCallback {
-        void onClick(View v, Interestingness.Photo data);
+        void onClick(View v, ListData.Photo data);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -47,7 +47,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     }
 
 
-    public ImageAdapter(Context context, List<Interestingness.Photo> myDataset,
+    public ImageAdapter(Context context, List<ListData.Photo> myDataset,
                         OnClickCallback listener, int column) {
         mContext = context;
         mDataSet = myDataset;
@@ -98,7 +98,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         // change image quality by checking network state
         String quality_flg = is_wifi_connected ? "z": "q";
 
-        Interestingness.Photo item = mDataSet.get(position);
+        ListData.Photo item = mDataSet.get(position);
 
         String url = item.generatePhotoURL(quality_flg);
         Picasso.with(mContext)
