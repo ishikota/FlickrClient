@@ -1,22 +1,18 @@
 language: android
 android:
   components:
-    # The BuildTools version used by your project
-    - build-tools-22.0.1
-    # The SDK version used to compile your project
-    - android-22
-    # m2repository is needed to install espresso and other support libs
-    - extra-android-m2repository
-    # Specify at least one system image to run emulator
-    - sys-img-armeabi-v7a-android-22
-# Emulator Management: Create, Start and Wait
+  - build-tools-22.0.1
+  - android-22
+  - extra-android-m2repository
+  - sys-img-armeabi-v7a-android-22
 before_script:
-  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
-  - emulator -avd test -no-skin -no-audio -no-window &
-  - android-wait-for-emulator
-  - adb shell input keyevent 82 &
+- echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
+- emulator -avd test -no-skin -no-audio -no-window &
+- android-wait-for-emulator
+- adb shell input keyevent 82 &
 script:
-  - ./gradlew clean test
-  #- ./gradlew cC
+- ./gradlew clean test
 notifications:
   email: false
+  slack:
+    secure: PsfYklZhXHBhh93LqVsWJuvWw+yeFDfXVm05C3g7idZ/mqLaZHyzBrl+se7LbpVYY5+r48zuxKX2XAejjf8aSznmyrDGuVCykJ8ubroC7Z3kfJWBPqppnFFF6J/b+y88Xw8ExUSAzo9ST60jclNyeP0RWabStNeXO5sDZhJFhZ6AKLEsALLIC6CUmHCvK3LsBiNG+sdeV6pATVSiNqD+CBdZkG5LRakbM2OGcdScZlvePo7SeS3t7kZmwKX35OAayf8cR7aJYekI07f+3vB+ATK7hzDmoj0YWXMvcH6QSLBeKRTxOPSA66q45Qe9DrlHE1KHqiA8Ai49JPLA0XHcMHXFd5QB1V7cC8PUGNql7lwQNnFuaCZIfZMZsk7Mv6VEUT3SwAknYz+Q049XpvLeCZhRFiTpwG4M+cjUlPYoC+uR261V8f7UlQeTj51nkmjSqWhkAUE2EOh9wbM8bzjZ4+qPx90drW/T/jDkMEx+YR/kdcrT2F+E7J7DWG20L1CBdkDKtanEvCLbZS2orQdKbdUWK+YhU4AdqmgUbVivFdySD4XKxL1YOOTbYhoFryzBHWb0cbJM0S12owASWCTrYUQ0oyC+AcDGKBH36M2UHmRm6y3ukMbAwi0IGruiUbWMxWhgYkF0t/B1C5cP9GLOAECgm7DxrT0NtoFdDVbJSos=
