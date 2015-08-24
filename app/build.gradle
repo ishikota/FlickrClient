@@ -22,6 +22,16 @@ android {
     packagingOptions {
         exclude 'LICENSE.txt'
     }
+    productFlavors {
+        mock {
+            applicationId "com.ikota.flickrclient.mock"
+            versionName "1.0-mock"
+        }
+        product {
+            applicationId "com.ikota.flickrclient"
+            versionName "1.0-product"
+        }
+    }
 }
 
 dependencies {

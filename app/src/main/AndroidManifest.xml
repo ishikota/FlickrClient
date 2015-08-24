@@ -22,6 +22,10 @@
             android:name=".ui.ImageDetailActivity"
             android:label="@string/detail">
         </activity>
+        
+        <activity
+            android:name=".ui.UserActivity"
+            android:label="@string/user"/>
 
     </application>
 

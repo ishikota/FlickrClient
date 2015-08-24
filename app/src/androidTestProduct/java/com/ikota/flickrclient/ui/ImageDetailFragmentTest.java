@@ -74,7 +74,7 @@ public class ImageDetailFragmentTest extends ActivityInstrumentationTestCase2<Im
         Espresso.registerIdlingResources(idlingResource);
         onView(withId(R.id.title)).check(matches(withText("A Quiet Evening")));
         onView(withId(R.id.user_name)).check(matches(withText("Jens Haggren")));
-        onView(withId(R.id.description)).check(matches(withText("Thank you very much for your views, faves and comments. I appreciate it a lot!")));
+        //onView(withId(R.id.description)).check(matches(withText("Thank you very much for your views, faves and comments. I appreciate it a lot!")));
         onView(withId(R.id.date_text)).check(matches(withText("2015-06-21 21:18:57")));
     }
 

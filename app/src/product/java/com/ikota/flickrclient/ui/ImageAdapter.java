@@ -67,7 +67,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     }
 
     @Override
-    public ImageAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view.
         View v = mInflater.inflate(R.layout.row_image_list, viewGroup, false);
 
@@ -86,7 +86,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
                 }
             }
         });
-        return new ImageAdapter.ViewHolder(v);
+        return new ViewHolder(v);
     }
 
     @Override
