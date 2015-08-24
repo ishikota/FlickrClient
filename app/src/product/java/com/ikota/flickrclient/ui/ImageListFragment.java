@@ -2,6 +2,7 @@ package com.ikota.flickrclient.ui;
 
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -166,8 +167,11 @@ public class ImageListFragment extends Fragment {
         mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh);
 
         mRecyclerView.setHasFixedSize(true);
-        GridLayoutManager layoutManager = new GridLayoutManager(mAppContext, PORTRAIT_COL_NUM);
+        int display_mode = getResources().getConfiguration().orientation;
+        int col_num = display_mode == Configuration.ORIENTATION_PORTRAIT ? PORTRAIT_COL_NUM : HORIZONTAL_COL_NUM;
+        GridLayoutManager layoutManager = new GridLayoutManager(mAppContext, col_num);
         mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.addOnScrollListener(scroll_lister);
 
         mSwipeRefreshLayout.setColorSchemeColors(
                 getResources().getColor(R.color.swipe_color_1),
@@ -207,13 +211,14 @@ public class ImageListFragment extends Fragment {
      */
     private void initList() {
 
-        // this condition is occur when this fragment is re-created.(like created by PagerAdapter again)
+        // this condition is occur when this fragment is re-created.
+        // (like created by PagerAdapter again, orientation change occurred)
         if (mItemList != null && !mItemList.isEmpty()) {
             mRecyclerView.setAdapter(mAdapter);
             return;
         }
-        mItemList = new ArrayList<>();
 
+        mItemList = new ArrayList<>();
         // if cache found then display it.
         String json = null; //mCacheUtil.getCacheJson(getActivity(), CONTENT_TYPE, CONTENT_PARAM1);
         if (json != null && !json.isEmpty()) {
@@ -225,7 +230,7 @@ public class ImageListFragment extends Fragment {
             }
             mAdapter = new ImageAdapter(mAppContext, mItemList, mItemClickListener, PORTRAIT_COL_NUM);
             mRecyclerView.setAdapter(mAdapter);
-            mRecyclerView.addOnScrollListener(scroll_lister);
+
         }
         // if cache found (json!=null) then do not need to refresh list
         if(isAdded()) updateList(0, json == null || json.isEmpty());
