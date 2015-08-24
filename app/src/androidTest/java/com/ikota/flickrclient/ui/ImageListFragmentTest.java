@@ -107,21 +107,20 @@ public class ImageListFragmentTest extends ActivityInstrumentationTestCase2<Popu
         @SuppressWarnings("ConstantConditions")
         RecyclerView recyclerView = (RecyclerView)fragment.getView().findViewById(android.R.id.list);
 
-        ListCountIdlingResource idlingResource_20 = new ListCountIdlingResource(recyclerView, 20);
-        Espresso.registerIdlingResources(idlingResource_20);
+        ListCountIdlingResource idlingResource_24 = new ListCountIdlingResource(recyclerView, 24);
+        Espresso.registerIdlingResources(idlingResource_24);
         onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(18, scrollTo()));
-        Espresso.unregisterIdlingResources(idlingResource_20);
-        assertEquals(40, recyclerView.getAdapter().getItemCount());
+        Espresso.unregisterIdlingResources(idlingResource_24);
 
-        ListCountIdlingResource idlingResource_40 = new ListCountIdlingResource(recyclerView, 40);
-        Espresso.registerIdlingResources(idlingResource_40);
+        ListCountIdlingResource idlingResource_48 = new ListCountIdlingResource(recyclerView, 48);
+        Espresso.registerIdlingResources(idlingResource_48);
         onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(30, scrollTo()));
-        Espresso.unregisterIdlingResources(idlingResource_40);
+        Espresso.unregisterIdlingResources(idlingResource_48);
 
-        ListCountIdlingResource idlingResource_60 = new ListCountIdlingResource(recyclerView, 60);
-        Espresso.registerIdlingResources(idlingResource_60);
+        ListCountIdlingResource idlingResource_72 = new ListCountIdlingResource(recyclerView, 72);
+        Espresso.registerIdlingResources(idlingResource_72);
         onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(0, scrollTo()));
-        assertEquals(60, recyclerView.getAdapter().getItemCount());
+        assertEquals(72, recyclerView.getAdapter().getItemCount());
     }
 
 }

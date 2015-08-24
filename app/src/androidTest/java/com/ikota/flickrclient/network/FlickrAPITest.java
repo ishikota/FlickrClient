@@ -82,7 +82,7 @@ public class FlickrAPITest extends ActivityInstrumentationTestCase2<PopularListA
 
     @Test
     public void popularPhotoList() throws Exception {
-        app.api().getPopularPhotos(1, new Callback<ListData>() {
+        app.api().getPopularPhotos(1, 20, new Callback<ListData>() {
 
             @Override
             public void success(ListData popularPhotos, Response response) {

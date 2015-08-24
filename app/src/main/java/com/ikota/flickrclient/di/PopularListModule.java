@@ -16,21 +16,24 @@ import retrofit.Callback;
         library = true
 )
 public class PopularListModule {
+    public static final int PORTRAIT_COL = 2;
+    public static final int HORIZONTAL_COL = 3;
+    public static final int ITEM_PER_PAGE = 24;
 
     @Provides
     @Named("portrait col")
     public int providePortraitColumn() {
-        return 2;
+        return PORTRAIT_COL;
     }
 
     @Provides @Named("horizontal col")
     public int provideHorizontalColumn() {
-        return 3;
+        return HORIZONTAL_COL;
     }
 
     @Provides @Named("item per page")
     public int provideItemPerPage() {
-        return 24;
+        return ITEM_PER_PAGE;
     }
 
     @Provides
@@ -43,7 +46,7 @@ public class PopularListModule {
         return new LoadMethod() {
             @Override
             public void loadItem(AndroidApplication app, int page, Callback<ListData> cb) {
-                    app.api().getPopularPhotos(page, cb);
+                    app.api().getPopularPhotos(page, ITEM_PER_PAGE, cb);
             }
         };
     }
