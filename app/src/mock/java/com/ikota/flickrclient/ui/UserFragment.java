@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +25,10 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
-public class TabFragment extends Fragment{
+public class UserFragment extends Fragment{
 
     private Context mAppContext;
+    private Toolbar mToolbar;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -41,6 +44,11 @@ public class TabFragment extends Fragment{
             "#FAFAFA", "#F5F5F5", "#EEEEEE", "#E0E0E0",
             "#BDBDBD", "#9E9E9E", "#757575", "#616161", "#424242", "#212121"
     };
+
+    private TabLayout mTabLayout;
+    private int mActionBarHeight;
+    private int mTabHeight;
+    private int mHeaderPadding;
 
     private ImageAdapter.OnClickCallback mItemClickListener = new ImageAdapter.OnClickCallback() {
         @Override
@@ -60,6 +68,9 @@ public class TabFragment extends Fragment{
             int totalItemCount = layoutManager.getItemCount();
             int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
 
+            // avoid nullpo
+            if(totalItemCount == 0) return;
+
             //load next item
             if (!busy.get() && totalItemCount - firstVisibleItem <= 24) {
                 if(isAdded()) updateList(false);
@@ -68,6 +79,24 @@ public class TabFragment extends Fragment{
             // if it's loading and reached to bottom of the list, then show loading animation.
             if (busy.get() && firstVisibleItem + visibleItemCount == totalItemCount) {
                 mProgress.setVisibility(View.VISIBLE);
+            }
+
+            // scroll TabLayout with RecyclerView scroll
+            int headPos = mRecyclerView.getChildAt(0).getTop();
+            float y = mTabLayout.getY();
+            if (y == 0) return;  // ignore setup phase callback
+            if (dy >= 0) {  // if up scroll
+                mTabLayout.setY(Math.max(mActionBarHeight, headPos-mTabHeight));    // tab stops below actionbar
+            } else {    // if down scroll
+                if(headPos >= y+mTabHeight) {  // do not down TabLayout until list head is revealed
+                    mTabLayout.setY(Math.min(headPos-mTabHeight, mHeaderPadding));
+                }
+            }
+
+            // change actionbar alpha with RecyclerView scroll
+            if(mToolbar!=null) {  // nullpo occured when config changes
+                int alpha = (int) (255 * (1 - (y - mActionBarHeight) / (mHeaderPadding - mTabHeight - mActionBarHeight)));
+                mToolbar.getBackground().setAlpha(alpha);
             }
         }
     };
@@ -82,21 +111,34 @@ public class TabFragment extends Fragment{
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mAppContext = activity.getApplicationContext();
+
+        mTabHeight = (int)getResources().getDimension(R.dimen.tab_height);
+        mHeaderPadding = (int)getResources().getDimension(R.dimen.header_padding);
+        TypedValue tv = new TypedValue();
+        if (activity.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+        {
+            mActionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_image_list, container, false);
+        View root = inflater.inflate(R.layout.fragment_tab_list, container, false);
 
         mRecyclerView = (RecyclerView) root.findViewById(android.R.id.list);
         mEmptyView = root.findViewById(android.R.id.empty);
         mProgress = (ProgressBar) root.findViewById(R.id.progress);
         mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh);
+        mTabLayout = (TabLayout)root.findViewById(R.id.tab_layout);
+
+        mToolbar = ((BaseActivity)getActivity()).mActionBarToolbar;
+        if(mToolbar!=null) mToolbar.getBackground().setAlpha(0);  // nullpo occured when config changes
 
         mRecyclerView.setHasFixedSize(true);
         GridLayoutManager layoutManager = new GridLayoutManager(mAppContext, 2);
         mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.addOnScrollListener(scroll_lister);
 
         mSwipeRefreshLayout.setColorSchemeColors(
                 getResources().getColor(R.color.swipe_color_1),
@@ -105,7 +147,9 @@ public class TabFragment extends Fragment{
                 getResources().getColor(R.color.swipe_color_4)
         );
 
-        //addPaddingToTop(root);
+        mTabLayout.addTab(mTabLayout.newTab().setText("ABOUTS"));
+        mTabLayout.addTab(mTabLayout.newTab().setText("POST"));
+        mTabLayout.addTab(mTabLayout.newTab().setText("PHOTOS"));
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -116,15 +160,6 @@ public class TabFragment extends Fragment{
         initList();
 
         return root;
-    }
-
-    private void addPaddingToTop(View root) {
-        int actionBarHeight = 0;
-        TypedValue tv = new TypedValue();
-        if (getActivity().getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-        root.setPadding(0, actionBarHeight, 0, 0);
     }
 
     private void initList() {

@@ -8,7 +8,7 @@ import com.ikota.flickrclient.R;
 
 
 public class BaseActivity extends AppCompatActivity{
-    private Toolbar mActionBarToolbar;
+    protected Toolbar mActionBarToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
