@@ -15,9 +15,9 @@ public class UserPagerAdapter extends FragmentStatePagerAdapter{
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0: return new PopularListFragment();
-            case 1: return new PopularListFragment();
-            case 2: return new PopularListFragment();
+            case 0: return new TabFragment();
+            case 1: return new TabFragment();
+            case 2: return new TabFragment();
             default: return null;
         }
     }

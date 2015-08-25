@@ -3,7 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/white_dull">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
@@ -13,16 +15,80 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_actionbar"
+        android:layout_height="240dp"
+        android:fitsSystemWindows="true"
+        android:background="@color/white_dull">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            android:minHeight="?attr/actionBarSize"
-            android:background="@color/primary"
-            app:popupTheme="@style/LightPopupMenu"
-            app:layout_scrollFlags="scroll|enterAlways"/>
+            android:layout_height="192dp"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:fitsSystemWindows="true"
+            app:contentScrim="@color/white_dull"
+            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleMarginEnd="64dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white_dull"
+                app:layout_collapseMode="parallax"
+                android:fitsSystemWindows="true">
+
+                <com.makeramen.roundedimageview.RoundedImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/user_icon"
+                    android:layout_width="72dp"
+                    android:layout_height="128dp"
+                    app:riv_mutate_background="true"
+                    app:riv_oval="true"
+                    android:src="#88000000"
+                    android:layout_centerVertical="true"
+                    android:paddingTop="56dp"
+                    android:paddingLeft="16dp"/>
+
+                <LinearLayout
+                    android:id="@+id/text_space"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@id/user_icon"
+                    android:layout_toEndOf="@id/user_icon"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:paddingTop="56dp">
+
+                    <TextView
+                        android:id="@+id/user_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/username"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/sub_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/user_info"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_actionbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                android:minHeight="?attr/actionBarSize"
+                app:popupTheme="@style/LightPopupMenu"
+                app:layout_collapseMode="pin"
+                android:background="@color/primary"/>
+        </android.support.design.widget.CollapsingToolbarLayout>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_layout"
