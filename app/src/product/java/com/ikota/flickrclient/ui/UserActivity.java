@@ -37,6 +37,8 @@ public class UserActivity extends BaseActivity{
     private int mTabHeight;
     private int mHeaderPadding;
 
+    private int mActionbarAlpha = 255;
+
     public static Intent createIntent(Activity activity, PhotoInfo.Owner owner) {
         Gson gson = new Gson();
         String parsed_json = gson.toJson(owner);
@@ -78,12 +80,14 @@ public class UserActivity extends BaseActivity{
     public void onResume() {
         super.onResume();
         sTabEventBus.register(this);
+        if(mActionBarToolbar!=null) mActionBarToolbar.getBackground().setAlpha(mActionbarAlpha);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         sTabEventBus.unregister(this);
+        if(mActionBarToolbar!=null) mActionBarToolbar.getBackground().setAlpha(255);
     }
 
     private void getViewSize() {
@@ -106,7 +110,8 @@ public class UserActivity extends BaseActivity{
     private void setupViews(PhotoInfo.Owner content) {
 
         // nullpo occurred when config changes
-        if(mActionBarToolbar!=null) mActionBarToolbar.getBackground().setAlpha(0);
+        mActionbarAlpha = 0;
+        if(mActionBarToolbar!=null) mActionBarToolbar.getBackground().setAlpha(mActionbarAlpha);
 
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         mTabLayout.addTab(mTabLayout.newTab().setText("ABOUTS"));
@@ -161,9 +166,9 @@ public class UserActivity extends BaseActivity{
 
         // change actionbar alpha with RecyclerView scroll
         if(mActionBarToolbar!=null) {  // nullpo occured when config changes
-            int alpha = (int) (255 *
+            mActionbarAlpha = (int) (255 *
                     (1 - (y - mActionBarHeight) / (mHeaderPadding - mTabHeight - mActionBarHeight)));
-            mActionBarToolbar.getBackground().setAlpha(alpha);
+            mActionBarToolbar.getBackground().setAlpha(mActionbarAlpha);
         }
     }
 
