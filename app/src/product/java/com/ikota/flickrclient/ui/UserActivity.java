@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentManager;
 import android.util.TypedValue;
 import android.widget.ImageView;
@@ -39,20 +37,14 @@ public class UserActivity extends BaseActivity{
     private int mTabHeight;
     private int mHeaderPadding;
 
-    public static void launch(Activity activity, PhotoInfo.Owner owner, ImageView transitionView) {
-        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                activity,
-                transitionView,
-                activity.getString(R.string.trans_list2detail));
-
+    public static Intent createIntent(Activity activity, PhotoInfo.Owner owner) {
         Gson gson = new Gson();
         String parsed_json = gson.toJson(owner);
 
         Intent intent = new Intent(activity, UserActivity.class);
         intent.putExtra(EXTRA_CONTENT, parsed_json);
-        ActivityCompat.startActivity(activity, intent, options.toBundle());
+        return intent;
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

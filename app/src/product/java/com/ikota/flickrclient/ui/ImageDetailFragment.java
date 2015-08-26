@@ -177,7 +177,7 @@ public class ImageDetailFragment extends Fragment {
         mUserImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UserActivity.launch(getActivity(), info.photo.owner, (ImageView) view);
+                startActivity(UserActivity.createIntent(getActivity(), info.photo.owner));
             }
         });
 
