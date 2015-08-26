@@ -30,6 +30,7 @@
             android:layout_height="72dp"
             android:layout_below="@+id/title"
             android:padding="12dp"
+            android:src="#AA000000"
             app:riv_mutate_background="true"
             app:riv_oval="true"/>
 
@@ -62,7 +63,7 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_below="@+id/description"
-            android:padding="16dp"
+            android:padding="24dp"
             android:alpha="0.5"
             android:contentDescription="@string/icon"
             android:src="@drawable/ic_access_time_black" />

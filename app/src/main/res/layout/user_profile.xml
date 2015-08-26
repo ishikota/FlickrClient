@@ -38,7 +38,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/username"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -47,7 +46,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/user_info"
             android:textStyle="bold" />
 
     </LinearLayout>

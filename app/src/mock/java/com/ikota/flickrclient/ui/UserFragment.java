@@ -2,6 +2,7 @@ package com.ikota.flickrclient.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.model.ListData;
@@ -125,6 +127,11 @@ public class UserFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_tab_list, container, false);
+
+        // set mock data
+        Resources r = getResources();
+        ((TextView)root.findViewById(R.id.user_name)).setText(r.getString(R.string.username));
+        ((TextView)root.findViewById(R.id.sub_text)).setText(r.getString(R.string.user_info));
 
         mRecyclerView = (RecyclerView) root.findViewById(android.R.id.list);
         mEmptyView = root.findViewById(android.R.id.empty);
