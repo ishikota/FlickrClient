@@ -149,4 +149,27 @@ public class FlickrAPITest extends ActivityInstrumentationTestCase2<PopularListA
         lock.await(10000, TimeUnit.MILLISECONDS);
         assertEquals(0, lock.getCount());
     }
+
+    @Test
+    public void peoplePublicPhoto() throws Exception {
+        app.api().getPeoplePublicPhotos("133363540@N06", 1, 24, new Callback<ListData>() {
+
+            @Override
+            public void success(ListData data, Response response) {
+                assertEquals("ok", data.stat);
+                assertEquals(1, data.photos.page);
+                assertEquals(24, data.photos.perpage);
+                assertEquals(24, data.photos.photo.size());
+                assertEquals(48, data.photos.total);
+                lock.countDown();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fail("Error on peoplePublicPhoto API");
+            }
+        });
+        lock.await(10000, TimeUnit.MILLISECONDS);
+        assertEquals(0, lock.getCount());
+    }
 }

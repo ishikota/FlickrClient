@@ -141,4 +141,34 @@ public class DataHolder {
                             "}" +
                     ",\"stat\":\"ok\"" +
                     "}";
+
+    public static final String PEOPLE_PUBLIC_PHOTO =
+            "{ \"photos\": { \"page\": 1, \"pages\": 2, \"perpage\": 24, \"total\": 48, \n" +
+                    "    \"photo\": [\n" +
+                    "      { \"id\": \"18333809254\", \"owner\": \"133363540@N06\", \"secret\": \"cce9eb98e1\", \"server\": \"465\", \"farm\": 1, \"title\": \"tumblr_nppx0meDoL1r3y74po4_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18335723653\", \"owner\": \"133363540@N06\", \"secret\": \"a293b058f0\", \"server\": \"347\", \"farm\": 1, \"title\": \"tumblr_nppx0meDoL1r3y74po3_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18333809744\", \"owner\": \"133363540@N06\", \"secret\": \"69fe7fd18e\", \"server\": \"427\", \"farm\": 1, \"title\": \"tumblr_nppx0meDoL1r3y74po2_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18959317011\", \"owner\": \"133363540@N06\", \"secret\": \"94cd9cc816\", \"server\": \"462\", \"farm\": 1, \"title\": \"tumblr_nppx0meDoL1r3y74po1_540\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18770167029\", \"owner\": \"133363540@N06\", \"secret\": \"d1c4117f0b\", \"server\": \"380\", \"farm\": 1, \"title\": \"tumblr_npk1d5vYNN1r3y74po6_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18768708228\", \"owner\": \"133363540@N06\", \"secret\": \"b1463483d3\", \"server\": \"330\", \"farm\": 1, \"title\": \"tumblr_npk1d5vYNN1r3y74po5_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18956371595\", \"owner\": \"133363540@N06\", \"secret\": \"3a7e224d64\", \"server\": \"428\", \"farm\": 1, \"title\": \"tumblr_npk1d5vYNN1r3y74po4_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18959317791\", \"owner\": \"133363540@N06\", \"secret\": \"4590e4fb80\", \"server\": \"449\", \"farm\": 1, \"title\": \"tumblr_npk1d5vYNN1r3y74po3_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18959317741\", \"owner\": \"133363540@N06\", \"secret\": \"f0c27df64e\", \"server\": \"334\", \"farm\": 1, \"title\": \"tumblr_npk1d5vYNN1r3y74po2_540\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18768678520\", \"owner\": \"133363540@N06\", \"secret\": \"182272c613\", \"server\": \"427\", \"farm\": 1, \"title\": \"tumblr_npk1d5vYNN1r3y74po1_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18768708428\", \"owner\": \"133363540@N06\", \"secret\": \"9a1e6aae11\", \"server\": \"326\", \"farm\": 1, \"title\": \"tumblr_npj9ly0nNO1r3y74po2_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18930130686\", \"owner\": \"133363540@N06\", \"secret\": \"29a81f6439\", \"server\": \"404\", \"farm\": 1, \"title\": \"tumblr_npci8h7ti61r3y74po5_400\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18768678590\", \"owner\": \"133363540@N06\", \"secret\": \"169094874c\", \"server\": \"280\", \"farm\": 1, \"title\": \"tumblr_npci8h7ti61r3y74po4_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18333810824\", \"owner\": \"133363540@N06\", \"secret\": \"7a1ef43e5b\", \"server\": \"513\", \"farm\": 1, \"title\": \"tumblr_npci8h7ti61r3y74po3_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18951017412\", \"owner\": \"133363540@N06\", \"secret\": \"8ec26b1c22\", \"server\": \"467\", \"farm\": 1, \"title\": \"tumblr_npci8h7ti61r3y74po2_540\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18930131356\", \"owner\": \"133363540@N06\", \"secret\": \"92e5deac3c\", \"server\": \"420\", \"farm\": 1, \"title\": \"tumblr_npci8h7ti61r3y74po1_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18768708638\", \"owner\": \"133363540@N06\", \"secret\": \"d46394fca1\", \"server\": \"3788\", \"farm\": 4, \"title\": \"tumblr_npchydgwDE1r3y74po6_r1_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18768678720\", \"owner\": \"133363540@N06\", \"secret\": \"fcd858579b\", \"server\": \"453\", \"farm\": 1, \"title\": \"tumblr_npchydgwDE1r3y74po5_540\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18768678770\", \"owner\": \"133363540@N06\", \"secret\": \"bd235a604d\", \"server\": \"359\", \"farm\": 1, \"title\": \"tumblr_np79bobAKv1r3y74po4_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18930131026\", \"owner\": \"133363540@N06\", \"secret\": \"5f07756d11\", \"server\": \"405\", \"farm\": 1, \"title\": \"tumblr_np79bobAKv1r3y74po1_540\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18770167669\", \"owner\": \"133363540@N06\", \"secret\": \"3409abaa02\", \"server\": \"310\", \"farm\": 1, \"title\": \"tumblr_np31haDZPF1r3y74po4_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18930131496\", \"owner\": \"133363540@N06\", \"secret\": \"837e41dff1\", \"server\": \"551\", \"farm\": 1, \"title\": \"tumblr_np31haDZPF1r3y74po2_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18335725013\", \"owner\": \"133363540@N06\", \"secret\": \"43a684ab21\", \"server\": \"281\", \"farm\": 1, \"title\": \"tumblr_np31haDZPF1r3y74po1_540\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+                    "      { \"id\": \"18959318231\", \"owner\": \"133363540@N06\", \"secret\": \"b57dbb0d1f\", \"server\": \"491\", \"farm\": 1, \"title\": \"tumblr_np9cdslQWY1r3y74po3_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 }\n" +
+                    "    ] }, \"stat\": \"ok\" }";
+
 }

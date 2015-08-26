@@ -33,4 +33,7 @@ public interface FlickrService {
     @GET(METHOD_PREFIX+"flickr.people.getInfo"+FORMAT_JSON+JSON_CALLBACK+APIKEY_SEARCH_STRING+AUTO_TOKEN_STRING+APISIG_STRING)
     void getPeopleInfo(@Query("user_id") String user_id, Callback<PeopleInfo> cb);
 
+    @GET(METHOD_PREFIX+"flickr.people.getPublicPhotos"+FORMAT_JSON+JSON_CALLBACK+APIKEY_SEARCH_STRING+AUTO_TOKEN_STRING+APISIG_STRING)
+    void getPeoplePublicPhotos(@Query("user_id") String user_id, @Query("page") int page, @Query("per_page") int per_page, Callback<ListData> cb);
+
 }
