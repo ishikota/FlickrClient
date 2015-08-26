@@ -43,7 +43,7 @@ public class PeopleInfo {
     }
 
     public static class Count {
-        int _content;
+        public int _content;
     }
 
     public static class Views {
