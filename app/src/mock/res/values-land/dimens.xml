@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="user_cover_height">202dp</dimen>
+    <dimen name="user_cover_height">112dp</dimen>
     <dimen name="user_info_height">100dp</dimen>
     <dimen name="user_tab_height">48dp</dimen>
     <dimen name="user_icon_size">90dp</dimen>
-    <dimen name="user_icon_margin">132dp</dimen>
-    <dimen name="user_header_padding">350dp</dimen>
-    <dimen name="user_header_size">302dp</dimen>
+    <dimen name="user_icon_margin">40dp</dimen>
+    <dimen name="user_header_padding">250dp</dimen>
+    <dimen name="user_header_size">202dp</dimen>
+
 </resources>

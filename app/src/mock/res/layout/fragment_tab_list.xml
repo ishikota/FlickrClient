@@ -17,16 +17,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingTop="@dimen/header_padding"/>
+            android:paddingTop="@dimen/user_header_padding"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/tab_height"
+        android:layout_height="@dimen/user_tab_height"
         android:background="@color/white_dull"
-        android:layout_marginTop="302dp"
+        android:layout_marginTop="@dimen/user_header_size"
         app:tabSelectedTextColor="@color/accent"
         app:tabIndicatorColor="@color/accent"
         android:fillViewport="false" />

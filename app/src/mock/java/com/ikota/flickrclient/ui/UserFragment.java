@@ -112,8 +112,8 @@ public class UserFragment extends Fragment{
         super.onAttach(activity);
         mAppContext = activity.getApplicationContext();
 
-        mTabHeight = (int)getResources().getDimension(R.dimen.tab_height);
-        mHeaderPadding = (int)getResources().getDimension(R.dimen.header_padding);
+        mTabHeight = (int)getResources().getDimension(R.dimen.user_tab_height);
+        mHeaderPadding = (int)getResources().getDimension(R.dimen.user_header_padding);
         TypedValue tv = new TypedValue();
         if (activity.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
         {
