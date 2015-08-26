@@ -10,6 +10,7 @@
         android:id="@+id/cover"
         android:layout_width="match_parent"
         android:layout_height="@dimen/user_cover_height"
+        android:scaleType="centerCrop"
         android:contentDescription="@string/image"
         android:background="#33000000"/>
 

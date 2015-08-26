@@ -56,17 +56,16 @@ public class ImageListFragment extends Fragment {
 
     private Context mAppContext;
 
-    private RecyclerView mRecyclerView;
+    protected RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private ArrayList<ListData.Photo> mItemList;
 
+    protected ProgressBar mProgress;
     private View mEmptyView;
-    private ProgressBar mProgress;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-
-    private boolean end_flg;
-    private AtomicBoolean busy = new AtomicBoolean(false);
+    protected boolean end_flg;
+    protected AtomicBoolean busy = new AtomicBoolean(false);
 
     private NetworkReceiver mReceiver;
     private NetworkReceiver.OnNetworkStateChangedListener mListener =
@@ -97,30 +96,6 @@ public class ImageListFragment extends Fragment {
         @Override
         public void onClick(View v, ListData.Photo data) {
             ImageDetailActivity.launch(getActivity(), data, (ImageView)v);
-        }
-    };
-
-    private RecyclerView.OnScrollListener scroll_lister = new RecyclerView.OnScrollListener() {
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-
-            GridLayoutManager layoutManager = (GridLayoutManager)recyclerView.getLayoutManager();
-            int visibleItemCount = layoutManager.getChildCount();
-            int totalItemCount = layoutManager.getItemCount();
-            int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
-
-            //load next item
-            if (!end_flg && !busy.get() && totalItemCount - firstVisibleItem <= ITEM_PER_PAGE) {
-                int page = totalItemCount / ITEM_PER_PAGE;
-                if(isAdded()) updateList(page, false);
-            }
-
-            // if it's loading and reached to bottom of the list, then show loading animation.
-            if (busy.get() && firstVisibleItem + visibleItemCount == totalItemCount) {
-                mProgress.setVisibility(View.VISIBLE);
-            }
         }
     };
 
@@ -171,7 +146,7 @@ public class ImageListFragment extends Fragment {
         int col_num = display_mode == Configuration.ORIENTATION_PORTRAIT ? PORTRAIT_COL_NUM : HORIZONTAL_COL_NUM;
         GridLayoutManager layoutManager = new GridLayoutManager(mAppContext, col_num);
         mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.addOnScrollListener(scroll_lister);
+        mRecyclerView.addOnScrollListener(getScrollListener());
 
         mSwipeRefreshLayout.setColorSchemeColors(
                 getResources().getColor(R.color.swipe_color_1),
@@ -265,7 +240,7 @@ public class ImageListFragment extends Fragment {
                     mAdapter = new ImageAdapter(
                             mAppContext, mItemList, mItemClickListener, PORTRAIT_COL_NUM);
                     mRecyclerView.setAdapter(mAdapter);
-                    mRecyclerView.addOnScrollListener(scroll_lister);
+                    mRecyclerView.addOnScrollListener(getScrollListener());
                     mSwipeRefreshLayout.setRefreshing(false);
                 } else if (mAdapter != null) {
                     mAdapter.notifyDataSetChanged();
@@ -288,6 +263,32 @@ public class ImageListFragment extends Fragment {
                 busy.set(false);
             }
         });
+    }
+
+    protected RecyclerView.OnScrollListener getScrollListener() {
+        return new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                GridLayoutManager layoutManager = (GridLayoutManager)recyclerView.getLayoutManager();
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+
+                //load next item
+                if (!end_flg && !busy.get() && totalItemCount - firstVisibleItem <= ITEM_PER_PAGE) {
+                    int page = totalItemCount / ITEM_PER_PAGE;
+                    if(isAdded()) updateList(page, false);
+                }
+
+                // if it's loading and reached to bottom of the list, then show loading animation.
+                if (busy.get() && firstVisibleItem + visibleItemCount == totalItemCount) {
+                    mProgress.setVisibility(View.VISIBLE);
+                }
+            }
+        };
     }
 
 }

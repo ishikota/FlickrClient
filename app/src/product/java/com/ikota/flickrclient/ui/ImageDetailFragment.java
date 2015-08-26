@@ -150,7 +150,7 @@ public class ImageDetailFragment extends Fragment {
      * Read json data and set image
      * @param info : photo info holder object
      */
-    private void setDetailInfo(PhotoInfo info){
+    private void setDetailInfo(final PhotoInfo info){
         String original_img_url = info.photo.generatePhotoURL("b");
         Picasso.with(getActivity()).load(original_img_url).into(new Target() {
             @Override
@@ -170,6 +170,14 @@ public class ImageDetailFragment extends Fragment {
             @Override
             public void onPrepareLoad(Drawable placeHolderDrawable) {
                 // do nothing
+            }
+        });
+
+        Picasso.with(getActivity()).load(info.photo.owner.generateOwnerIconURL()).into(mUserImage);
+        mUserImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UserActivity.launch(getActivity(), info.photo.owner, (ImageView) view);
             }
         });
 

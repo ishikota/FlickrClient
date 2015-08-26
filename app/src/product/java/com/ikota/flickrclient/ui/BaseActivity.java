@@ -12,7 +12,7 @@ import com.ikota.flickrclient.R;
  * - Inflates Toolbar if found in xml. ( So you must set id of toolbar as "R.id.toolbar_actionbar" )
  */
 public class BaseActivity extends AppCompatActivity{
-    private Toolbar mActionBarToolbar;
+    protected Toolbar mActionBarToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
