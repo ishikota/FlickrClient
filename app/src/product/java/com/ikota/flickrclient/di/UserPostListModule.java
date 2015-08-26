@@ -19,6 +19,11 @@ public class UserPostListModule {
     public static final int PORTRAIT_COL = 3;
     public static final int HORIZONTAL_COL = 4;
     public static final int ITEM_PER_PAGE = 24;
+    public final String USER_ID;
+
+    public UserPostListModule(String user_id) {
+        this.USER_ID = user_id;
+    }
 
     @Provides
     @Named("portrait col")
@@ -46,7 +51,7 @@ public class UserPostListModule {
         return new LoadMethod() {
             @Override
             public void loadItem(AndroidApplication app, int page, Callback<ListData> cb) {
-                    app.api().getPopularPhotos(page, ITEM_PER_PAGE, cb);
+                    app.api().getPeoplePublicPhotos(USER_ID, page, ITEM_PER_PAGE, cb);
             }
         };
     }

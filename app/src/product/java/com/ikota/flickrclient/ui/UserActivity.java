@@ -67,7 +67,7 @@ public class UserActivity extends BaseActivity{
                 fm.findFragmentByTag(UserBaseFragment.class.getSimpleName());
         if (mFragment == null) {
             mFragment = new UserBaseFragment();
-            ObjectGraph graph = ObjectGraph.create(new UserPostListModule());
+            ObjectGraph graph = ObjectGraph.create(new UserPostListModule(content.nsid));
             graph.inject(mFragment);
             String tag = UserBaseFragment.class.getSimpleName();
             fm.beginTransaction().add(R.id.container, mFragment, tag).commit();
