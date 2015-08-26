@@ -33,6 +33,33 @@ public class DataHolder {
                     "]" +
                     "},\"stat\":\"ok\"}";
 
+    public static final String LIST_JSON_ERROR = "{ \"photos\": { \"page\": 3, \"pages\": 21, \"perpage\": 24, \"total\": \"500\", \n" +
+            "    \"photo\": [\n" +
+            "      { \"id\": \"20682344538\", \"owner\": \"67258907@N02\", \"secret\": \"ef33f246c3\", \"server\": \"642\", \"farm\": 1, \"title\": \"Mc Donnell MD11 - FedEx\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20234226914\", \"owner\": \"51037533@N00\", \"secret\": \"d7f053e692\", \"server\": \"5772\", \"farm\": 6, \"title\": \"Blue Mosque Reflection\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20681199278\", \"owner\": \"51343158@N05\", \"secret\": \"81bd80fd96\", \"server\": \"709\", \"farm\": 1, \"title\": \"Flickan och havet (del två)\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20678808228\", \"owner\": \"45934115@N06\", \"secret\": \"e9f605dd3f\", \"server\": \"5711\", \"farm\": 6, \"title\": \"Caballito del diablo\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20256839063\", \"owner\": \"10549218@N04\", \"secret\": \"e44f08b3bb\", \"server\": \"679\", \"farm\": 1, \"title\": \"Nader's Nightmare\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20881699001\", \"owner\": \"96571908@N07\", \"secret\": \"4498e34576\", \"server\": \"5817\", \"farm\": 6, \"title\": \"Bella Venezia\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20867256801\", \"owner\": \"101624127@N07\", \"secret\": \"262e6e03e1\", \"server\": \"5663\", \"farm\": 6, \"title\": \"The Tahoe Queen\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20235990363\", \"owner\": \"35977661@N00\", \"secret\": \"3388fdcb6e\", \"server\": \"626\", \"farm\": 1, \"title\": \"Scale - We are Small Travelers in a Large World\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20876089915\", \"owner\": \"95577050@N02\", \"secret\": \"ea7140babc\", \"server\": \"5635\", \"farm\": 6, \"title\": \"Ich bin ein Berliner\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20684936068\", \"owner\": \"8999293@N03\", \"secret\": \"06a6120b74\", \"server\": \"5820\", \"farm\": 6, \"title\": \"withered\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20888135551\", \"owner\": \"85259079@N00\", \"secret\": \"e9c5c49205\", \"server\": \"600\", \"farm\": 1, \"title\": \"Scheldelaan\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20876364021\", \"owner\": \"66748278@N03\", \"secret\": \"e0ea9755d6\", \"server\": \"574\", \"farm\": 1, \"title\": \"Enseada do Canal Saquarema Sunset\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20868550702\", \"owner\": \"7379660@N05\", \"secret\": \"cd7f028064\", \"server\": \"727\", \"farm\": 1, \"title\": \"Sunset and Smoke\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20244679494\", \"owner\": \"111031505@N04\", \"secret\": \"288729d4c1\", \"server\": \"609\", \"farm\": 1, \"title\": \"Visby.\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20884299941\", \"owner\": \"63193389@N00\", \"secret\": \"6b7f03db08\", \"server\": \"762\", \"farm\": 1, \"title\": \"Coucher sur la Corniche à Urrugne\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20874034651\", \"owner\": \"57853578@N03\", \"secret\": \"58f39bac9d\", \"server\": \"5631\", \"farm\": 6, \"title\": \"Ballymorran Bay\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20246382234\", \"owner\": \"89254589@N03\", \"secret\": \"6c4c1bc78c\", \"server\": \"774\", \"farm\": 1, \"title\": \"The Black Hole.  Fondation Folon\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20239679674\", \"owner\": \"76360656@N08\", \"secret\": \"402f46c3a7\", \"server\": \"622\", \"farm\": 1, \"title\": \"Sunset at Lake Cospuden\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20692691998\", \"owner\": \"94902477@N05\", \"secret\": \"61b6bf940a\", \"server\": \"5750\", \"farm\": 6, \"title\": \"On the prairie\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20686312920\", \"owner\": \"118662564@N05\", \"secret\": \"e38d02a8bc\", \"server\": \"5624\", \"farm\": 6, \"title\": \"cala luna\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20853489272\", \"owner\": \"44915680@N05\", \"secret\": \"6b9ce56050\", \"server\": \"772\", \"farm\": 1, \"title\": \".\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20259286253\", \"owner\": \"54656712@N06\", \"secret\": \"f306ace932\", \"server\": \"771\", \"farm\": 1, \"title\": \"Night colors\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20832943556\", \"owner\": \"73746571@N00\", \"secret\": \"b59c96588d\", \"server\": \"640\", \"farm\": 1, \"title\": \"Us out\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 }\n" +
+            "    ] }, \"stat\": \"ok\" }";
+
     public static final String LIST_ITEM_JSON =
             "{\"farm\":1,\"id\":\"20697268356\",\"isfamily\":0,\"isfriend\":0,\"ispublic\":1,\"owner\":\"123449478@N07\",\"secret\":\"c173eb3ebc\",\"server\":\"644\",\"title\":\"A Quiet Evening\"}";
 
