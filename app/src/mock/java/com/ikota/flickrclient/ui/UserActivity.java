@@ -16,7 +16,6 @@ public class UserActivity extends BaseActivity{
 
     static Bus sTabEventBus = new Bus();
 
-    private UserBaseFragment mFragment;
     private TabLayout mTabLayout;
 
     private int mActionBarHeight;
@@ -33,11 +32,11 @@ public class UserActivity extends BaseActivity{
         getViewSize();
 
         FragmentManager fm = getSupportFragmentManager();
-        mFragment = (UserBaseFragment)
+        UserBaseFragment mFragment = (UserBaseFragment)
                 fm.findFragmentByTag(UserBaseFragment.class.getSimpleName());
         if (mFragment == null) {
             mFragment = new UserBaseFragment();
-            String tag = UserFragment.class.getSimpleName();
+            String tag = UserBaseFragment.class.getSimpleName();
             fm.beginTransaction().add(R.id.container, mFragment, tag).commit();
         }
     }
