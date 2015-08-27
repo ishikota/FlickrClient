@@ -18,7 +18,6 @@ import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.data.model.PhotoInfo;
-import com.ikota.flickrclient.util.NetUtils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -34,10 +33,11 @@ public class ImageDetailFragment extends Fragment {
     private ImageView mItemImage, mUserImage;
     private TextView mTitleText, mUserText, mDateText, mDescriptText;
 
-    public static ImageDetailFragment newInstance(String json) {
+    public static ImageDetailFragment newInstance(String json, String cache_size) {
         ImageDetailFragment fragment = new ImageDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ImageDetailActivity.EXTRA_CONTENT, json);
+        bundle.putString(ImageDetailActivity.EXTRA_CACHE_SIZE, cache_size);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -75,7 +75,8 @@ public class ImageDetailFragment extends Fragment {
     private void setupContent(ListData.Photo content) {
         // set item information which we got from list data
         mTitleText.setText(content.title);
-        String url = content.generatePhotoURL(NetUtils.isWifiConnected(getActivity()) ? "z" : "q");
+        String url = content
+                .generatePhotoURL(getArguments().getString(ImageDetailActivity.EXTRA_CACHE_SIZE));
         Picasso.with(getActivity()).load(url).into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {

@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.di.LoadMethod;
+import com.ikota.flickrclient.util.NetUtils;
 import com.ikota.flickrclient.util.NetworkReceiver;
 
 import java.util.ArrayList;
@@ -95,7 +96,9 @@ public class ImageListFragment extends Fragment {
     private ImageAdapter.OnClickCallback mItemClickListener = new ImageAdapter.OnClickCallback() {
         @Override
         public void onClick(View v, ListData.Photo data) {
-            ImageDetailActivity.launch(getActivity(), data, (ImageView)v);
+            boolean is_wifi = NetUtils.isWifiConnected(getActivity());
+            String size = ListData.Photo.getProperSize(calcViewSize(), is_wifi);
+            ImageDetailActivity.launch(getActivity(), data, (ImageView)v, size);
         }
     };
 
@@ -204,11 +207,17 @@ public class ImageListFragment extends Fragment {
                 mItemList.add(photo);
             }
             mAdapter = new ImageAdapter(mAppContext, mItemList, mItemClickListener);
+            if(isAdded()) ((ImageAdapter)mAdapter).setViewSize(calcViewSize());
             mRecyclerView.setAdapter(mAdapter);
 
         }
         // if cache found (json!=null) then do not need to refresh list
         if(isAdded()) updateList(0, json == null || json.isEmpty());
+    }
+
+    private int calcViewSize() {
+        AndroidApplication app = (AndroidApplication)getActivity().getApplication();
+        return app.SCREEN_WIDTH / Math.min(PORTRAIT_COL_NUM, HORIZONTAL_COL_NUM);
     }
 
     /**
@@ -239,6 +248,7 @@ public class ImageListFragment extends Fragment {
                 if (refresh_list) {
                     mAdapter = new ImageAdapter(
                             mAppContext, mItemList, mItemClickListener);
+                    if(isAdded()) ((ImageAdapter)mAdapter).setViewSize(calcViewSize());
                     mRecyclerView.setAdapter(mAdapter);
                     mRecyclerView.addOnScrollListener(getScrollListener());
                     mSwipeRefreshLayout.setRefreshing(false);

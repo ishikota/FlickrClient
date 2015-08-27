@@ -24,9 +24,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     private final OnClickCallback mClickCallback;
     private final LayoutInflater mInflater;
     private boolean is_wifi_connected;
+    private int view_size;
 
     public void setIfWifiConnected(boolean wifi_connected) {
         is_wifi_connected = wifi_connected;
+    }
+    public void setViewSize(int size) {
+        view_size = size;
     }
 
     public interface OnClickCallback {
@@ -78,12 +82,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         // set list position as tag
         holder.imageview.setTag(R.integer.list_pos_key, position);
 
-        // change image quality by checking network state
-        String quality_flg = is_wifi_connected ? "z": "q";
-
         ListData.Photo item = mDataSet.get(position);
-
-        String url = item.generatePhotoURL(quality_flg);
+        String url = item.generatePhotoURL(view_size, is_wifi_connected);
         Picasso.with(mContext)
                 .load(url)
                 .placeholder(R.drawable.loading_default)

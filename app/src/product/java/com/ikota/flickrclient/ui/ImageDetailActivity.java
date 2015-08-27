@@ -16,8 +16,9 @@ import com.ikota.flickrclient.data.model.ListData;
 
 public class ImageDetailActivity extends BaseActivity{
     public static final String EXTRA_CONTENT = "content";
+    public static final String EXTRA_CACHE_SIZE = "cache_size";
 
-    public static void launch(Activity activity, ListData.Photo data, ImageView transitionView) {
+    public static void launch(Activity activity, ListData.Photo data, ImageView transitionView, String size) {
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
                 activity,
                 transitionView,
@@ -28,6 +29,7 @@ public class ImageDetailActivity extends BaseActivity{
 
         Intent intent = new Intent(activity, ImageDetailActivity.class);
         intent.putExtra(EXTRA_CONTENT, parsed_json);
+        intent.putExtra(EXTRA_CACHE_SIZE, size);
         ActivityCompat.startActivity(activity, intent, options.toBundle());
     }
 
@@ -44,8 +46,9 @@ public class ImageDetailActivity extends BaseActivity{
         if (savedInstanceState == null) {
             String tag = ImageDetailFragment.class.getSimpleName();
             String json = getIntent().getStringExtra(EXTRA_CONTENT);
+            String size = getIntent().getStringExtra(EXTRA_CACHE_SIZE);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, ImageDetailFragment.newInstance(json), tag)
+                    .add(R.id.container, ImageDetailFragment.newInstance(json, size), tag)
                     .commit();
         }
     }

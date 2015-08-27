@@ -1,5 +1,6 @@
 package com.ikota.flickrclient.data.model;
 
+import android.util.Log;
 import android.util.SparseArray;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public class ListData {
             {put(1<<6, "h");}
         };
 
-        public String getProperSize(int view_size, boolean is_wifi) {
+        public static String getProperSize(int view_size, boolean is_wifi) {
             int flg;
             if(view_size >= 1600) {
                 flg = 1<<6;  // size h
@@ -90,6 +91,7 @@ public class ListData {
 
             // if wifi is unavailable, down scale image size
             if(!is_wifi) flg >>= 1;
+            Log.i("size", "view_size:"+view_size+",size:"+SIZE_MAP.get(flg));
             return SIZE_MAP.get(flg);
         }
     }
