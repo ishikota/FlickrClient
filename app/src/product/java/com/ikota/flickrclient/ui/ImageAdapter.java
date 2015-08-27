@@ -1,13 +1,10 @@
 package com.ikota.flickrclient.ui;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.support.v7.widget.RecyclerView;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.ikota.flickrclient.R;
@@ -26,7 +23,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     private List<ListData.Photo> mDataSet;
     private final OnClickCallback mClickCallback;
     private final LayoutInflater mInflater;
-    private final int view_size;
     private boolean is_wifi_connected;
 
     public void setIfWifiConnected(boolean wifi_connected) {
@@ -47,20 +43,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     }
 
 
-    public ImageAdapter(Context context, List<ListData.Photo> myDataset,
-                        OnClickCallback listener, int column) {
+    public ImageAdapter(Context context, List<ListData.Photo> myDataset, OnClickCallback listener) {
         mContext = context;
         mDataSet = myDataset;
         mClickCallback = listener;
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        // init grid size (grid size = display_width/column_num).
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        view_size = size.x / column;
 
         // check network state
         is_wifi_connected = NetUtils.isWifiConnected(context);
@@ -70,11 +58,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view.
         View v = mInflater.inflate(R.layout.row_image_list, viewGroup, false);
-
-        // set view size here
-        ViewGroup.LayoutParams params = v.getLayoutParams();
-        params.height = view_size;
-        v.setLayoutParams(params);
 
         ImageView imageview = (ImageView)v.findViewById(R.id.image);
         imageview.setOnClickListener(new View.OnClickListener() {

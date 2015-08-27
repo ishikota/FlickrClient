@@ -203,7 +203,7 @@ public class ImageListFragment extends Fragment {
             for(ListData.Photo photo : item.photos.photo) {
                 mItemList.add(photo);
             }
-            mAdapter = new ImageAdapter(mAppContext, mItemList, mItemClickListener, PORTRAIT_COL_NUM);
+            mAdapter = new ImageAdapter(mAppContext, mItemList, mItemClickListener);
             mRecyclerView.setAdapter(mAdapter);
 
         }
@@ -238,7 +238,7 @@ public class ImageListFragment extends Fragment {
 
                 if (refresh_list) {
                     mAdapter = new ImageAdapter(
-                            mAppContext, mItemList, mItemClickListener, PORTRAIT_COL_NUM);
+                            mAppContext, mItemList, mItemClickListener);
                     mRecyclerView.setAdapter(mAdapter);
                     mRecyclerView.addOnScrollListener(getScrollListener());
                     mSwipeRefreshLayout.setRefreshing(false);
