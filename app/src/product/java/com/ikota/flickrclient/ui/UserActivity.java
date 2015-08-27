@@ -177,7 +177,7 @@ public class UserActivity extends BaseActivity{
         // change actionbar alpha with RecyclerView scroll
         if(mActionBarToolbar!=null) {  // nullpo occured when config changes
             mActionbarAlpha = (int) (255 *
-                    (1 - (y - mActionBarHeight) / (mHeaderPadding - mTabHeight - mActionBarHeight)));
+                    (1 - (mTabLayout.getY() - mActionBarHeight) / (mHeaderPadding - mTabHeight - mActionBarHeight)));
             mActionBarToolbar.getBackground().setAlpha(mActionbarAlpha);
         }
     }

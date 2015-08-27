@@ -1,6 +1,7 @@
 package com.ikota.flickrclient.ui;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.pressBack;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.core.deps.guava.base.Preconditions.checkNotNull;
@@ -62,6 +65,7 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
         super.setUp();
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         Context context = instrumentation.getTargetContext();
+        injectInstrumentation(instrumentation);
 
         Gson gson = new Gson();
         PhotoInfo info = gson.fromJson(DataHolder.DETAIL_JSON, PhotoInfo.class);
@@ -122,6 +126,36 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
 
         onView(withId(R.id.toolbar_actionbar)).check(matches(withAlpha(is(255))));
 
+    }
+
+    @Test
+    public void tab_Go_detail_orientation_change_back() {
+        // setup
+        Instrumentation.ActivityMonitor receiverActivityMonitor =
+                getInstrumentation().addMonitor(ImageDetailActivity.class.getName(),null, false);
+
+        // go list and tap to go detail
+        UserActivity activity = activityRule.launchActivity(intent);
+        ListCountIdlingResource idlingResource = new ListCountIdlingResource((RecyclerView)activity.findViewById(android.R.id.list), 1);
+        Espresso.registerIdlingResources(idlingResource);
+        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(12, scrollTo()));
+        Espresso.unregisterIdlingResources(idlingResource);
+        onView(withId(R.id.toolbar_actionbar)).check(matches(withAlpha(is(255))));
+        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(12, click()));
+
+        // Remove the ActivityMonitor
+        getInstrumentation().removeMonitor(receiverActivityMonitor);
+
+        // assertion to DetailActivity
+        Activity detail_activity = receiverActivityMonitor.waitForActivityWithTimeout(1000);
+        assertNotNull("DetailActivity is not null", detail_activity);
+
+        // rotate device
+        onView(isRoot()).perform(orientationLandscape());
+
+        // back to list
+        pressBack();
+        onView(withId(R.id.toolbar_actionbar)).check(matches(withAlpha(is(255))));
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)

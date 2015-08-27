@@ -22,6 +22,12 @@ public class UserBaseFragment extends ImageListFragment{
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if(mRecyclerView.getChildAt(0)!=null) notifyListState();
+    }
+
+    @Override
     protected RecyclerView.OnScrollListener getScrollListener() {
         return new RecyclerView.OnScrollListener() {
 
