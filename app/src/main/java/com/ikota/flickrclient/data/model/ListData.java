@@ -1,5 +1,7 @@
 package com.ikota.flickrclient.data.model;
 
+import android.util.SparseArray;
+
 import java.util.List;
 
 /**
@@ -45,8 +47,50 @@ public class ListData {
          * @return url of image of specified quality
          */
         public String generatePhotoURL(String size) {
+            String size_prefix = size.isEmpty() ? "" : "_";
             return "https://farm" + this.farm + ".staticflickr.com/"
-                    + this.server + "/" + this.id + "_" + this.secret + "_" + size + ".jpg";
+                    + this.server + "/" + this.id + "_" + this.secret + size_prefix + size + ".jpg";
+        }
+
+        /** Calculate proper photo size by using view size and network state */
+        public String generatePhotoURL(int view_size, boolean is_wifi) {
+            return generatePhotoURL(getProperSize(view_size, is_wifi));
+        }
+
+        private static final SparseArray<String> SIZE_MAP = new SparseArray<String>() {
+            {put(0, "q");}
+            {put(1, "m");}
+            {put(1<<1, "n");}
+            {put(1<<2, "");}
+            {put(1<<3, "z");}
+            {put(1<<4, "c");}
+            {put(1<<5, "b");}
+            {put(1<<6, "h");}
+        };
+
+        public String getProperSize(int view_size, boolean is_wifi) {
+            int flg;
+            if(view_size >= 1600) {
+                flg = 1<<6;  // size h
+            } else if(view_size >= 1024) {
+                flg = 1<<5;  // size b
+            } else if(view_size >= 800) {
+                flg = 1<<4;  // size c
+            } else if(view_size >= 640) {
+                flg = 1<<3;  // size z
+            } else if(view_size >= 500) {
+                flg = 1<<2;  // size -
+            } else if(view_size >= 320) {
+                flg = 1<<1;  // size n
+            } else if(view_size >= 240) {
+                flg = 1;     // size m
+            } else {
+                flg = 0;     // size q
+            }
+
+            // if wifi is unavailable, down scale image size
+            if(!is_wifi) flg >>= 1;
+            return SIZE_MAP.get(flg);
         }
     }
 }
