@@ -21,7 +21,6 @@ public class UserBaseFragment extends ImageListFragment{
         return root;
     }
 
-
     @Override
     protected RecyclerView.OnScrollListener getScrollListener() {
         return new RecyclerView.OnScrollListener() {
@@ -54,6 +53,10 @@ public class UserBaseFragment extends ImageListFragment{
             }
         };
 
+    }
+
+    public void notifyListState() {
+        UserActivity.sTabEventBus.post(new UserActivity.ScrollEvent(mRecyclerView.getChildAt(0).getTop(), 1));
     }
 
 }

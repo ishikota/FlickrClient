@@ -63,16 +63,26 @@ public class UserActivity extends BaseActivity{
         setupViews(content);
         loadUserInfo(content);
 
-
         FragmentManager fm = getSupportFragmentManager();
-        UserBaseFragment mFragment = (UserBaseFragment)
+        UserBaseFragment fragment = (UserBaseFragment)
                 fm.findFragmentByTag(UserBaseFragment.class.getSimpleName());
-        if (mFragment == null) {
-            mFragment = new UserBaseFragment();
+        if (fragment == null) {
+            fragment = new UserBaseFragment();
             ObjectGraph graph = ObjectGraph.create(new UserPostListModule(content.nsid));
-            graph.inject(mFragment);
+            graph.inject(fragment);
             String tag = UserBaseFragment.class.getSimpleName();
-            fm.beginTransaction().add(R.id.container, mFragment, tag).commit();
+            fm.beginTransaction().add(R.id.container, fragment, tag).commit();
+        } else {
+            // the case when orientation change occurred
+            final UserBaseFragment tmp = fragment;
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    tmp.notifyListState();
+                }
+            };
+            mTabLayout.post(runnable);
+            mActionBarToolbar.post(runnable);
         }
     }
 
@@ -84,8 +94,8 @@ public class UserActivity extends BaseActivity{
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         sTabEventBus.unregister(this);
         if(mActionBarToolbar!=null) mActionBarToolbar.getBackground().setAlpha(255);
     }

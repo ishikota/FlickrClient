@@ -35,8 +35,10 @@ import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.core.deps.guava.base.Preconditions.checkNotNull;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.ikota.flickrclient.OrientationChangeAction.orientationLandscape;
 import static org.hamcrest.core.Is.is;
 
 
@@ -105,6 +107,21 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
         onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(12, scrollTo()));
         Espresso.unregisterIdlingResources(idlingResource);
         onView(withId(R.id.toolbar_actionbar)).check(matches(withAlpha(is(255))));
+    }
+
+    @Test
+    public void tab_supportOrientationChange() {
+        UserActivity activity = activityRule.launchActivity(intent);
+        ListCountIdlingResource idlingResource = new ListCountIdlingResource((RecyclerView)activity.findViewById(android.R.id.list), 1);
+        Espresso.registerIdlingResources(idlingResource);
+        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(9, scrollTo()));
+        Espresso.unregisterIdlingResources(idlingResource);
+
+        // change orientation to landscape
+        onView(isRoot()).perform(orientationLandscape());
+
+        onView(withId(R.id.toolbar_actionbar)).check(matches(withAlpha(is(255))));
+
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
