@@ -62,7 +62,12 @@ public class UserBaseFragment extends ImageListFragment{
     }
 
     public void notifyListState() {
-        UserActivity.sTabEventBus.post(new UserActivity.ScrollEvent(mRecyclerView.getChildAt(0).getTop(), 1));
+        if(mRecyclerView.getChildAt(0) != null) {
+            UserActivity.sTabEventBus.post(new UserActivity.ScrollEvent(mRecyclerView.getChildAt(0).getTop(), 1));
+        } else {  // before list item is loaded
+            int head = (int)getResources().getDimension(R.dimen.user_header_padding);
+            UserActivity.sTabEventBus.post(new UserActivity.ScrollEvent(head, 1));
+        }
     }
 
 }
