@@ -32,11 +32,11 @@ public class UserActivity extends BaseActivity{
         getViewSize();
 
         FragmentManager fm = getSupportFragmentManager();
-        UserBaseFragment mFragment = (UserBaseFragment)
-                fm.findFragmentByTag(UserBaseFragment.class.getSimpleName());
+        UserBaseFragment mFragment = (UserPostListFragment)
+                fm.findFragmentByTag(UserPostListFragment.class.getSimpleName());
         if (mFragment == null) {
-            mFragment = new UserBaseFragment();
-            String tag = UserBaseFragment.class.getSimpleName();
+            mFragment = new UserPostListFragment();
+            String tag = UserPostListFragment.class.getSimpleName();
             fm.beginTransaction().add(R.id.container, mFragment, tag).commit();
         }
     }

@@ -158,7 +158,7 @@ public class PopularListFragment extends Fragment{
 
         if (refresh_list) {
             mAdapter = new ImageAdapter(
-                    mAppContext, mItemList, mItemClickListener, 2);
+                    mAppContext, mItemList, mItemClickListener);
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.addOnScrollListener(scroll_lister);
             mSwipeRefreshLayout.setRefreshing(false);

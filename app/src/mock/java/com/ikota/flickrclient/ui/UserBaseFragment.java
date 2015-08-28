@@ -22,7 +22,12 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class UserBaseFragment extends Fragment{
+public abstract class UserBaseFragment extends Fragment{
+
+    abstract RecyclerView.Adapter getAdapter(
+            Context context,
+            ArrayList<ListData.Photo> data,
+            ImageAdapter.OnClickCallback callback);
 
     private Context mAppContext;
 
@@ -152,8 +157,8 @@ public class UserBaseFragment extends Fragment{
         mEmptyView.setVisibility(mItemList.isEmpty() ? View.VISIBLE : View.GONE);
 
         if (refresh_list) {
-            mAdapter = new ImageAdapter(
-                    mAppContext, mItemList, mItemClickListener, 2);
+            mAdapter = getAdapter(
+                    mAppContext, mItemList, mItemClickListener);
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.addOnScrollListener(scroll_lister);
             mSwipeRefreshLayout.setRefreshing(false);
