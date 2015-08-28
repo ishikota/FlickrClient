@@ -1,6 +1,7 @@
 package com.ikota.flickrclient.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +19,12 @@ import java.util.List;
  */
 public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.ViewHolder> {
     private List<ListData.Photo> mDataSet;
-    private final OnClickCallback mClickCallback;
+    private final ImageAdapter.OnClickCallback mClickCallback;
     private final LayoutInflater mInflater;
 
-    public interface OnClickCallback {
-        void onClick(View v, ListData.Photo data);
-    }
+    private final Bitmap big_image;
+    private final Bitmap small_iamge;
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView imageview;
@@ -35,36 +36,34 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.ViewHo
     }
 
     public TimeLineAdapter(Context context, List<ListData.Photo> myDataset,
-                           OnClickCallback listener) {
+                           ImageAdapter.OnClickCallback listener) {
         mDataSet = myDataset;
         mClickCallback = listener;
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        big_image = Bitmap.createBitmap(1080, 1080, Bitmap.Config.ARGB_8888);
+        small_iamge = Bitmap.createBitmap(1080, 540, Bitmap.Config.ARGB_8888);
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view.
         View v = mInflater.inflate(R.layout.row_timeline, viewGroup, false);
-
-//        ImageView imageview = (ImageView)v.findViewById(R.id.image);
-//        imageview.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int position = (Integer) v.getTag(R.integer.list_pos_key);
-//                if(mClickCallback != null) {
-//                    mClickCallback.onClick(v, mDataSet.get(position));
-//                }
-//            }
-//        });
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // set list position as tag
-//        holder.imageview.setTag(R.integer.list_pos_key, position);
-//        holder.imageview.setBackgroundColor(mDataSet.get(position).farm);
+        switch (mDataSet.get(position).isfamily) {
+            case 0:
+                holder.imageview.setImageBitmap(big_image);
+                break;
+            case 1:
+                holder.imageview.setImageBitmap(small_iamge);
+                break;
+        }
+        holder.imageview.setBackgroundColor(mDataSet.get(position).farm);
     }
 
     @Override

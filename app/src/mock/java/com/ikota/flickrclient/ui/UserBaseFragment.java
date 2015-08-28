@@ -85,8 +85,10 @@ public abstract class UserBaseFragment extends Fragment{
             }
 
             // notify scroll event to host Activity
-            UserActivity.sTabEventBus.post(new UserActivity
-                    .ScrollEvent(mRecyclerView.getChildAt(0).getTop(), dy));
+            if(mRecyclerView.getChildAt(0) != null) {  // nullpo occur when swipe refresh staggered
+                UserActivity.sTabEventBus.post(new UserActivity
+                        .ScrollEvent(mRecyclerView.getChildAt(0).getTop(), dy));
+            }
 
         }
     };
@@ -162,6 +164,7 @@ public abstract class UserBaseFragment extends Fragment{
         for(int i=0;i<24;i++) {
             ListData.Photo photo = new ListData.Photo();
             photo.farm = getThumbColor();
+            photo.isfamily = getContentType();
             mItemList.add(photo);
         }
 
@@ -184,6 +187,11 @@ public abstract class UserBaseFragment extends Fragment{
     private int getThumbColor() {
         Random  random = new Random();
         return Color.parseColor(COLORS[random.nextInt(COLORS.length)]);
+    }
+
+    private int getContentType() {
+        Random random = new Random();
+        return random.nextInt(3);
     }
 
 }
