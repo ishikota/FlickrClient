@@ -18,4 +18,26 @@
     <!-- this style is used in toolbar xml -->
     <style name ="LightPopupMenu" parent="android:Theme.Holo.Light"/>
 
+    <style name="FavoriteCommentText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_below">@id/image</item>
+        <item name="android:layout_toLeftOf">@id/ic_share</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/tertiary_text_light</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:visibility">visible</item>
+    </style>
+
+    <style name="FavoriteCommentIcon">
+        <item name="android:layout_width">56dp</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_below">@id/image</item>
+        <item name="android:layout_toLeftOf">@id/comment_num</item>
+        <item name="android:src">@drawable/ic_comment_black_48dp</item>
+        <item name="android:alpha">0.5</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:visibility">visible</item>
+    </style>
+
 </resources>

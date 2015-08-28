@@ -136,7 +136,7 @@ public class UserActivity extends BaseActivity{
                     mDisplayingFragment = new UserPostListFragment();
                     break;
                 case 1:
-                    mDisplayingFragment = new UserTimelineFragment();
+                    mDisplayingFragment = new UserFavoriteFragment();
                     break;
             }
             getSupportFragmentManager()

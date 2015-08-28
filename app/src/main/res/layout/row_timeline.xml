@@ -32,28 +32,35 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_toRightOf="@+id/user_icon"
-                android:layout_marginTop="20dp">
+                android:layout_toEndOf="@+id/user_icon"
+                android:layout_marginTop="20dp"
+                android:paddingRight="16dp"
+                android:paddingLeft="0dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="0dp">
                 <TextView
+                    android:id="@+id/user_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/username"
-                    android:textColor="@android:color/secondary_text_light"/>
+                    android:textColor="@android:color/secondary_text_light"
+                    android:lines="1"/>
                 <TextView
+                    android:id="@+id/date_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/date"
-                    android:textColor="@android:color/tertiary_text_light"/>
+                    android:textColor="@android:color/tertiary_text_light"
+                    android:lines="1"/>
             </LinearLayout>
 
             <ImageView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/user_icon"
                 android:minHeight="100dp"
-                android:background="#55000000"
                 android:scaleType="centerCrop"
-                android:contentDescription="@string/image"
-                android:layout_below="@+id/user_icon"/>
+                android:background="#55000000"
+                android:contentDescription="@string/image"/>
 
             <ImageView
                 android:id="@+id/ic_favorite"
@@ -62,7 +69,8 @@
                 android:layout_below="@+id/image"
                 android:src="@drawable/ic_favorite_black_48dp"
                 android:alpha="0.5"
-                android:padding="12dp"/>
+                android:padding="12dp"
+                android:contentDescription="@string/icon"/>
 
             <TextView
                 android:id="@+id/favorite_num"
@@ -70,32 +78,10 @@
                 android:layout_height="56dp"
                 android:layout_below="@+id/image"
                 android:layout_toRightOf="@+id/ic_favorite"
-                android:text="4"
+                android:layout_toEndOf="@+id/ic_favorite"
                 android:textSize="16sp"
                 android:textColor="@android:color/tertiary_text_light"
                 android:gravity="center_vertical"/>
-
-            <ImageView
-                android:id="@+id/ic_comment"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:layout_below="@+id/image"
-                android:layout_toLeftOf="@+id/comment_num"
-                android:src="@drawable/ic_comment_black_48dp"
-                android:alpha="0.5"
-                android:padding="12dp"/>
-
-            <TextView
-                android:id="@+id/comment_num"
-                android:layout_width="wrap_content"
-                android:layout_height="56dp"
-                android:layout_below="@+id/image"
-                android:layout_toLeftOf="@+id/ic_share"
-                android:text="4"
-                android:textSize="16sp"
-                android:textColor="@android:color/tertiary_text_light"
-                android:gravity="center_vertical"
-                android:layout_marginRight="16dp"/>
 
             <ImageView
                 android:id="@+id/ic_share"
@@ -103,9 +89,11 @@
                 android:layout_height="56dp"
                 android:layout_below="@+id/image"
                 android:layout_toLeftOf="@+id/share_num"
+                android:layout_toStartOf="@+id/share_num"
                 android:src="@drawable/ic_share_black_48dp"
                 android:alpha="0.5"
-                android:padding="12dp"/>
+                android:padding="12dp"
+                android:contentDescription="@string/icon"/>
 
             <TextView
                 android:id="@+id/share_num"
@@ -113,11 +101,19 @@
                 android:layout_height="56dp"
                 android:layout_below="@+id/image"
                 android:layout_alignParentRight="true"
-                android:text="4"
+                android:layout_alignParentEnd="true"
                 android:textSize="16sp"
                 android:textColor="@android:color/tertiary_text_light"
                 android:gravity="center_vertical"
-                android:layout_marginRight="16dp"/>
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"/>
+
+            <ImageView style="@style/FavoriteCommentIcon"
+                android:id="@+id/ic_comment"
+                android:contentDescription="@string/icon"/>
+
+            <TextView style="@style/FavoriteCommentText"
+                android:id="@+id/comment_num"/>
 
         </RelativeLayout>
 
