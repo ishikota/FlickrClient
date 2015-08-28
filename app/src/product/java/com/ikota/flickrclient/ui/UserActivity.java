@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.util.TypedValue;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,6 +39,7 @@ public class UserActivity extends BaseActivity{
     private String mTag = "";
 
     private TabLayout mTabLayout;
+    private int mSelectedTabPos = 0;
 
     private int mActionBarHeight;
     private int mTabHeight;
@@ -59,8 +59,8 @@ public class UserActivity extends BaseActivity{
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d("Lifecycle", "onSaveInstanceState()");
         outState.putString("tag", mTag);
+        outState.putInt("pos", mSelectedTabPos);
     }
 
     @Override
@@ -76,51 +76,28 @@ public class UserActivity extends BaseActivity{
         getViewSize();
         setupActionBar();
         setupViews(content);
-        loadUserInfo(content);
+        loadUserInfo(content.nsid);
+        registerFragment(content.nsid);
 
-        ObjectGraph graph = ObjectGraph.create(new UserPostListModule(content.nsid));
-        FragmentManager fm = getSupportFragmentManager();
-        fragment1 = fm.findFragmentByTag("f1");
-        if(fragment1 == null) {
-            fragment1 = new UserBaseFragment();
-            graph.inject(fragment1);
-            fm.beginTransaction().add(R.id.container, fragment1, "f1").commit();
-            fm.beginTransaction().hide(fragment1).commit();
-        }
-        fragment2 = fm.findFragmentByTag("f2");
-        if(fragment2 == null) {
-            fragment2 = new UserBaseFragment();
-            graph.inject(fragment2);
-            fm.beginTransaction().add(R.id.container, fragment2, "f2").commit();
-            fm.beginTransaction().hide(fragment2).commit();
-        }
-        fragment3 = fm.findFragmentByTag("f3");
-        if(fragment3 == null) {
-            fragment3 = new UserBaseFragment();
-            graph.inject(fragment3);
-            fm.beginTransaction().add(R.id.container, fragment3, "f3").commit();
-            fm.beginTransaction().hide(fragment3).commit();
+        if(savedInstanceState!=null) {
+            mTag = savedInstanceState.getString("tag");
+            mSelectedTabPos = savedInstanceState.getInt("pos");
+            // restore selected tab
+            mTabLayout.setOnTabSelectedListener(null);
+            mTabLayout.getTabAt(mSelectedTabPos).select();
+            mTabLayout.setOnTabSelectedListener(new MyTabListener());
         }
 
-        if(savedInstanceState!=null) mTag = savedInstanceState.getString("tag");
-        mDisplayingFragment = fm.findFragmentByTag(mTag);
+        mDisplayingFragment = getSupportFragmentManager().findFragmentByTag(mTag);
         if(mDisplayingFragment == null) {
             mTag = "f1";
             mDisplayingFragment = fragment1;
         } else {
             // the case when orientation change occurred
-            final UserBaseFragment tmp = (UserBaseFragment)mDisplayingFragment;
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    tmp.notifyListState();
-                }
-            };
-            mTabLayout.post(runnable);
-            mActionBarToolbar.post(runnable);
-
+            adjustTabPosition((UserBaseFragment)mDisplayingFragment);
         }
-        fm.beginTransaction().show(mDisplayingFragment).commit();
+
+        getSupportFragmentManager().beginTransaction().show(mDisplayingFragment).commit();
     }
 
     @Override
@@ -157,7 +134,7 @@ public class UserActivity extends BaseActivity{
     private void setupViews(PhotoInfo.Owner content) {
 
         // nullpo occurred when config changes
-        mActionbarAlpha = 0;
+        mActionbarAlpha = 0;  // we need to manually set initial visibility.
         if(mActionBarToolbar!=null) mActionBarToolbar.getBackground().setAlpha(mActionbarAlpha);
 
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
@@ -165,7 +142,6 @@ public class UserActivity extends BaseActivity{
         mTabLayout.addTab(mTabLayout.newTab().setText("POST"));
         mTabLayout.addTab(mTabLayout.newTab().setText("PHOTOS"));
         mTabLayout.setOnTabSelectedListener(new MyTabListener());
-
 
         ImageView cover = (ImageView)findViewById(R.id.cover);
         ImageView icon = (ImageView)findViewById(R.id.user_icon);
@@ -179,8 +155,8 @@ public class UserActivity extends BaseActivity{
         name.setText(content.username);
     }
 
-    private void loadUserInfo(PhotoInfo.Owner content) {
-        ((AndroidApplication)getApplication()).api().getPeopleInfo(content.nsid, new Callback<PeopleInfo>() {
+    private void loadUserInfo(String nsid) {
+        ((AndroidApplication)getApplication()).api().getPeopleInfo(nsid, new Callback<PeopleInfo>() {
             @Override
             public void success(PeopleInfo peopleInfo, Response response) {
                 TextView info = (TextView)findViewById(R.id.sub_text);
@@ -196,6 +172,44 @@ public class UserActivity extends BaseActivity{
                         Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void registerFragment(String nsid) {
+        ObjectGraph graph = ObjectGraph.create(new UserPostListModule(nsid));
+        FragmentManager fm = getSupportFragmentManager();
+        fragment1 = fm.findFragmentByTag("f1");
+        if(fragment1 == null) {
+            fragment1 = new UserBaseFragment();
+            graph.inject(fragment1);
+            fm.beginTransaction().add(R.id.container, fragment1, "f1").commit();
+            fm.beginTransaction().hide(fragment1).commit();
+        }
+        fragment2 = fm.findFragmentByTag("f2");
+        if(fragment2 == null) {
+            fragment2 = new UserBaseFragment();
+            graph.inject(fragment2);
+            fm.beginTransaction().add(R.id.container, fragment2, "f2").commit();
+            fm.beginTransaction().hide(fragment2).commit();
+        }
+        fragment3 = fm.findFragmentByTag("f3");
+        if(fragment3 == null) {
+            fragment3 = new UserBaseFragment();
+            graph.inject(fragment3);
+            fm.beginTransaction().add(R.id.container, fragment3, "f3").commit();
+            fm.beginTransaction().hide(fragment3).commit();
+        }
+
+    }
+
+    private void adjustTabPosition(final UserBaseFragment fragment) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                fragment.notifyListState();
+            }
+        };
+        mTabLayout.post(runnable);
+        mActionBarToolbar.post(runnable);
     }
 
     @Subscribe
@@ -234,10 +248,10 @@ public class UserActivity extends BaseActivity{
 
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
-            getSupportFragmentManager().beginTransaction()
-                    .hide(mDisplayingFragment)
-                    .commit();
-            switch (tab.getPosition()) {
+            mSelectedTabPos = tab.getPosition();
+            FragmentManager fm = getSupportFragmentManager();
+            fm.beginTransaction().hide(mDisplayingFragment).commit();
+            switch (mSelectedTabPos) {
                 case 0:
                     mDisplayingFragment = fragment1;
                     mTag = "f1";
@@ -251,32 +265,17 @@ public class UserActivity extends BaseActivity{
                     mTag = "f3";
                     break;
             }
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .show(mDisplayingFragment)
-                    .commit();
-            // the case when orientation change occurred
-            final UserBaseFragment tmp = (UserBaseFragment)mDisplayingFragment;
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    tmp.notifyListState();
-                }
-            };
-            mTabLayout.post(runnable);
-            mActionBarToolbar.post(runnable);
+            fm.beginTransaction().show(mDisplayingFragment).commit();
+
+            // adjust tab position for next displaying list
+            adjustTabPosition((UserBaseFragment)mDisplayingFragment);
         }
 
         @Override
-        public void onTabUnselected(TabLayout.Tab tab) {
-        }
+        public void onTabUnselected(TabLayout.Tab tab) {}
 
         @Override
-        public void onTabReselected(TabLayout.Tab tab) {
-
-        }
+        public void onTabReselected(TabLayout.Tab tab) {}
     }
-
-
 
 }

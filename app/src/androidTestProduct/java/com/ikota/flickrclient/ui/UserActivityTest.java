@@ -130,6 +130,7 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
 
     }
 
+    /** TODO This test is succeeded when running only this test. **/
     @Test
     public void tab_Go_detail_orientation_change_back() {
         // setup
