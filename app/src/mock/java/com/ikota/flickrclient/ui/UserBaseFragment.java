@@ -3,11 +3,11 @@ package com.ikota.flickrclient.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +28,14 @@ public abstract class UserBaseFragment extends Fragment{
             Context context,
             ArrayList<ListData.Photo> data,
             ImageAdapter.OnClickCallback callback);
+
+    abstract RecyclerView.LayoutManager getLayoutManager(Context context, int column);
+
+    abstract int findFirstVisibleItemPosition(RecyclerView.LayoutManager manager);
+
+    abstract int getPortraitColNum();
+    abstract int getHorizontalColNum();
+    abstract boolean getHasFixedSize();
 
     private Context mAppContext;
 
@@ -59,10 +67,10 @@ public abstract class UserBaseFragment extends Fragment{
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
 
-            GridLayoutManager layoutManager = (GridLayoutManager)recyclerView.getLayoutManager();
+            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
             int visibleItemCount = layoutManager.getChildCount();
             int totalItemCount = layoutManager.getItemCount();
-            int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+            int firstVisibleItem = findFirstVisibleItemPosition(layoutManager);
 
             if(totalItemCount == 0) return;  // avoid nullpo
 
@@ -105,8 +113,11 @@ public abstract class UserBaseFragment extends Fragment{
         mProgress = (ProgressBar) root.findViewById(R.id.progress);
         mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh);
 
-        mRecyclerView.setHasFixedSize(true);
-        GridLayoutManager layoutManager = new GridLayoutManager(mAppContext, 2);
+        mRecyclerView.setHasFixedSize(getHasFixedSize());
+        int display_mode = getResources().getConfiguration().orientation;
+        int col_num = display_mode == Configuration.ORIENTATION_PORTRAIT ?
+                getPortraitColNum() : getHorizontalColNum();
+        RecyclerView.LayoutManager layoutManager = getLayoutManager(mAppContext, col_num);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.addOnScrollListener(scroll_lister);
 

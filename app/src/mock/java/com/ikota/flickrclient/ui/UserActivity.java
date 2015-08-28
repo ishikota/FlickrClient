@@ -4,6 +4,7 @@ package com.ikota.flickrclient.ui;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.TypedValue;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ public class UserActivity extends BaseActivity{
 
     static Bus sTabEventBus = new Bus();
 
+    private Fragment mDisplayingFragment;
     private TabLayout mTabLayout;
 
     private int mActionBarHeight;
@@ -32,12 +34,11 @@ public class UserActivity extends BaseActivity{
         getViewSize();
 
         FragmentManager fm = getSupportFragmentManager();
-        UserBaseFragment mFragment = (UserPostListFragment)
-                fm.findFragmentByTag(UserPostListFragment.class.getSimpleName());
-        if (mFragment == null) {
-            mFragment = new UserPostListFragment();
+        mDisplayingFragment = fm.findFragmentByTag(UserPostListFragment.class.getSimpleName());
+        if (mDisplayingFragment == null) {
+            mDisplayingFragment = new UserPostListFragment();
             String tag = UserPostListFragment.class.getSimpleName();
-            fm.beginTransaction().add(R.id.container, mFragment, tag).commit();
+            fm.beginTransaction().add(R.id.container, mDisplayingFragment, tag).commit();
         }
     }
 
@@ -48,8 +49,8 @@ public class UserActivity extends BaseActivity{
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         sTabEventBus.unregister(this);
     }
 
@@ -77,7 +78,9 @@ public class UserActivity extends BaseActivity{
 
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         mTabLayout.addTab(mTabLayout.newTab().setText("ABOUTS"));
+        mTabLayout.setOnTabSelectedListener(new MyTabListener(new UserPostListFragment()));
         mTabLayout.addTab(mTabLayout.newTab().setText("POST"));
+        mTabLayout.setOnTabSelectedListener(new MyTabListener(new UserTimelineFragment()));
         mTabLayout.addTab(mTabLayout.newTab().setText("PHOTOS"));
 
         if(mActionBarToolbar!=null)  // nullpo occurred when config changes
@@ -113,6 +116,45 @@ public class UserActivity extends BaseActivity{
         public ScrollEvent(int list_top, int dy) {
             this.list_top = list_top;
             this.dy = dy;
+        }
+    }
+
+    private class MyTabListener implements TabLayout.OnTabSelectedListener {
+        private final Fragment mFragment;
+
+        MyTabListener(Fragment fragment) {
+            this.mFragment = fragment;
+        }
+
+        @Override
+        public void onTabSelected(TabLayout.Tab tab) {
+            getSupportFragmentManager().beginTransaction()
+                    .detach(mDisplayingFragment)
+                    .commit();
+            switch (tab.getPosition()) {
+                case 0:
+                    mDisplayingFragment = new UserPostListFragment();
+                    break;
+                case 1:
+                    mDisplayingFragment = new UserTimelineFragment();
+                    break;
+            }
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.container, mDisplayingFragment)
+                    .commit();
+        }
+
+        @Override
+        public void onTabUnselected(TabLayout.Tab tab) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .detach(mFragment).commit();
+        }
+
+        @Override
+        public void onTabReselected(TabLayout.Tab tab) {
+
         }
     }
 
