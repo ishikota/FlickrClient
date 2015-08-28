@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,6 +37,8 @@ public class UserActivity extends BaseActivity{
     private Fragment fragment2;
     private Fragment fragment3;
     private Fragment mDisplayingFragment;
+    private String mTag = "";
+
     private TabLayout mTabLayout;
 
     private int mActionBarHeight;
@@ -51,6 +54,13 @@ public class UserActivity extends BaseActivity{
         Intent intent = new Intent(activity, UserActivity.class);
         intent.putExtra(EXTRA_CONTENT, parsed_json);
         return intent;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d("Lifecycle", "onSaveInstanceState()");
+        outState.putString("tag", mTag);
     }
 
     @Override
@@ -76,7 +86,6 @@ public class UserActivity extends BaseActivity{
             graph.inject(fragment1);
             fm.beginTransaction().add(R.id.container, fragment1, "f1").commit();
             fm.beginTransaction().hide(fragment1).commit();
-            mDisplayingFragment = fragment1;
         }
         fragment2 = fm.findFragmentByTag("f2");
         if(fragment2 == null) {
@@ -93,6 +102,24 @@ public class UserActivity extends BaseActivity{
             fm.beginTransaction().hide(fragment3).commit();
         }
 
+        if(savedInstanceState!=null) mTag = savedInstanceState.getString("tag");
+        mDisplayingFragment = fm.findFragmentByTag(mTag);
+        if(mDisplayingFragment == null) {
+            mTag = "f1";
+            mDisplayingFragment = fragment1;
+        } else {
+            // the case when orientation change occurred
+            final UserBaseFragment tmp = (UserBaseFragment)mDisplayingFragment;
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    tmp.notifyListState();
+                }
+            };
+            mTabLayout.post(runnable);
+            mActionBarToolbar.post(runnable);
+
+        }
         fm.beginTransaction().show(mDisplayingFragment).commit();
     }
 
@@ -213,12 +240,15 @@ public class UserActivity extends BaseActivity{
             switch (tab.getPosition()) {
                 case 0:
                     mDisplayingFragment = fragment1;
+                    mTag = "f1";
                     break;
                 case 1:
                     mDisplayingFragment = fragment2;
+                    mTag = "f2";
                     break;
                 case 2:
                     mDisplayingFragment = fragment3;
+                    mTag = "f3";
                     break;
             }
             getSupportFragmentManager()

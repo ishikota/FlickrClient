@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.ikota.flickrclient.IdlingResource.ListCountIdlingResource;
 import com.ikota.flickrclient.IdlingResource.TextIdlingResource;
+import com.ikota.flickrclient.IdlingResource.TimingIdlingResource;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.DataHolder;
 import com.ikota.flickrclient.data.model.PhotoInfo;
@@ -42,6 +43,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.ikota.flickrclient.OrientationChangeAction.orientationLandscape;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.core.Is.is;
 
 
@@ -90,7 +92,7 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
         TextIdlingResource idlingResource = new TextIdlingResource((TextView)activity.findViewById(R.id.user_name));
         onView(withId(R.id.user_name)).check(matches(withText("Cole Chase Photography")));
         //onView(withId(R.id.toolbar_actionbar)).check(matches(withAlpha(is(0))));
-        onView(withId(android.R.id.list)).check(matches(isDisplayed()));
+        onView(allOf(withId(android.R.id.list), isDisplayed())).check(matches(isDisplayed()));
         Espresso.unregisterIdlingResources(idlingResource);
     }
 
@@ -108,7 +110,7 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
         UserActivity activity = activityRule.launchActivity(intent);
         ListCountIdlingResource idlingResource = new ListCountIdlingResource((RecyclerView)activity.findViewById(android.R.id.list), 1);
         Espresso.registerIdlingResources(idlingResource);
-        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(12, scrollTo()));
+        onView(allOf(withId(android.R.id.list), isDisplayed())).perform(RecyclerViewActions.actionOnItemAtPosition(12, scrollTo()));
         Espresso.unregisterIdlingResources(idlingResource);
         onView(withId(R.id.toolbar_actionbar)).check(matches(withAlpha(is(255))));
     }
@@ -118,7 +120,7 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
         UserActivity activity = activityRule.launchActivity(intent);
         ListCountIdlingResource idlingResource = new ListCountIdlingResource((RecyclerView)activity.findViewById(android.R.id.list), 1);
         Espresso.registerIdlingResources(idlingResource);
-        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(9, scrollTo()));
+        onView(allOf(withId(android.R.id.list), isDisplayed())).perform(RecyclerViewActions.actionOnItemAtPosition(9, scrollTo()));
         Espresso.unregisterIdlingResources(idlingResource);
 
         // change orientation to landscape
@@ -138,10 +140,10 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
         UserActivity activity = activityRule.launchActivity(intent);
         ListCountIdlingResource idlingResource = new ListCountIdlingResource((RecyclerView)activity.findViewById(android.R.id.list), 1);
         Espresso.registerIdlingResources(idlingResource);
-        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(12, scrollTo()));
+        onView(allOf(withId(android.R.id.list), isDisplayed())).perform(RecyclerViewActions.actionOnItemAtPosition(12, scrollTo()));
         Espresso.unregisterIdlingResources(idlingResource);
         onView(withId(R.id.toolbar_actionbar)).check(matches(withAlpha(is(255))));
-        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(12, click()));
+        onView(allOf(withId(android.R.id.list), isDisplayed())).perform(RecyclerViewActions.actionOnItemAtPosition(12, click()));
 
         // Remove the ActivityMonitor
         getInstrumentation().removeMonitor(receiverActivityMonitor);
@@ -158,6 +160,40 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
         onView(withId(R.id.toolbar_actionbar)).check(matches(withAlpha(is(255))));
     }
 
+    @Test
+    public void tab_goDetailKeepTabHeight() {
+        // setup
+        Instrumentation.ActivityMonitor receiverActivityMonitor =
+                getInstrumentation().addMonitor(ImageDetailActivity.class.getName(),null, false);
+
+        // Wait until list is displayed
+        UserActivity activity = activityRule.launchActivity(intent);
+        ListCountIdlingResource idlingResource = new ListCountIdlingResource((RecyclerView)activity.findViewById(android.R.id.list), 1);
+        Espresso.registerIdlingResources(idlingResource);
+        onView(allOf(withId(android.R.id.list), isDisplayed())).perform(RecyclerViewActions.actionOnItemAtPosition(18, scrollTo()));
+        Espresso.unregisterIdlingResources(idlingResource);
+        float expected = activity.findViewById(R.id.tab_layout).getY();
+
+        // Switch tab and go detail
+        onView(withText("PHOTOS")).perform(click());
+        onView(withText("ABOUTS")).perform(click());
+        onView(allOf(withId(android.R.id.list), isDisplayed())).perform(RecyclerViewActions.actionOnItemAtPosition(18, click()));
+
+        // Remove the ActivityMonitor
+        getInstrumentation().removeMonitor(receiverActivityMonitor);
+
+        // assertion to DetailActivity
+        Activity detail_activity = receiverActivityMonitor.waitForActivityWithTimeout(1000);
+        assertNotNull("DetailActivity is not null", detail_activity);
+
+        // back to list
+        pressBack();
+        TimingIdlingResource ti = new TimingIdlingResource(2000);
+        Espresso.registerIdlingResources(ti);
+        onView(withId(R.id.tab_layout)).check(matches(withY(is(expected))));
+        Espresso.unregisterIdlingResources(ti);
+    }
+
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private static Matcher<View> withAlpha(final Matcher<Integer> alphaMatcher) {
         checkNotNull(alphaMatcher);
@@ -172,6 +208,24 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
             @Override
             protected boolean matchesSafely(View view) {
                 return alphaMatcher.matches(view.getBackground().getAlpha());
+            }
+        };
+    }
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private static Matcher<View> withY(final Matcher<Float> yMatcher) {
+        checkNotNull(yMatcher);
+        return new TypeSafeMatcher<View>() {
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with y: ");
+                yMatcher.describeTo(description);
+            }
+
+            @Override
+            protected boolean matchesSafely(View view) {
+                return yMatcher.matches(view.getY());
             }
         };
     }

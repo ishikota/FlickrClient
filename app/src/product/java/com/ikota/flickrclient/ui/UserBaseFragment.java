@@ -24,7 +24,9 @@ public class UserBaseFragment extends ImageListFragment{
     @Override
     public void onResume() {
         super.onResume();
-        if(mRecyclerView.getChildAt(0)!=null) notifyListState();
+        // onResume() is called even when this fragment is hidden.
+        // So prevent to call nofifyListState() if this fragment is hidden.
+        if(mRecyclerView.getChildAt(0)!=null && isVisible()) notifyListState();
     }
 
     @Override
