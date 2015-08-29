@@ -23,6 +23,8 @@ import com.ikota.flickrclient.IdlingResource.TimingIdlingResource;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.DataHolder;
 import com.ikota.flickrclient.data.model.PhotoInfo;
+import com.ikota.flickrclient.di.DummyAPIModule;
+import com.ikota.flickrclient.network.Util;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -31,6 +33,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
+import dagger.ObjectGraph;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
@@ -62,6 +70,26 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
             true,     // initialTouchMode
             false);   // launchActivity. False so we can customize the intent per test method
 
+    private void setupMockServer(HashMap<String, String> override_map) {
+        HashMap<String, String> map = Util.RESPONSE_MAP;
+
+        if(override_map!=null) {
+            for (String key : override_map.keySet()) {
+                map.put(key, override_map.get(key));
+            }
+        }
+
+        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+        AndroidApplication app =
+                (AndroidApplication) instrumentation.getTargetContext().getApplicationContext();
+
+        // setup objectGraph to inject Mock API
+        List modules = Collections.singletonList(new DummyAPIModule(map));
+        ObjectGraph graph = ObjectGraph.create(modules.toArray());
+        app.setObjectGraph(graph);
+        app.getObjectGraph().inject(app);
+    }
+
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -88,6 +116,7 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
 
     @Test
     public void setupViews() {
+        setupMockServer(null);
         UserActivity activity = activityRule.launchActivity(intent);
         TextIdlingResource idlingResource = new TextIdlingResource((TextView)activity.findViewById(R.id.user_name));
         onView(withId(R.id.user_name)).check(matches(withText("Cole Chase Photography")));
@@ -98,6 +127,7 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
 
     @Test
     public void loadPeopleInfo() {
+        setupMockServer(null);
         UserActivity activity = activityRule.launchActivity(intent);
         TextIdlingResource idlingResource = new TextIdlingResource((TextView)activity.findViewById(R.id.sub_text));
         Espresso.registerIdlingResources(idlingResource);
@@ -107,6 +137,7 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
 
     @Test
     public void actionbarAlphaChange() {
+        setupMockServer(null);
         UserActivity activity = activityRule.launchActivity(intent);
         ListCountIdlingResource idlingResource = new ListCountIdlingResource((RecyclerView)activity.findViewById(android.R.id.list), 1);
         Espresso.registerIdlingResources(idlingResource);
@@ -117,6 +148,7 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
 
     @Test
     public void tab_supportOrientationChange() {
+        setupMockServer(null);
         UserActivity activity = activityRule.launchActivity(intent);
         ListCountIdlingResource idlingResource = new ListCountIdlingResource((RecyclerView)activity.findViewById(android.R.id.list), 1);
         Espresso.registerIdlingResources(idlingResource);
@@ -130,9 +162,9 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
 
     }
 
-    /** TODO This test is succeeded when running only this test. **/
     @Test
     public void tab_Go_detail_orientation_change_back() {
+        setupMockServer(null);
         // setup
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(ImageDetailActivity.class.getName(),null, false);
@@ -163,6 +195,7 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
 
     @Test
     public void tab_goDetailKeepTabHeight() {
+        setupMockServer(null);
         // setup
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(ImageDetailActivity.class.getName(),null, false);
