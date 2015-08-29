@@ -138,6 +138,9 @@ public class UserActivity extends BaseActivity{
                 case 1:
                     mDisplayingFragment = new UserFavoriteFragment();
                     break;
+                case 2:
+                    mDisplayingFragment = new UserAboutFragment();
+                    break;
             }
             getSupportFragmentManager()
                     .beginTransaction()

@@ -37,7 +37,7 @@ public abstract class UserBaseFragment extends Fragment{
     abstract int getHorizontalColNum();
     abstract boolean getHasFixedSize();
 
-    private Context mAppContext;
+    protected Context mAppContext;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -61,7 +61,7 @@ public abstract class UserBaseFragment extends Fragment{
         }
     };
 
-    private RecyclerView.OnScrollListener scroll_lister = new RecyclerView.OnScrollListener() {
+    protected RecyclerView.OnScrollListener scroll_lister = new RecyclerView.OnScrollListener() {
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -184,12 +184,12 @@ public abstract class UserBaseFragment extends Fragment{
 
     }
 
-    private int getThumbColor() {
+    protected int getThumbColor() {
         Random  random = new Random();
         return Color.parseColor(COLORS[random.nextInt(COLORS.length)]);
     }
 
-    private int getContentType() {
+    protected int getContentType() {
         Random random = new Random();
         return random.nextInt(3);
     }

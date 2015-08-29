@@ -28,6 +28,7 @@
     <string name="tab_title_1">POST</string>
     <string name="tab_title_2">FAVORITE</string>
     <string name="tab_title_3">ABOUT</string>
+    <string name="flickr">Flickr</string>
 
 
 </resources>
