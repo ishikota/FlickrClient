@@ -58,7 +58,7 @@ public class UserTimelineModule {
         return new LoadMethod() {
             @Override
             public void loadItem(AndroidApplication app, int page, Callback<ListData> cb) {
-                    app.api().getPeoplePublicPhotos(USER_ID, page, ITEM_PER_PAGE, cb);
+                    app.api().getPeopleFavorites(USER_ID, page, ITEM_PER_PAGE, cb);
             }
         };
     }

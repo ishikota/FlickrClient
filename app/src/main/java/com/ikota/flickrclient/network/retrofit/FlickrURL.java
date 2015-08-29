@@ -16,4 +16,5 @@ public class FlickrURL {
     public static final String PHOTO_INFO ="flickr.photos.getInfo";
     public static final String PEOPLE_INFO ="flickr.people.getInfo";
     public static final String PUBLIC_PHOTO ="flickr.people.getPublicPhotos";
+    public static final String PEOPLE_FAVORITE = "flickr.favorites.getPublicList";
 }

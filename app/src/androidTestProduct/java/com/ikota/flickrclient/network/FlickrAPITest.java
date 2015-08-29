@@ -172,4 +172,26 @@ public class FlickrAPITest extends ActivityInstrumentationTestCase2<PopularListA
         lock.await(10000, TimeUnit.MILLISECONDS);
         assertEquals(0, lock.getCount());
     }
+
+    @Test
+    public void getFavorites() throws Exception {
+        app.api().getPeopleFavorites("30179751@N06", 1, 24, new Callback<ListData>() {
+
+            @Override
+            public void success(ListData data, Response response) {
+                assertEquals("ok", data.stat);
+                assertEquals(1, data.photos.page);
+                assertEquals(24, data.photos.perpage);
+                assertEquals(24, data.photos.photo.size());
+                lock.countDown();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fail("Error on getFavorites API");
+            }
+        });
+        lock.await(10000, TimeUnit.MILLISECONDS);
+        assertEquals(0, lock.getCount());
+    }
 }

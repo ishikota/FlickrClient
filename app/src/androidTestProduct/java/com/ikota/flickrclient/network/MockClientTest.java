@@ -169,6 +169,30 @@ public class MockClientTest extends ActivityInstrumentationTestCase2<PopularList
         assertEquals(0, lock.getCount());
     }
 
+    @Test
+    public void getFavorites() throws Exception {
+        app.api().getPeopleFavorites("133363540@N06",1,24, new Callback<ListData>() {
+            @Override
+            public void success(ListData item, Response response) {
+                assertEquals("ok", item.stat);
+                assertEquals(1, item.photos.page);
+                assertEquals(24, item.photos.perpage);
+                assertEquals(24, item.photos.photo.size());
+                assertEquals(33379, item.photos.total);
+                ListData.Photo photo = item.photos.photo.get(0);
+                assertEquals("5565562390", photo.id);
+                lock.countDown();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fail("Error o getPeopleInfo API");
+            }
+        });
+        lock.await(10000, TimeUnit.MILLISECONDS);
+        assertEquals(0, lock.getCount());
+    }
+
 
     @Test
     public void test_regex() {
