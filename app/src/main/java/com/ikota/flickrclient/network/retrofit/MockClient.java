@@ -2,6 +2,9 @@ package com.ikota.flickrclient.network.retrofit;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit.client.Client;
 import retrofit.client.Request;
@@ -12,21 +15,35 @@ import retrofit.mime.TypedByteArray;
 public class MockClient implements Client{
 
     private static final int HTTP_OK_STATUS = 200;
-    private final String RESPONSE_JSON;
+    private static final Pattern PATTERN_METHOD = Pattern.compile("method=(.*)&format");
 
-    public MockClient(String responce_json) {
-        this.RESPONSE_JSON = responce_json;
+    private final HashMap<String, String> RESPONSE_MAP;
+
+    public MockClient(HashMap<String, String> map) {
+        this.RESPONSE_MAP = map;
     }
 
     @Override
     public Response execute(Request request) throws IOException {
         try {
-            Thread.sleep(2000);  // simulates server access
+            Thread.sleep(1000);  // simulates server access
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        return createResponseWithCodeAndJson(HTTP_OK_STATUS, RESPONSE_JSON);
+        String key = retrieveMethod(request.getUrl());
+        String json = RESPONSE_MAP.get(key);
+
+        return createResponseWithCodeAndJson(HTTP_OK_STATUS, json);
+    }
+
+    public String retrieveMethod(String url) {
+        Matcher m = PATTERN_METHOD.matcher(url);
+        if(m.find()){
+            return m.group(1);
+        } else {
+            return null;
+        }
     }
 
     private Response createResponseWithCodeAndJson(int responseCode, String json) {

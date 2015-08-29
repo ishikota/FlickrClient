@@ -11,4 +11,9 @@ public class FlickrURL {
     public static final String JSON_CALLBACK = "&nojsoncallback=1";
     public static final String PER_PAGE = "&per_page=";
     public static final String PAGE = "&page=";
+    public static final String TEST_ECHO ="flickr.test.echo";
+    public static final String POPULAR = "flickr.interestingness.getList";
+    public static final String PHOTO_INFO ="flickr.photos.getInfo";
+    public static final String PEOPLE_INFO ="flickr.people.getInfo";
+    public static final String PUBLIC_PHOTO ="flickr.people.getPublicPhotos";
 }

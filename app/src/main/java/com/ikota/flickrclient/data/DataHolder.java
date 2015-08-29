@@ -4,6 +4,9 @@ package com.ikota.flickrclient.data;
 /** Sample json data of Flickr API */
 public class DataHolder {
 
+    public static final String ECHO_JSON =
+            "{\"method\":{\"_content\":\"flickr.test.echo\"},\"format\":{\"_content\":\"json\"},\"nojsoncallback\":{\"_content\":\"1\"},\"api_key\":{\"_content\":\"84434e44ac54eb2853b6b4492daf863e\"},\"hoge\":{\"_content\":\"fuga\"},\"stat\":\"ok\"}";
+
     // return of GET(https://api.flickr.com/services/rest/?method=flickr.interestingness.getList&page=1&per_page=20&format=json&nojsoncallback=1&api_key=84434e44ac54eb2853b6b4492daf863e)
     public static final String LIST_JSON =
             "{\"photos\":{" +
