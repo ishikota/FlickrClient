@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
@@ -216,8 +217,9 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
         float expected = activity.findViewById(R.id.tab_layout).getY();
 
         // Switch tab and go detail
-        onView(withText("PHOTOS")).perform(click());
-        onView(withText("ABOUTS")).perform(click());
+        Resources r = activity.getResources();
+        onView(withText(r.getString(R.string.tab_title_3))).perform(click());
+        onView(withText(r.getString(R.string.tab_title_1))).perform(click());
         onView(allOf(withId(android.R.id.list), isDisplayed())).perform(RecyclerViewActions.actionOnItemAtPosition(18, click()));
 
         // Remove the ActivityMonitor

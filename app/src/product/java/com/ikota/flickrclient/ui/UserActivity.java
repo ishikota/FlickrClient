@@ -3,6 +3,7 @@ package com.ikota.flickrclient.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -33,6 +34,12 @@ public class UserActivity extends BaseActivity{
 
     static Bus sTabEventBus = new Bus();
 
+    private static final String KEY_FRAGMENT_TAG = "tag";
+    private static final String KEY_SELECTED_TAB = "pos";
+    private static final String TAG_FRAGMENT_1 = "f1";
+    private static final String TAG_FRAGMENT_2 = "f2";
+    private static final String TAG_FRAGMENT_3 = "f3";
+
     private Fragment fragment1;
     private Fragment fragment2;
     private Fragment fragment3;
@@ -60,8 +67,8 @@ public class UserActivity extends BaseActivity{
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("tag", mTag);
-        outState.putInt("pos", mSelectedTabPos);
+        outState.putString(KEY_FRAGMENT_TAG, mTag);
+        outState.putInt(KEY_SELECTED_TAB, mSelectedTabPos);
     }
 
     @Override
@@ -81,8 +88,8 @@ public class UserActivity extends BaseActivity{
         registerFragment(content.nsid);
 
         if(savedInstanceState!=null) {
-            mTag = savedInstanceState.getString("tag");
-            mSelectedTabPos = savedInstanceState.getInt("pos");
+            mTag = savedInstanceState.getString(KEY_FRAGMENT_TAG);
+            mSelectedTabPos = savedInstanceState.getInt(KEY_SELECTED_TAB);
             // restore selected tab
             mTabLayout.setOnTabSelectedListener(null);
             mTabLayout.getTabAt(mSelectedTabPos).select();
@@ -91,7 +98,7 @@ public class UserActivity extends BaseActivity{
 
         mDisplayingFragment = getSupportFragmentManager().findFragmentByTag(mTag);
         if(mDisplayingFragment == null) {
-            mTag = "f1";
+            mTag = TAG_FRAGMENT_1;
             mDisplayingFragment = fragment1;
         } else {
             // the case when orientation change occurred
@@ -138,22 +145,24 @@ public class UserActivity extends BaseActivity{
         mActionbarAlpha = 0;  // we need to manually set initial visibility.
         if(mActionBarToolbar!=null) mActionBarToolbar.getBackground().setAlpha(mActionbarAlpha);
 
+        Resources r = getResources();
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        mTabLayout.addTab(mTabLayout.newTab().setText("ABOUTS"));
-        mTabLayout.addTab(mTabLayout.newTab().setText("POST"));
-        mTabLayout.addTab(mTabLayout.newTab().setText("PHOTOS"));
+        mTabLayout.addTab(mTabLayout.newTab().setText(r.getString(R.string.tab_title_1)));
+        mTabLayout.addTab(mTabLayout.newTab().setText(r.getString(R.string.tab_title_2)));
+        mTabLayout.addTab(mTabLayout.newTab().setText(r.getString(R.string.tab_title_3)));
         mTabLayout.setOnTabSelectedListener(new MyTabListener());
 
         ImageView cover = (ImageView)findViewById(R.id.cover);
         ImageView icon = (ImageView)findViewById(R.id.user_icon);
         TextView name = (TextView)findViewById(R.id.user_name);
+
+        name.setText(content.username);
         Picasso.with(UserActivity.this)
                 .load(content.generateOwnerIconURL())
                 .into(icon);
         Picasso.with(UserActivity.this)
                 .load("https://d13yacurqjgara.cloudfront.net/users/44585/screenshots/1544389/book-pattern.png")
                 .into(cover);
-        name.setText(content.username);
     }
 
     private void loadUserInfo(String nsid) {
@@ -177,28 +186,28 @@ public class UserActivity extends BaseActivity{
 
     private void registerFragment(String nsid) {
         FragmentManager fm = getSupportFragmentManager();
-        fragment1 = fm.findFragmentByTag("f1");
+        fragment1 = fm.findFragmentByTag(TAG_FRAGMENT_1);
         if(fragment1 == null) {
             fragment1 = new UserBaseFragment();
             ObjectGraph graph = ObjectGraph.create(new UserPostListModule(nsid));
             graph.inject(fragment1);
-            fm.beginTransaction().add(R.id.container, fragment1, "f1").commit();
+            fm.beginTransaction().add(R.id.container, fragment1, TAG_FRAGMENT_1).commit();
             fm.beginTransaction().hide(fragment1).commit();
         }
-        fragment2 = fm.findFragmentByTag("f2");
+        fragment2 = fm.findFragmentByTag(TAG_FRAGMENT_2);
         if(fragment2 == null) {
             fragment2 = new UserBaseFragment();
             ObjectGraph graph = ObjectGraph.create(new UserTimelineModule(nsid));
             graph.inject(fragment2);
-            fm.beginTransaction().add(R.id.container, fragment2, "f2").commit();
+            fm.beginTransaction().add(R.id.container, fragment2, TAG_FRAGMENT_2).commit();
             fm.beginTransaction().hide(fragment2).commit();
         }
-        fragment3 = fm.findFragmentByTag("f3");
+        fragment3 = fm.findFragmentByTag(TAG_FRAGMENT_3);
         if(fragment3 == null) {
             fragment3 = new UserBaseFragment();
             ObjectGraph graph = ObjectGraph.create(new UserPostListModule(nsid));
             graph.inject(fragment3);
-            fm.beginTransaction().add(R.id.container, fragment3, "f3").commit();
+            fm.beginTransaction().add(R.id.container, fragment3, TAG_FRAGMENT_3).commit();
             fm.beginTransaction().hide(fragment3).commit();
         }
 
@@ -257,15 +266,15 @@ public class UserActivity extends BaseActivity{
             switch (mSelectedTabPos) {
                 case 0:
                     mDisplayingFragment = fragment1;
-                    mTag = "f1";
+                    mTag = TAG_FRAGMENT_1;
                     break;
                 case 1:
                     mDisplayingFragment = fragment2;
-                    mTag = "f2";
+                    mTag = TAG_FRAGMENT_2;
                     break;
                 case 2:
                     mDisplayingFragment = fragment3;
-                    mTag = "f3";
+                    mTag = TAG_FRAGMENT_3;
                     break;
             }
             fm.beginTransaction().show(mDisplayingFragment).commit();

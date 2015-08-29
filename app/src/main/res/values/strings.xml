@@ -25,6 +25,9 @@
     <string name="network_problem_message">Network Error Occurred</string>
     <string name="no_data">No image found…</string>
     <string name="detail_container">detail_container</string>
+    <string name="tab_title_1">POST</string>
+    <string name="tab_title_2">FAVORITE</string>
+    <string name="tab_title_3">ABOUT</string>
 
 
 </resources>
