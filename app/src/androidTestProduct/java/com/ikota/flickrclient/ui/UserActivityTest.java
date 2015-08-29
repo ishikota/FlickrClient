@@ -6,6 +6,7 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.contrib.RecyclerViewActions;
@@ -51,6 +52,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.ikota.flickrclient.OrientationChangeAction.orientationLandscape;
+import static com.ikota.flickrclient.OrientationChangeAction.orientationPortrait;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.core.Is.is;
 
@@ -160,6 +162,9 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
 
         onView(withId(R.id.toolbar_actionbar)).check(matches(withAlpha(is(255))));
 
+        onView(isRoot()).perform(orientationPortrait());
+        SystemClock.sleep(2000);
+
     }
 
     @Test
@@ -191,6 +196,8 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
         // back to list
         pressBack();
         onView(withId(R.id.toolbar_actionbar)).check(matches(withAlpha(is(255))));
+        onView(isRoot()).perform(orientationPortrait());
+        SystemClock.sleep(2000);
     }
 
     @Test
