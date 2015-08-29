@@ -8,6 +8,7 @@ import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.ui.AndroidApplication;
 import com.ikota.flickrclient.ui.ImageAdapter;
 import com.ikota.flickrclient.ui.UserBaseFragment;
+import com.ikota.flickrclient.ui.UserTimelineAdapter;
 
 import java.util.ArrayList;
 
@@ -21,13 +22,13 @@ import retrofit.Callback;
         injects = UserBaseFragment.class,
         library = true
 )
-public class UserPostListModule {
-    public static final int PORTRAIT_COL = 3;
-    public static final int HORIZONTAL_COL = 4;
+public class UserTimelineModule {
+    public static final int PORTRAIT_COL = 1;
+    public static final int HORIZONTAL_COL = 3;
     public static final int ITEM_PER_PAGE = 24;
     public final String USER_ID;
 
-    public UserPostListModule(String user_id) {
+    public UserTimelineModule(String user_id) {
         this.USER_ID = user_id;
     }
 
@@ -70,7 +71,7 @@ public class UserPostListModule {
                     Context context,
                     ArrayList<ListData.Photo> data,
                     ImageAdapter.OnClickCallback callback) {
-                return new ImageAdapter(context, data, callback);
+                return new UserTimelineAdapter(context, data, callback);
             }
         };
     }

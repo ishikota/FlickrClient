@@ -17,6 +17,7 @@ import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.model.PeopleInfo;
 import com.ikota.flickrclient.data.model.PhotoInfo;
 import com.ikota.flickrclient.di.UserPostListModule;
+import com.ikota.flickrclient.di.UserTimelineModule;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
@@ -175,11 +176,11 @@ public class UserActivity extends BaseActivity{
     }
 
     private void registerFragment(String nsid) {
-        ObjectGraph graph = ObjectGraph.create(new UserPostListModule(nsid));
         FragmentManager fm = getSupportFragmentManager();
         fragment1 = fm.findFragmentByTag("f1");
         if(fragment1 == null) {
             fragment1 = new UserBaseFragment();
+            ObjectGraph graph = ObjectGraph.create(new UserPostListModule(nsid));
             graph.inject(fragment1);
             fm.beginTransaction().add(R.id.container, fragment1, "f1").commit();
             fm.beginTransaction().hide(fragment1).commit();
@@ -187,6 +188,7 @@ public class UserActivity extends BaseActivity{
         fragment2 = fm.findFragmentByTag("f2");
         if(fragment2 == null) {
             fragment2 = new UserBaseFragment();
+            ObjectGraph graph = ObjectGraph.create(new UserTimelineModule(nsid));
             graph.inject(fragment2);
             fm.beginTransaction().add(R.id.container, fragment2, "f2").commit();
             fm.beginTransaction().hide(fragment2).commit();
@@ -194,6 +196,7 @@ public class UserActivity extends BaseActivity{
         fragment3 = fm.findFragmentByTag("f3");
         if(fragment3 == null) {
             fragment3 = new UserBaseFragment();
+            ObjectGraph graph = ObjectGraph.create(new UserPostListModule(nsid));
             graph.inject(fragment3);
             fm.beginTransaction().add(R.id.container, fragment3, "f3").commit();
             fm.beginTransaction().hide(fragment3).commit();

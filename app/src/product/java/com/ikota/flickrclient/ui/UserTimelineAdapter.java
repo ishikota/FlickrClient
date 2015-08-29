@@ -1,11 +1,13 @@
 package com.ikota.flickrclient.ui;
 
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.model.ListData;
@@ -14,16 +16,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Created by kota on 2015/08/11.
- * This adapter is used in ImageListFragment
- */
-public class ImageAdapter
-        extends RecyclerView.Adapter<ImageAdapter.ViewHolder> implements ListAdapterImpl {
+public class UserTimelineAdapter
+        extends RecyclerView.Adapter<UserTimelineAdapter.ViewHolder> implements ListAdapterImpl {
 
     private Context mContext;
     private List<ListData.Photo> mDataSet;
-    private final OnClickCallback mClickCallback;
+    private final ImageAdapter.OnClickCallback mClickCallback;
     private final LayoutInflater mInflater;
     private boolean is_wifi_connected;
     private int view_size;
@@ -32,21 +30,24 @@ public class ImageAdapter
         view_size = size;
     }
 
-    public interface OnClickCallback {
-        void onClick(View v, ListData.Photo data);
-    }
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView imageview;
+        public ImageView item_image, user_image;
+        public TextView user_text, date_text, fav_text, com_text, share_text;
 
         public ViewHolder(View v) {
             super(v);
-            imageview = (ImageView) v.findViewById(R.id.image);
+            item_image = (ImageView) v.findViewById(R.id.image);
+            user_image = (ImageView) v.findViewById(R.id.user_icon);
+            user_text = (TextView) v.findViewById(R.id.user_name);
+            date_text = (TextView) v.findViewById(R.id.date_text);
+            fav_text = (TextView) v.findViewById(R.id.favorite_num);
+            com_text = (TextView) v.findViewById(R.id.comment_num);
+            share_text = (TextView) v.findViewById(R.id.share_num);
         }
     }
 
 
-    public ImageAdapter(Context context, List<ListData.Photo> myDataset, OnClickCallback listener) {
+    public UserTimelineAdapter(Context context, List<ListData.Photo> myDataset, ImageAdapter.OnClickCallback listener) {
         mContext = context;
         mDataSet = myDataset;
         mClickCallback = listener;
@@ -60,7 +61,7 @@ public class ImageAdapter
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view.
-        View v = mInflater.inflate(R.layout.row_image_list, viewGroup, false);
+        View v = mInflater.inflate(R.layout.row_timeline, viewGroup, false);
 
         ImageView imageview = (ImageView)v.findViewById(R.id.image);
         imageview.setOnClickListener(new View.OnClickListener() {
@@ -78,16 +79,24 @@ public class ImageAdapter
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        // set list position as tag
-        holder.imageview.setTag(R.integer.list_pos_key, position);
-
         ListData.Photo item = mDataSet.get(position);
-        String url = item.generatePhotoURL(view_size, is_wifi_connected);
+
+        // set list position as tag
+        holder.item_image.setTag(R.integer.list_pos_key, position);
+        holder.user_text.setText(item.title);
+        holder.date_text.setText("2015-04-29 15:22:34");
+
         Picasso.with(mContext)
-                .load(url)
+                .load(item.generateOwnerIconURL())
                 .placeholder(R.drawable.loading_default)
                 .error(R.drawable.ic_image_broken)
-                .into(holder.imageview);
+                .into(holder.user_image);
+
+        Picasso.with(mContext)
+                .load(item.generatePhotoURL(view_size, is_wifi_connected))
+                .placeholder(R.drawable.loading_default)
+                .error(R.drawable.ic_image_broken)
+                .into(holder.item_image);
     }
 
     @Override

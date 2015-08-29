@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.model.ListData;
+import com.ikota.flickrclient.di.ListAdapterGenerator;
 import com.ikota.flickrclient.di.LoadMethod;
 import com.ikota.flickrclient.util.NetUtils;
 import com.ikota.flickrclient.util.NetworkReceiver;
@@ -54,6 +55,7 @@ public class ImageListFragment extends Fragment {
     @Inject @Named("item per page") public int ITEM_PER_PAGE;
     @Inject public boolean ADD_PADDING;
     @Inject public LoadMethod LOAD_METHOD;
+    @Inject public ListAdapterGenerator ADAPTER_GENERATOR;
 
     private Context mAppContext;
 
@@ -74,21 +76,21 @@ public class ImageListFragment extends Fragment {
         @Override
         public void changedToWifi() {
             if(mAdapter!=null) {
-                ((ImageAdapter) mAdapter).setIfWifiConnected(true);
+                ((ListAdapterImpl) mAdapter).setIfWifiConnected(true);
             }
         }
 
         @Override
         public void changedToMobile() {
             if(mAdapter!=null) {
-                ((ImageAdapter) mAdapter).setIfWifiConnected(false);
+                ((ListAdapterImpl) mAdapter).setIfWifiConnected(false);
             }
         }
 
         @Override
         public void changedToOffline() {
             if(mAdapter!=null) {
-                ((ImageAdapter) mAdapter).setIfWifiConnected(false);
+                ((ListAdapterImpl) mAdapter).setIfWifiConnected(false);
             }
         }
     };
@@ -206,8 +208,8 @@ public class ImageListFragment extends Fragment {
             for(ListData.Photo photo : item.photos.photo) {
                 mItemList.add(photo);
             }
-            mAdapter = new ImageAdapter(mAppContext, mItemList, mItemClickListener);
-            if(isAdded()) ((ImageAdapter)mAdapter).setViewSize(calcViewSize());
+            mAdapter = ADAPTER_GENERATOR.generateAdapter(mAppContext, mItemList, mItemClickListener);
+            if(isAdded()) ((ListAdapterImpl)mAdapter).setViewSize(calcViewSize());
             mRecyclerView.setAdapter(mAdapter);
 
         }
@@ -246,9 +248,9 @@ public class ImageListFragment extends Fragment {
                 mEmptyView.setVisibility(mItemList.isEmpty() ? View.VISIBLE : View.GONE);
 
                 if (refresh_list) {
-                    mAdapter = new ImageAdapter(
+                    mAdapter = ADAPTER_GENERATOR.generateAdapter(
                             mAppContext, mItemList, mItemClickListener);
-                    if(isAdded()) ((ImageAdapter)mAdapter).setViewSize(calcViewSize());
+                    if(isAdded()) ((ListAdapterImpl)mAdapter).setViewSize(calcViewSize());
                     mRecyclerView.setAdapter(mAdapter);
                     mRecyclerView.addOnScrollListener(getScrollListener());
                     mSwipeRefreshLayout.setRefreshing(false);

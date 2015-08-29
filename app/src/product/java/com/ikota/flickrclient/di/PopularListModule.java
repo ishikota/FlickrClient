@@ -1,9 +1,15 @@
 package com.ikota.flickrclient.di;
 
 
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
+
 import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.ui.AndroidApplication;
+import com.ikota.flickrclient.ui.ImageAdapter;
 import com.ikota.flickrclient.ui.ImageListFragment;
+
+import java.util.ArrayList;
 
 import javax.inject.Named;
 
@@ -47,6 +53,19 @@ public class PopularListModule {
             @Override
             public void loadItem(AndroidApplication app, int page, Callback<ListData> cb) {
                     app.api().getPopularPhotos(page, ITEM_PER_PAGE, cb);
+            }
+        };
+    }
+
+    @Provides
+    public ListAdapterGenerator provideAdapterGenerator() {
+        return new ListAdapterGenerator() {
+            @Override
+            public RecyclerView.Adapter generateAdapter(
+                    Context context,
+                    ArrayList<ListData.Photo> data,
+                    ImageAdapter.OnClickCallback callback) {
+                return new ImageAdapter(context, data, callback);
             }
         };
     }

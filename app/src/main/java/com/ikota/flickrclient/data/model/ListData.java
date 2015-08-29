@@ -58,6 +58,11 @@ public class ListData {
             return generatePhotoURL(getProperSize(view_size, is_wifi));
         }
 
+        public String generateOwnerIconURL() {
+            return "https://flickr.com/buddyicons/"+this.owner+".jpg";
+        }
+
+
         private static final SparseArray<String> SIZE_MAP = new SparseArray<String>() {
             {put(0, "q");}
             {put(1, "m");}
