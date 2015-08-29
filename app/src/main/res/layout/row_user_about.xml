@@ -30,7 +30,7 @@
                 android:layout_height="1dp"
                 android:background="#E0E0E0" />
 
-            <Button
+            <TextView
                 android:id="@+id/location"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
@@ -39,7 +39,8 @@
                 android:drawableStart="@drawable/ic_place_black_18dp"
                 android:drawablePadding="8dp"
                 android:alpha="0.5"
-                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:background="@drawable/btn_bg"
                 android:gravity="center_vertical"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"/>
@@ -53,8 +54,8 @@
                 android:id="@+id/flickr_info_parent"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:orientation="horizontal">
-
+                android:orientation="horizontal"
+                android:background="@drawable/btn_bg">
 
                 <ImageView
                     android:layout_width="56dp"
@@ -71,9 +72,6 @@
                     android:gravity="center_vertical"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"/>
-
-
-
 
             </LinearLayout>
 
