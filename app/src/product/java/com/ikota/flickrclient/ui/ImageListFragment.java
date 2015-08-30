@@ -95,15 +95,6 @@ public class ImageListFragment extends Fragment {
         }
     };
 
-    private ImageAdapter.OnClickCallback mItemClickListener = new ImageAdapter.OnClickCallback() {
-        @Override
-        public void onClick(View v, ListData.Photo data) {
-            boolean is_wifi = NetUtils.isWifiConnected(getActivity());
-            String size = ListData.Photo.getProperSize(calcViewSize(), is_wifi);
-            ImageDetailActivity.launch(getActivity(), data, (ImageView)v, size);
-        }
-    };
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -208,7 +199,7 @@ public class ImageListFragment extends Fragment {
             for(ListData.Photo photo : item.photos.photo) {
                 mItemList.add(photo);
             }
-            mAdapter = ADAPTER_GENERATOR.generateAdapter(mAppContext, mItemList, mItemClickListener);
+            mAdapter = ADAPTER_GENERATOR.generateAdapter(mAppContext, mItemList, getItemClickListener());
             if(isAdded()) ((ListAdapterImpl)mAdapter).setViewSize(calcViewSize());
             mRecyclerView.setAdapter(mAdapter);
 
@@ -249,7 +240,7 @@ public class ImageListFragment extends Fragment {
 
                 if (refresh_list) {
                     mAdapter = ADAPTER_GENERATOR.generateAdapter(
-                            mAppContext, mItemList, mItemClickListener);
+                            mAppContext, mItemList, getItemClickListener());
                     if(isAdded()) ((ListAdapterImpl)mAdapter).setViewSize(calcViewSize());
                     mRecyclerView.setAdapter(mAdapter);
                     mRecyclerView.addOnScrollListener(getScrollListener());
@@ -275,6 +266,17 @@ public class ImageListFragment extends Fragment {
                 busy.set(false);
             }
         });
+    }
+
+    protected ImageAdapter.OnClickCallback getItemClickListener() {
+        return new ImageAdapter.OnClickCallback() {
+            @Override
+            public void onClick(View v, ListData.Photo data) {
+                boolean is_wifi = NetUtils.isWifiConnected(getActivity());
+                String size = ListData.Photo.getProperSize(calcViewSize(), is_wifi);
+                ImageDetailActivity.launch(getActivity(), data, (ImageView) v, size);
+            }
+        };
     }
 
     protected RecyclerView.OnScrollListener getScrollListener() {

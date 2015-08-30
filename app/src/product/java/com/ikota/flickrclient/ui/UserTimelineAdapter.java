@@ -103,13 +103,19 @@ public class UserTimelineAdapter
         holder.ic_com.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO implements
+                ((UserTimelineFragment.OnTimelineClickCallback)mClickCallback)
+                        .onCommentClicked(
+                                item.title,
+                                item.generatePhotoURL(view_size, is_wifi_connected));
             }
         });
         holder.ic_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO implements
+                ((UserTimelineFragment.OnTimelineClickCallback)mClickCallback)
+                        .onShareClicked(
+                                item.title,
+                                item.generatePhotoURL(view_size, is_wifi_connected));
             }
         });
 

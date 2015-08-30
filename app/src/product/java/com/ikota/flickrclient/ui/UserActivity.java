@@ -196,7 +196,7 @@ public class UserActivity extends BaseActivity{
         }
         fragment2 = fm.findFragmentByTag(TAG_FRAGMENT_2);
         if(fragment2 == null) {
-            fragment2 = new UserBaseFragment();
+            fragment2 = new UserTimelineFragment();
             ObjectGraph graph = ObjectGraph.create(new UserTimelineModule(nsid));
             graph.inject(fragment2);
             fm.beginTransaction().add(R.id.container, fragment2, TAG_FRAGMENT_2).commit();

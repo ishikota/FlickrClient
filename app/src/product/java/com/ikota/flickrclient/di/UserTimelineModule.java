@@ -7,8 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.ui.AndroidApplication;
 import com.ikota.flickrclient.ui.ImageAdapter;
-import com.ikota.flickrclient.ui.UserBaseFragment;
 import com.ikota.flickrclient.ui.UserTimelineAdapter;
+import com.ikota.flickrclient.ui.UserTimelineFragment;
 
 import java.util.ArrayList;
 
@@ -19,7 +19,7 @@ import dagger.Provides;
 import retrofit.Callback;
 
 @Module(
-        injects = UserBaseFragment.class,
+        injects = UserTimelineFragment.class,
         library = true
 )
 public class UserTimelineModule {
