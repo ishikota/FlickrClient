@@ -18,6 +18,7 @@ public class PeopleInfo {
         public RealName realname;
         public Location location;
         public Description description;
+        public ProfileURL profileurl;
         public Photos photos;
     }
 
@@ -40,6 +41,10 @@ public class PeopleInfo {
     public static class Photos {
         public Count count;
         public Views views;
+    }
+
+    public static class ProfileURL {
+        public String _content;
     }
 
     public static class Count {

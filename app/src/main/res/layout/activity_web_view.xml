@@ -1,4 +1,4 @@
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -8,6 +8,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_actionbar"
+        android:indeterminate="true"
+        android:layout_marginTop="-6dp"/>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_actionbar"
@@ -19,4 +28,4 @@
         app:popupTheme="@style/LightPopupMenu">
     </android.support.v7.widget.Toolbar>
 
-</FrameLayout>
+</RelativeLayout>

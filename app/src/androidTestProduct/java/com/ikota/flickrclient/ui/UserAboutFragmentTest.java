@@ -1,6 +1,7 @@
 package com.ikota.flickrclient.ui;
 
 
+import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
@@ -128,6 +129,34 @@ public class UserAboutFragmentTest extends ActivityInstrumentationTestCase2<User
         onView(withId(R.id.location)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
         onView(withContentDescription("Flickr")).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
         Espresso.unregisterIdlingResources(ti);
+    }
+
+    @Test
+    public void startWebActivity() {
+        HashMap<String, String> map = new HashMap<>();
+        map.put(FlickrURL.PEOPLE_INFO, DataHolder.PEOPLE_NO_INFO);
+        setupMockServer(map);
+        activityRule.launchActivity(intent);
+        String about = context.getResources().getString(R.string.tab_title_3);
+        onView(withText(about)).perform(click());
+        // wait page loading
+        //noinspection ConstantConditions
+        TimingIdlingResource ti = new TimingIdlingResource(3);
+        Espresso.registerIdlingResources(ti);
+        onView(withContentDescription("Flickr")).check(matches(withText("Flickr")));
+        Espresso.unregisterIdlingResources(ti);
+
+        // Set up an ActivityMonitor
+        Instrumentation.ActivityMonitor receiverActivityMonitor =
+                getInstrumentation().addMonitor(WebViewActivity.class.getName(), null, false);
+        onView(withContentDescription("Flickr")).perform(click());
+        Activity web_activity = receiverActivityMonitor.waitForActivityWithTimeout(1000);
+        getInstrumentation().removeMonitor(receiverActivityMonitor);
+
+        Intent intent = web_activity.getIntent();
+        assertEquals("Flickr Client", intent.getStringExtra("title"));
+        assertEquals("https://www.flickr.com/people/131498071@N04/", intent.getStringExtra("url"));
+
     }
 
     public static Matcher<View> startsWith(final String expectString) {

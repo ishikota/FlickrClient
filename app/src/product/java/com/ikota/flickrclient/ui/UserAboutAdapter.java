@@ -17,6 +17,12 @@ public class UserAboutAdapter extends RecyclerView.Adapter<UserAboutAdapter.View
 
     private List<PeopleInfo> mDataSet;
     private final LayoutInflater mInflater;
+    private OnClickCallback mCallback;
+
+    public interface OnClickCallback {
+        void onFlickrClicked(View view, String url);
+        void onLocationClicked(View view, String location);
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public View flickr_view;
@@ -30,10 +36,10 @@ public class UserAboutAdapter extends RecyclerView.Adapter<UserAboutAdapter.View
         }
     }
 
-    public UserAboutAdapter(Context context, List<PeopleInfo> myDataSet) {
+    public UserAboutAdapter(Context context, List<PeopleInfo> myDataSet, OnClickCallback callback) {
         mDataSet = myDataSet;
-        mInflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mCallback = callback;
     }
 
     @Override
@@ -44,12 +50,18 @@ public class UserAboutAdapter extends RecyclerView.Adapter<UserAboutAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        PeopleInfo item = mDataSet.get(position);
+        final PeopleInfo item = mDataSet.get(position);
         if(item.person.location == null || item.person.location._content.isEmpty()) {
             holder.location.setVisibility(View.GONE);
         } else {
             holder.location.setVisibility(View.VISIBLE);
             holder.location.setText(item.person.location._content);
+            holder.flickr_view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mCallback.onLocationClicked(view, item.person.location._content);
+                }
+            });
         }
         if(item.person.description._content.isEmpty()) {
             holder.description.setVisibility(View.GONE);
@@ -61,7 +73,7 @@ public class UserAboutAdapter extends RecyclerView.Adapter<UserAboutAdapter.View
         holder.flickr_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //mContext.startActivity();
+                mCallback.onFlickrClicked(view, item.person.profileurl._content);
             }
         });
     }

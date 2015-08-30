@@ -119,7 +119,17 @@ public class UserAboutFragment extends Fragment implements UserTabImpl {
                 mItemList.add(item);
                 mEmptyView.setVisibility(mItemList.isEmpty() ? View.VISIBLE : View.GONE);
 
-                mAdapter = new UserAboutAdapter(mAppContext, mItemList);
+                mAdapter = new UserAboutAdapter(mAppContext, mItemList, new UserAboutAdapter.OnClickCallback() {
+                    @Override
+                    public void onFlickrClicked(View view, String url) {
+                        WebViewActivity.launch(getActivity(), "Flickr Client", url);
+                    }
+
+                    @Override
+                    public void onLocationClicked(View view, String location) {
+
+                    }
+                });
                 mRecyclerView.setAdapter(mAdapter);
                 mRecyclerView.addOnScrollListener(getScrollListener());
 

@@ -26,6 +26,7 @@ public class PeopleInfoTest extends TestCase {
         assertEquals("Cole Chase Photography", info.person.username._content);
         //assertEquals("Kota Ishimoto", info.person.realname._content);
         assertEquals("Iowa City, USA", info.person.location._content);
+        assertEquals("https://www.flickr.com/people/cannon_s5_is/", info.person.profileurl._content);
         //assertEquals("", info.person.description._content);
         // below 2 test value would change
         // assertEquals(53, info.person.photos.count._content);
