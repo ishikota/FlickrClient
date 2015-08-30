@@ -18,6 +18,7 @@
         <item name="android:layout_below">@id/image</item>
         <item name="android:layout_toLeftOf">@id/comment_num</item>
         <item name="android:src">@drawable/ic_comment_black_48dp</item>
+        <item name="android:background">@drawable/btn_ripple_bg</item>
         <item name="android:alpha">0.5</item>
         <item name="android:padding">12dp</item>
         <item name="android:visibility">gone</item>

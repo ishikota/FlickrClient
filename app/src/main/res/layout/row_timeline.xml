@@ -68,8 +68,9 @@
                 android:layout_height="56dp"
                 android:layout_below="@+id/image"
                 android:src="@drawable/ic_favorite_black_48dp"
+                android:background="@drawable/btn_ripple_bg"
                 android:alpha="0.5"
-                android:padding="12dp"
+                android:padding="16dp"
                 android:contentDescription="@string/icon"/>
 
             <TextView
@@ -91,8 +92,9 @@
                 android:layout_toLeftOf="@+id/share_num"
                 android:layout_toStartOf="@+id/share_num"
                 android:src="@drawable/ic_share_black_48dp"
+                android:background="@drawable/btn_ripple_bg"
                 android:alpha="0.5"
-                android:padding="12dp"
+                android:padding="16dp"
                 android:contentDescription="@string/icon"/>
 
             <TextView
@@ -105,8 +107,8 @@
                 android:textSize="16sp"
                 android:textColor="@android:color/tertiary_text_light"
                 android:gravity="center_vertical"
-                android:layout_marginRight="16dp"
-                android:layout_marginEnd="16dp"/>
+                android:layout_marginRight="0dp"
+                android:layout_marginEnd="0dp"/>
 
             <ImageView style="@style/FavoriteCommentIcon"
                 android:id="@+id/ic_comment"
