@@ -7,7 +7,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ikota.flickrclient.R;
 import com.squareup.otto.Bus;
@@ -41,6 +44,29 @@ public class UserActivity extends BaseActivity{
             fm.beginTransaction().add(R.id.container, mDisplayingFragment, tag).commit();
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_user, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_comment) {
+            CommentDialog dialog = CommentDialog.newInstance(getResources().getString(R.string.title));
+            dialog.setOnFinishListener(new CommentDialog.OnFinishListener() {
+                @Override
+                public void onFinish(String comment) {
+                    Toast.makeText(UserActivity.this,
+                            "comment : "+comment, Toast.LENGTH_SHORT).show();
+                }
+            });
+            dialog.show(getSupportFragmentManager(), "dialog");
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public void onResume() {

@@ -18,6 +18,16 @@
     <!-- this style is used in toolbar xml -->
     <style name ="LightPopupMenu" parent="android:Theme.Holo.Light"/>
 
+    <!-- style for Collction Dialog IN/OUT animation -->
+    <style name="CommentDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowAnimationStyle">@style/CommentDialogAnimation</item>
+    </style>
+
+    <style name="CommentDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/page_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/page_bottom_out</item>
+    </style>
+
     <style name="FavoriteCommentText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">56dp</item>
