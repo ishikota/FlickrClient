@@ -1,11 +1,23 @@
 package com.ikota.flickrclient.ui;
 
 
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Toast;
 
+import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.model.ListData;
+import com.ikota.flickrclient.util.ImageUtils;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
+import java.io.File;
 
 public class UserTimelineFragment extends UserBaseFragment{
 
@@ -34,7 +46,7 @@ public class UserTimelineFragment extends UserBaseFragment{
                             @Override
                             public void run() {
                                 if(isAdded()) {
-                                    Toast.makeText(getActivity(),
+                                    Toast.makeText(mAppContext,
                                             "Comment Created", Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -46,9 +58,47 @@ public class UserTimelineFragment extends UserBaseFragment{
 
             @Override
             public void onShareClicked(String title, String img_url) {
-                // todo: implement
+                Picasso.with(mAppContext)
+                        .load(img_url)
+                        .into(IMG_LOAD_HANDLER);
             }
         };
     }
+
+    private final Target IMG_LOAD_HANDLER = new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            Resources r = getResources();
+            File dist = ImageUtils.savePicture(mAppContext, bitmap, true);
+            if (dist != null) {
+                Uri uri = Uri.fromFile(dist);
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("image/jpg");
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                try {
+                    startActivity(Intent.createChooser(intent,r.getString(R.string.share_intent_title)));
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(mAppContext,r.getString(R.string.share_failed),Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(mAppContext,r.getString(R.string.share_failed),Toast.LENGTH_SHORT).show();
+            }
+
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+            Toast.makeText(mAppContext,
+                    getResources().getString(R.string.share_failed),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+            // do nothing
+        }
+    };
 
 }

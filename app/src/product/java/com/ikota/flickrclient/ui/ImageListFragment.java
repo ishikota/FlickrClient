@@ -57,7 +57,7 @@ public class ImageListFragment extends Fragment {
     @Inject public LoadMethod LOAD_METHOD;
     @Inject public ListAdapterGenerator ADAPTER_GENERATOR;
 
-    private Context mAppContext;
+    protected Context mAppContext;
 
     protected RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
