@@ -151,6 +151,9 @@ public class DataHolder {
                     "      { \"id\": \"18959318231\", \"owner\": \"133363540@N06\", \"secret\": \"b57dbb0d1f\", \"server\": \"491\", \"farm\": 1, \"title\": \"tumblr_np9cdslQWY1r3y74po3_1280\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 }\n" +
                     "    ] }, \"stat\": \"ok\" }";
 
+    public static final String PEOPLE_NO_INFO =
+            "{\"person\":{\"id\":\"131498071@N04\",\"nsid\":\"131498071@N04\",\"ispro\":0,\"can_buy_pro\":0,\"iconserver\":\"549\",\"iconfarm\":1,\"path_alias\":null,\"has_stats\":\"0\",\"username\":{\"_content\":\"britt vie\"},\"realname\":{\"_content\":\"britt vienonen\"},\"location\":{\"_content\":\"\"},\"timezone\":{\"label\":\"Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius\",\"offset\":\"+02:00\",\"timezone_id\":\"Europe\\/Helsinki\"},\"description\":{\"_content\":\"\"},\"photosurl\":{\"_content\":\"https:\\/\\/www.flickr.com\\/photos\\/131498071@N04\\/\"},\"profileurl\":{\"_content\":\"https:\\/\\/www.flickr.com\\/people\\/131498071@N04\\/\"},\"mobileurl\":{\"_content\":\"https:\\/\\/m.flickr.com\\/photostream.gne?id=131465932\"},\"photos\":{\"firstdatetaken\":{\"_content\":\"2015-04-05 11:41:54\"},\"firstdate\":{\"_content\":\"1437300506\"},\"count\":{\"_content\":32}}},\"stat\":\"ok\"}";
+
     public static final String PEOPLE_FAVORITE =
             "{ \"photos\": { \"page\": 1, \"pages\": \"1391\", \"perpage\": 24, \"total\": \"33379\", \n" +
                     "    \"photo\": [\n" +

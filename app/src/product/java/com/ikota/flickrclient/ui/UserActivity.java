@@ -102,7 +102,7 @@ public class UserActivity extends BaseActivity{
             mDisplayingFragment = fragment1;
         } else {
             // the case when orientation change occurred
-            adjustTabPosition((UserBaseFragment)mDisplayingFragment);
+            adjustTabPosition((UserTabImpl)mDisplayingFragment);
         }
 
         getSupportFragmentManager().beginTransaction().show(mDisplayingFragment).commit();
@@ -204,16 +204,14 @@ public class UserActivity extends BaseActivity{
         }
         fragment3 = fm.findFragmentByTag(TAG_FRAGMENT_3);
         if(fragment3 == null) {
-            fragment3 = new UserBaseFragment();
-            ObjectGraph graph = ObjectGraph.create(new UserPostListModule(nsid));
-            graph.inject(fragment3);
+            fragment3 = UserAboutFragment.newInstance(nsid);
             fm.beginTransaction().add(R.id.container, fragment3, TAG_FRAGMENT_3).commit();
             fm.beginTransaction().hide(fragment3).commit();
         }
 
     }
 
-    private void adjustTabPosition(final UserBaseFragment fragment) {
+    private void adjustTabPosition(final UserTabImpl fragment) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -280,7 +278,7 @@ public class UserActivity extends BaseActivity{
             fm.beginTransaction().show(mDisplayingFragment).commit();
 
             // adjust tab position for next displaying list
-            adjustTabPosition((UserBaseFragment)mDisplayingFragment);
+            adjustTabPosition((UserTabImpl)mDisplayingFragment);
         }
 
         @Override

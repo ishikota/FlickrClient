@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.ikota.flickrclient.R;
 
-public class UserBaseFragment extends ImageListFragment{
+public class UserBaseFragment extends ImageListFragment implements UserTabImpl{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,6 +63,7 @@ public class UserBaseFragment extends ImageListFragment{
 
     }
 
+    @Override
     public void notifyListState() {
         if(mRecyclerView.getChildAt(0) != null) {
             UserActivity.sTabEventBus.post(new UserActivity.ScrollEvent(mRecyclerView.getChildAt(0).getTop(), 1));
