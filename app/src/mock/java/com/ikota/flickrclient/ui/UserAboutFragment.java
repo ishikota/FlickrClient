@@ -119,7 +119,17 @@ public class UserAboutFragment extends UserBaseFragment{
         mEmptyView.setVisibility(mItemList.isEmpty() ? View.VISIBLE : View.GONE);
 
         if (refresh_list) {
-            mAdapter = new AboutAdapter(mAppContext, mItemList, null);
+            mAdapter = new AboutAdapter(mAppContext, mItemList, new AboutAdapter.OnClickCallback() {
+                @Override
+                public void onFlickrClicked(View view) {
+                    WebViewActivity.launch(getActivity(), "Flickr", "https:\\/\\/www.flickr.com\\/people\\/131498071@N04\\/");
+                }
+
+                @Override
+                public void onLocationClicked(View view) {
+
+                }
+            });
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.addOnScrollListener(scroll_lister);
         } else if (mAdapter != null) {

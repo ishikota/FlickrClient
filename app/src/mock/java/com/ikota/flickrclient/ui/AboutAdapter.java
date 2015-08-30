@@ -2,7 +2,6 @@ package com.ikota.flickrclient.ui;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +21,13 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
 
     private Context mContext;
     private List<PeopleInfo> mDataSet;
-    private final ImageAdapter.OnClickCallback mClickCallback;
+    private final OnClickCallback mClickCallback;
     private final LayoutInflater mInflater;
 
-    private final Bitmap small_iamge;
+    public interface OnClickCallback {
+        void onFlickrClicked(View view);
+        void onLocationClicked(View view);
+    }
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -40,14 +42,12 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
         }
     }
 
-    public AboutAdapter(Context context, List<PeopleInfo> myDataset,
-                        ImageAdapter.OnClickCallback listener) {
+    public AboutAdapter(Context context, List<PeopleInfo> myDataset, OnClickCallback listener) {
         mContext = context;
         mDataSet = myDataset;
         mClickCallback = listener;
         mInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        small_iamge = Bitmap.createBitmap(1080, 540, Bitmap.Config.ARGB_8888);
     }
 
     @Override
@@ -61,10 +61,16 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
         Resources r = mContext.getResources();
         holder.location.setText("Iowa City, USA");
         holder.description.setText(r.getString(R.string.description));
+        holder.location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mClickCallback!=null) mClickCallback.onLocationClicked(view);
+            }
+        });
         holder.flickr_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //mContext.startActivity();
+                if(mClickCallback!=null) mClickCallback.onFlickrClicked(view);
             }
         });
     }

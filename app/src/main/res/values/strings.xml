@@ -29,6 +29,7 @@
     <string name="tab_title_2">FAVORITE</string>
     <string name="tab_title_3">ABOUT</string>
     <string name="flickr">Flickr</string>
+    <string name="loading">Loading…</string>
 
 
 </resources>

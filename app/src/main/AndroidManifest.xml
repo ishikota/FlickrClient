@@ -27,6 +27,8 @@
             android:name=".ui.UserActivity"
             android:label="@string/user"/>
 
+        <activity android:name=".ui.WebViewActivity" />
+
     </application>
 
 </manifest>
