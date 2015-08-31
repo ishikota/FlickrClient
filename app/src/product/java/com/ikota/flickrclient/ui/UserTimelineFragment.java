@@ -23,7 +23,7 @@ import java.io.File;
 public class UserTimelineFragment extends UserBaseFragment{
 
     public interface OnTimelineClickCallback extends ImageAdapter.OnClickCallback {
-        void onCommentClicked(String title, String img_url);
+        void onCommentClicked(String id, String title, String img_url);
         void onShareClicked(String title, String img_url);
     }
 
@@ -37,16 +37,16 @@ public class UserTimelineFragment extends UserBaseFragment{
             }
 
             @Override
-            public void onCommentClicked(String title, String img_url) {
+            public void onCommentClicked(String id, String title, String img_url) {
                 final Handler handler = new Handler();
-                CommentDialog dialog = CommentDialog.newInstance(title, img_url);
+                CommentDialog dialog = CommentDialog.newInstance(id, title, img_url);
                 dialog.setOnFinishListener(new CommentDialog.OnFinishListener() {
                     @Override
-                    public void onFinish(String comment) {
+                    public void onFinish(final String comment) {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if(isAdded()) {
+                                if(isAdded() && !comment.isEmpty()) {
                                     View parent_layout = ((UserActivity) getActivity()).mContainer;
                                     Snackbar.make(parent_layout, R.string.posted, Snackbar.LENGTH_SHORT).show();
                                 }

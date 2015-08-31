@@ -1,5 +1,6 @@
 package com.ikota.flickrclient.ui;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,6 +22,15 @@ public class BaseActivity extends AppCompatActivity{
         ((AndroidApplication)getApplication())
                 .getObjectGraph()
                 .inject(getApplication());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // cleanup comment draft
+        SharedPreferences com_pref = getSharedPreferences(CommentDialog.PREF_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = com_pref.edit();
+        editor.clear().apply();
     }
 
     @Override

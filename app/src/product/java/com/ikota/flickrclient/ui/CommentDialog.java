@@ -1,6 +1,8 @@
 package com.ikota.flickrclient.ui;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -21,10 +23,17 @@ import com.squareup.picasso.Picasso;
 
 public class CommentDialog extends DialogFragment{
 
+    static final String PREF_NAME = "CommentDialog";
+    /** draft comment is saved with key comment_{item_id} */
+    private static final String PREF_KEY_PREFIX = "comment_";
+
+    private static final String EXTRA_ID = "id";
     private static final String EXTRA_TITLE = "title";
     private static final String EXTRA_IMAGE_URL = "url";
 
     private OnFinishListener mCallback;
+    private String id;
+    private EditText mEdit;
 
     public interface OnFinishListener {
         void onFinish(String comment);
@@ -34,13 +43,20 @@ public class CommentDialog extends DialogFragment{
         mCallback = listener;
     }
 
-    public static CommentDialog newInstance(String title, String img_url) {
+    public static CommentDialog newInstance(String id, String title, String img_url) {
         Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_ID, id);
         bundle.putString(EXTRA_TITLE, title);
         bundle.putString(EXTRA_IMAGE_URL, img_url);
         CommentDialog dialog = new CommentDialog();
         dialog.setArguments(bundle);
         return dialog;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        id = getArguments().getString(EXTRA_ID);
     }
 
     @NonNull
@@ -69,13 +85,34 @@ public class CommentDialog extends DialogFragment{
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Dialog dialog = getDialog();
+        String draft = getDraft(id);
+        if(dialog!=null && draft!=null) {
+            EditText edit = (EditText)dialog.findViewById(R.id.comment_edit);
+            edit.setText(draft);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mEdit!=null) {
+            String draft = mEdit.getText().toString();
+            saveDraft(id, draft);
+        }
+    }
+
     public void setupViews(final Dialog dialog) {
-        Bundle args = getArguments();
+        mEdit = (EditText)dialog.findViewById(R.id.comment_edit);
         ImageView image = (ImageView)dialog.findViewById(R.id.image);
         TextView title = (TextView)dialog.findViewById(R.id.title);
+        Bundle args = getArguments();
         title.setText(args.getString(EXTRA_TITLE));
 
-        if(getActivity()!=null) {
+        if(isAdded()) {
             Picasso.with(getActivity())
                     .load(args.getString(EXTRA_IMAGE_URL))
                     .into(image);
@@ -84,11 +121,27 @@ public class CommentDialog extends DialogFragment{
         dialog.findViewById(R.id.ic_comment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText edit = (EditText)dialog.findViewById(R.id.comment_edit);
-                String comment = edit.getText().toString();
+                String comment = mEdit.getText().toString();
+                mEdit.setText("");
                 mCallback.onFinish(comment);
                 dismiss();
             }
         });
+    }
+
+    private String getDraft(String id) {
+        if(getActivity()==null || id==null) return null;
+        SharedPreferences prefs =
+                getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return prefs.getString(PREF_KEY_PREFIX + id, null);
+    }
+
+    private void saveDraft(String id, String draft) {
+        if(getActivity()==null || id==null) return;
+        SharedPreferences prefs =
+                getActivity().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(PREF_KEY_PREFIX + id, draft);
+        editor.apply();
     }
 }

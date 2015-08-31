@@ -105,6 +105,7 @@ public class UserTimelineAdapter
             public void onClick(View view) {
                 ((UserTimelineFragment.OnTimelineClickCallback)mClickCallback)
                         .onCommentClicked(
+                                item.id,
                                 item.title,
                                 item.generatePhotoURL(view_size, is_wifi_connected));
             }
