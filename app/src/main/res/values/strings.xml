@@ -26,16 +26,19 @@
     <string name="share_failed">Failed to share</string>
     <string name="share_intent_title">Choose app to share</string>
 
+    <!-- action response -->
+    <string name="loading">Loading…</string>
+    <string name="sending">Sending…</string>
+    <string name="posted">Posted</string>
+    <string name="network_problem_message">Network Error Occurred</string>
 
     <!-- others -->
-    <string name="network_problem_message">Network Error Occurred</string>
     <string name="no_data">No image found…</string>
     <string name="detail_container">detail_container</string>
     <string name="tab_title_1">POST</string>
     <string name="tab_title_2">FAVORITE</string>
     <string name="tab_title_3">ABOUT</string>
     <string name="flickr">Flickr</string>
-    <string name="loading">Loading…</string>
     <string name="comment_prefix">comment to</string>
     <string name="comment_hint">Comment here</string>
 

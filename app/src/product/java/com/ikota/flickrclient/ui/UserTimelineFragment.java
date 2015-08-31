@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Toast;
 
@@ -46,8 +47,8 @@ public class UserTimelineFragment extends UserBaseFragment{
                             @Override
                             public void run() {
                                 if(isAdded()) {
-                                    Toast.makeText(mAppContext,
-                                            "Comment Created", Toast.LENGTH_SHORT).show();
+                                    View parent_layout = ((UserActivity) getActivity()).mContainer;
+                                    Snackbar.make(parent_layout, R.string.posted, Snackbar.LENGTH_SHORT).show();
                                 }
                             }
                         }, 2000);

@@ -9,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +56,8 @@ public class UserActivity extends BaseActivity{
 
     private int mActionbarAlpha = 255;
 
+    View mContainer;
+
     public static Intent createIntent(Activity activity, PhotoInfo.Owner owner) {
         Gson gson = new Gson();
         String parsed_json = gson.toJson(owner);
@@ -75,6 +78,7 @@ public class UserActivity extends BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
+        mContainer = findViewById(R.id.container);
 
         // get content
         Gson gson = new Gson();
