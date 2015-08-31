@@ -64,6 +64,7 @@ public class ImageDetailActivity extends BaseActivity{
         findViewById(R.id.ic_favorite).setOnClickListener(favo_click_listener);
         findViewById(R.id.ic_comment).setClickable(true);
         findViewById(R.id.ic_share).setClickable(true);
+        findViewById(R.id.ic_download).setClickable(true);
     }
 
     @Override

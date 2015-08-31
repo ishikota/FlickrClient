@@ -79,7 +79,7 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             // set content
             vh.text_title.setText(r.getString(R.string.title));
             vh.text_username.setText(r.getString(R.string.username));
-            vh.text_date.setText(r.getString(R.string.date));
+            vh.text_date.setText("Posted on "+r.getString(R.string.date));
             vh.text_description.setText(r.getString(R.string.description));
 
             // set comment
