@@ -8,4 +8,8 @@
         <item name="android:windowSharedElementExitTransition">@android:transition/move</item>
     </style>
 
+    <style name="DetailFooter">
+        <item name="android:elevation">4dp</item>
+    </style>
+
 </resources>

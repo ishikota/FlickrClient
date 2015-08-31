@@ -51,4 +51,8 @@
         <item name="android:visibility">visible</item>
     </style>
 
+    <style name="DetailFooter">
+
+    </style>
+
 </resources>

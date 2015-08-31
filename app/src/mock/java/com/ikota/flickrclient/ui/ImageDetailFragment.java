@@ -1,35 +1,50 @@
 package com.ikota.flickrclient.ui;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.ikota.flickrclient.R;
+import com.ikota.flickrclient.data.model.ListData;
 
 
-public class ImageDetailFragment extends Fragment {
+public class ImageDetailFragment extends Fragment{
+
+    private Context mAppContext;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mAppContext = activity.getApplicationContext();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_image_detail, container, false);
 
-        Resources r = getResources();
-        ((TextView) root.findViewById(R.id.title)).setText(r.getString(R.string.title));
-        ((TextView) root.findViewById(R.id.user_name)).setText(r.getString(R.string.username));
-        ((TextView) root.findViewById(R.id.description)).setText(r.getString(R.string.description));
-        ((TextView) root.findViewById(R.id.date_text)).setText(r.getString(R.string.date));
-
-        root.findViewById(R.id.user_icon).setOnClickListener(new View.OnClickListener() {
+        RecyclerView mRecyclerView = (RecyclerView) root.findViewById(android.R.id.list);
+        mRecyclerView.setHasFixedSize(false);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mAppContext));
+        mRecyclerView.setAdapter(new ImageDetailAdapter(mAppContext, new ImageAdapter.OnClickCallback() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v, ListData.Photo data) {
                 Intent intent = new Intent(getActivity(), UserActivity.class);
                 startActivity(intent);
+            }
+        }));
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                ImageDetailActivity.sTabEventBus.post(new ImageDetailActivity.ScrollEvent(dy));
             }
         });
 

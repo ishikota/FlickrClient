@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/btn_bg"
+    android:clickable="true"
+    android:paddingLeft="12dp"
+    android:paddingRight="16dp">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/user_icon"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:padding="12dp"
+        android:src="#AA000000"
+        app:riv_mutate_background="true"
+        app:riv_oval="true"/>
+
+    <TextView
+        android:id="@+id/comment_text"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:textColor="@android:color/tertiary_text_light"
+        android:gravity="center_vertical"/>
+
+</LinearLayout>

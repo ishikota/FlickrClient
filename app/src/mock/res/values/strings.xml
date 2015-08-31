@@ -5,4 +5,11 @@
     <string name="description">I think that if I had to say ONE company that I would love to work for, that is the epitomy of all my fave editorial design, it would be Washington based Design Army. I’ve shown you their ALICE IN WONDERLAND work before (Oh my god I still can’t get over how great it is!) but they’ve done so much other great work. Who else can make wedding editorial not nauseating?!?!?!?</string>
     <string name="date">2015–06–24 11:25:59</string>
     <string name="user_info">1909 followers | 10,871,670 views</string>
+    <string name="comment1">Looking good</string>
+    <string name="comment2">yes, at least mine</string>
+    <string name="comment3">life would be complete.</string>
+    <string name="comment_summary_prefix">See All</string>
+    <string name="comment_summary_suffix">Comments</string>
+    <string name="no_comment">No Comment</string>
+
 </resources>
