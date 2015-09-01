@@ -7,6 +7,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 
+import com.ikota.flickrclient.data.model.CommentList;
 import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.data.model.PeopleInfo;
 import com.ikota.flickrclient.data.model.PhotoInfo;
@@ -189,6 +190,26 @@ public class FlickrAPITest extends ActivityInstrumentationTestCase2<PopularListA
             @Override
             public void failure(RetrofitError error) {
                 fail("Error on getFavorites API");
+            }
+        });
+        lock.await(10000, TimeUnit.MILLISECONDS);
+        assertEquals(0, lock.getCount());
+    }
+
+    @Test
+    public void getCommentList() throws Exception {
+        app.api().getCommentList("20623135501", new Callback<CommentList>() {
+            @Override
+            public void success(CommentList commentList, Response response) {
+                assertEquals("ok", commentList.stat);
+                assertEquals("20623135501", commentList.comments.photo_id);
+                assertTrue(commentList.comments.comment.size() >= 30);
+                lock.countDown();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
             }
         });
         lock.await(10000, TimeUnit.MILLISECONDS);

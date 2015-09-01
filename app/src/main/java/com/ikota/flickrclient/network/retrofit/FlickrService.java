@@ -1,5 +1,6 @@
 package com.ikota.flickrclient.network.retrofit;
 
+import com.ikota.flickrclient.data.model.CommentList;
 import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.data.model.PeopleInfo;
 import com.ikota.flickrclient.data.model.PhotoInfo;
@@ -38,4 +39,7 @@ public interface FlickrService {
 
     @GET(METHOD_PREFIX+"flickr.favorites.getPublicList"+FORMAT_JSON+JSON_CALLBACK+APIKEY_SEARCH_STRING+AUTO_TOKEN_STRING+APISIG_STRING)
     void getPeopleFavorites(@Query("user_id") String user_id, @Query("page") int page, @Query("per_page") int per_page, Callback<ListData> cb);
+
+    @GET(METHOD_PREFIX+"flickr.photos.comments.getList"+FORMAT_JSON+JSON_CALLBACK+APIKEY_SEARCH_STRING+AUTO_TOKEN_STRING+APISIG_STRING)
+    void getCommentList(@Query("photo_id") String photo_id, Callback<CommentList> cb);
 }
