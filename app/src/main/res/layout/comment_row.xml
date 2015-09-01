@@ -23,6 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:textColor="@android:color/tertiary_text_light"
+        android:maxLines="3"
+        android:ellipsize="end"
         android:gravity="center_vertical"/>
 
 </LinearLayout>

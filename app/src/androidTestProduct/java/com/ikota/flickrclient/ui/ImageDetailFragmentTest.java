@@ -44,6 +44,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.core.deps.guava.base.Preconditions.checkNotNull;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.ikota.flickrclient.ui.UserAboutFragmentTest.startsWith;
@@ -130,9 +131,9 @@ public class ImageDetailFragmentTest extends ActivityInstrumentationTestCase2<Im
         activityRule.launchActivity(intent);
         TimingIdlingResource idlingResource = new TimingIdlingResource(3000);  // wait dummy network operation
         Espresso.registerIdlingResources(idlingResource);
-        onView(withId(R.id.description)).check(matches(withLines(3)));
-        onView(withId(R.id.description)).perform(click());
-        onView(withId(R.id.description)).check(matches(withLines(9)));
+        onView(withId(R.id.description)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
+        onView(withId(R.id.description_parent)).perform(click());
+        onView(withId(R.id.description)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
         Espresso.unregisterIdlingResources(idlingResource);
     }
 

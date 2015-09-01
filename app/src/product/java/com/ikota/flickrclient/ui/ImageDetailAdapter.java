@@ -56,18 +56,7 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         switch (viewType) {
             case 0:
                 v = mInflater.inflate(R.layout.row_image_detail, parent, false);
-                ContentViewHolder vh = new ContentViewHolder(v);
-                vh.text_description.setTag(false);  // if expanded
-                vh.text_description.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        boolean expanded = (boolean) view.getTag();
-                        int max_line = expanded ? 3 : 100;
-                        ((TextView)view).setMaxLines(max_line);
-                        view.setTag(!expanded);
-                    }
-                });
-                return vh;
+                return new ContentViewHolder(v);
             default:
                 return null;
         }
@@ -180,8 +169,8 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         // set text data
         vh.text_title.setText(data.photo.title._content);
-        vh.text_description.setText(data.photo.description._content);
         vh.text_date.setText("Posted on " + data.photo.dates.taken);
+        vh.text_description.setText(data.photo.description._content);
         vh.text_username.setText(data.photo.owner.username);
         vh.image_user.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,6 +178,20 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 mCallback.onUserClicked(view, data.photo.owner);
             }
         });
+        if(!data.photo.description._content.isEmpty()) {
+            vh.ic_ellip.setVisibility(View.VISIBLE);
+            vh.description_parent.setTag(false);  // if expanded
+            vh.description_parent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    boolean expanded = (boolean) view.getTag();
+                    view.setTag(!expanded);
+                    vh.text_description.setVisibility(expanded ? View.GONE : View.VISIBLE);
+                    vh.ic_ellip.setImageResource(expanded ?
+                            R.drawable.ic_arrow_drop_down_black_18dp : R.drawable.ic_arrow_drop_up_black_18dp);
+                }
+            });
+        }
     }
 
     private void loadComments(final ContentViewHolder vh, String photo_id) {
@@ -255,17 +258,19 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     public static class ContentViewHolder extends RecyclerView.ViewHolder {
-        public ImageView image_main, image_user;
-        public TextView text_title, text_description, text_username, text_date;
-        public LinearLayout comment_parent;
+        public ImageView image_main, image_user, ic_ellip;
+        public TextView text_title, text_date, text_description, text_username;
+        public LinearLayout description_parent, comment_parent;
         public ContentViewHolder(View v) {
             super(v);
             image_main = (ImageView)v.findViewById(R.id.image);
             image_user = (ImageView)v.findViewById(R.id.user_icon);
+            ic_ellip = (ImageView)v.findViewById(R.id.ic_ellipsize);
             text_title = (TextView)v.findViewById(R.id.title);
+            text_date = (TextView)v.findViewById(R.id.date_text);
             text_description = (TextView)v.findViewById(R.id.description);
             text_username = (TextView)v.findViewById(R.id.user_name);
-            text_date = (TextView)v.findViewById(R.id.date_text);
+            description_parent = (LinearLayout)v.findViewById(R.id.description_parent);
             comment_parent = (LinearLayout)v.findViewById(R.id.comment_parent);
         }
     }
