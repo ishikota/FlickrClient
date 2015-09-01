@@ -1,37 +1,22 @@
 package com.ikota.flickrclient.ui;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.graphics.Palette;
-import android.util.DisplayMetrics;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.data.model.PhotoInfo;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 
 public class ImageDetailFragment extends Fragment {
-
-    private DisplayMetrics mDisplayInfo = new DisplayMetrics();
-
-    private ImageView mItemImage, mUserImage;
-    private TextView mTitleText, mUserText, mDateText, mDescriptText;
 
     public static ImageDetailFragment newInstance(String json, String cache_size) {
         ImageDetailFragment fragment = new ImageDetailFragment();
@@ -42,151 +27,51 @@ public class ImageDetailFragment extends Fragment {
         return fragment;
     }
 
+    private AndroidApplication mAppContext;
+    ListData.Photo mData;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        //mAppContext = activity.getApplicationContext();
-        // save display sizes in mDisplayInfo
-        activity.getWindowManager().getDefaultDisplay().getMetrics(mDisplayInfo);
+        mAppContext = (AndroidApplication)activity.getApplication();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_image_detail, container, false);
-        mItemImage = (ImageView) root.findViewById(R.id.image);
-        mTitleText = (TextView) root.findViewById(R.id.title);
-        mUserImage = (ImageView) root.findViewById(R.id.user_icon);
-        mUserText = (TextView) root.findViewById(R.id.user_name);
-        mDateText = (TextView) root.findViewById(R.id.date_text);
-        mDescriptText = (TextView) root.findViewById(R.id.description);
-
-        // get content
+        // setup content
         Gson gson = new Gson();
         String json = getArguments().getString(ImageDetailActivity.EXTRA_CONTENT);
-        ListData.Photo content = gson.fromJson(json, ListData.Photo.class);
+        String size = getArguments().getString(ImageDetailActivity.EXTRA_CACHE_SIZE);
+        mData = gson.fromJson(json, ListData.Photo.class);
 
-        setupContent(content);
-        loadDetailInfo(content);
+        View root = inflater.inflate(R.layout.fragment_image_detail, container, false);
+        RecyclerView mRecyclerView = (RecyclerView) root.findViewById(android.R.id.list);
+        mRecyclerView.setHasFixedSize(false);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mAppContext));
+        mRecyclerView.setAdapter(new ImageDetailAdapter(mAppContext, mData, size,
+                new ImageDetailAdapter.OnClickCallback() {
+                    @Override
+                    public void onUserClicked(View v, PhotoInfo.Owner owner) {
+                        Intent intent = UserActivity.createIntent(getActivity(), owner);
+                        startActivity(intent);
+                    }
+                }));
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                ImageDetailActivity.sTabEventBus.post(new ImageDetailActivity.ScrollEvent(dy));
+            }
+        });
 
         return root;
     }
-
-    private void setupContent(ListData.Photo content) {
-        // set item information which we got from list data
-        mTitleText.setText(content.title);
-        String url = content
-                .generatePhotoURL(getArguments().getString(ImageDetailActivity.EXTRA_CACHE_SIZE));
-        Picasso.with(getActivity()).load(url).into(new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                adjustViewHeight(mItemImage,
-                        mDisplayInfo.widthPixels,
-                        bitmap.getWidth(),
-                        bitmap.getHeight());
-                mItemImage.setImageBitmap(bitmap);
-                adjustColorScheme(bitmap);
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-                // do nothing
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-                // do nothing
-            }
-        });
-    }
-
-    private void adjustViewHeight(View target, int disp_w, int img_w, int img_h) {
-        if(img_w == 0 || img_h == 0) return;
-        target.getLayoutParams().width = disp_w;
-        target.getLayoutParams().height = (int) (disp_w * (double)img_h/img_w);
-    }
-
-    private void adjustColorScheme(Bitmap image) {
-        Palette.from(image).generate(
-                new Palette.PaletteAsyncListener() {
-                    @Override
-                    public void onGenerated(Palette palette) {
-                        Palette.Swatch vibrant = palette.getVibrantSwatch();
-                        if (vibrant != null) {
-                            mTitleText.setBackgroundColor(vibrant.getRgb());
-                            mTitleText.setTextColor(vibrant.getTitleTextColor());
-//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                                Window window = getActivity().getWindow();
-//                                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//                                window.setStatusBarColor(vibrant.get());
-//                            }
-                        }
-                    }
-                }
-        );
-    }
-
-    private void loadDetailInfo(ListData.Photo content) {
-        ((AndroidApplication)getActivity().getApplication()).api().getPhotoInfo(content.id, new Callback<PhotoInfo>() {
-            @Override
-            public void success(PhotoInfo photoInfo, Response response) {
-                if (isAdded()) {
-                    setDetailInfo(photoInfo);
-                }
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                if (isAdded()) {
-                    Toast.makeText(
-                            getActivity(),
-                            getResources().getString(R.string.network_problem_message),
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    /**
-     * Read json data and set image
-     * @param info : photo info holder object
-     */
-    private void setDetailInfo(final PhotoInfo info){
-        String original_img_url = info.photo.generatePhotoURL("b");
-        Picasso.with(getActivity()).load(original_img_url).into(new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                adjustViewHeight(mItemImage,
-                        mDisplayInfo.widthPixels,
-                        bitmap.getWidth(),
-                        bitmap.getHeight());
-                mItemImage.setImageBitmap(bitmap);
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-                // do nothing
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-                // do nothing
-            }
-        });
-
-        Picasso.with(getActivity()).load(info.photo.owner.generateOwnerIconURL()).into(mUserImage);
-        mUserImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(UserActivity.createIntent(getActivity(), info.photo.owner));
-            }
-        });
-
-        Picasso.with(getActivity()).load(info.photo.owner.generateOwnerIconURL()).into(mUserImage);
-        mUserText.setText(info.photo.owner.username);
-        mDateText.setText(info.photo.dates.taken);
-        mDescriptText.setText(info.photo.description._content);
-    }
-
 
 }

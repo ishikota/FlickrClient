@@ -6,6 +6,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 
+import com.ikota.flickrclient.data.model.CommentList;
 import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.data.model.PeopleInfo;
 import com.ikota.flickrclient.data.model.PhotoInfo;
@@ -171,7 +172,7 @@ public class MockClientTest extends ActivityInstrumentationTestCase2<PopularList
 
     @Test
     public void getFavorites() throws Exception {
-        app.api().getPeopleFavorites("133363540@N06",1,24, new Callback<ListData>() {
+        app.api().getPeopleFavorites("133363540@N06", 1, 24, new Callback<ListData>() {
             @Override
             public void success(ListData item, Response response) {
                 assertEquals("ok", item.stat);
@@ -186,11 +187,42 @@ public class MockClientTest extends ActivityInstrumentationTestCase2<PopularList
 
             @Override
             public void failure(RetrofitError error) {
-                fail("Error o getPeopleInfo API");
+                fail("Error on getPeopleInfo API");
             }
         });
         lock.await(10000, TimeUnit.MILLISECONDS);
         assertEquals(0, lock.getCount());
+    }
+
+    @Test
+    public void getCommentList() throws Exception {
+        app.api().getCommentList("20623135501", new Callback<CommentList>() {
+            @Override
+            public void success(CommentList item, Response response) {
+                assertEquals("20623135501", item.comments.photo_id);
+                assertEquals("ok", item.stat);
+                CommentList.Comment comment = item.comments.comment.get(0);
+                assertEquals("30134429-20623135501-72157657254905896", comment.id);
+                assertEquals("43287538@N00", comment.author);
+                assertEquals("¡! Nature B■x !¡", comment.authorname);
+                assertEquals("2918", comment.iconserver);
+                assertEquals(3, comment.iconfarm);
+                assertEquals("1439709894", comment.datecreate);
+                assertEquals("https://www.flickr.com/photos/cannon_s5_is/20623135501/#comment72157657254905896", comment.permalink);
+                assertEquals("", comment.path_alias);
+                assertEquals("", comment.realname);
+                assertEquals("C'est magnifique !", comment._content);
+                lock.countDown();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fail("Error om getCommentList API");
+            }
+        });
+        lock.await(10000, TimeUnit.MILLISECONDS);
+        assertEquals(0, lock.getCount());
+
     }
 
 

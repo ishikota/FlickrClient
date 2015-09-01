@@ -7,4 +7,5 @@
     <dimen name="user_icon_margin">132dp</dimen>
     <dimen name="user_header_padding">350dp</dimen>
     <dimen name="user_header_size">302dp</dimen>
+    <dimen name="status_bar_height">24dp</dimen>
 </resources>

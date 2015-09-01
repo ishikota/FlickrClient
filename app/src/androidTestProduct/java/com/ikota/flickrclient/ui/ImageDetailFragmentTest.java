@@ -1,22 +1,31 @@
 package com.ikota.flickrclient.ui;
 
+import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
+import android.support.test.espresso.UiController;
+import android.support.test.espresso.ViewAction;
+import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ikota.flickrclient.IdlingResource.TimingIdlingResource;
 import com.ikota.flickrclient.R;
-import com.ikota.flickrclient.IdlingResource.TextIdlingResource;
 import com.ikota.flickrclient.data.DataHolder;
 import com.ikota.flickrclient.di.DummyAPIModule;
 import com.ikota.flickrclient.network.Util;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -29,9 +38,16 @@ import java.util.List;
 import dagger.ObjectGraph;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.pressBack;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.core.deps.guava.base.Preconditions.checkNotNull;
+import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.ikota.flickrclient.ui.UserAboutFragmentTest.startsWith;
+import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
 public class ImageDetailFragmentTest extends ActivityInstrumentationTestCase2<ImageDetailActivity> {
@@ -90,21 +106,107 @@ public class ImageDetailFragmentTest extends ActivityInstrumentationTestCase2<Im
     @Test
     public void checkDetailInfo_isSet() {
         setupMockServer(null);
-        ImageDetailActivity activity = activityRule.launchActivity(intent);
-        ImageDetailFragment fragment = (ImageDetailFragment)activity.getSupportFragmentManager().findFragmentByTag(
-                ImageDetailFragment.class.getSimpleName());
-        //noinspection ConstantConditions
-        TextView use_name = (TextView)fragment.getView().findViewById(R.id.user_name);
+        activityRule.launchActivity(intent);
         onView(withId(R.id.title)).check(matches(withText("A Quiet Evening")));  // we know its title from list
         onView(withId(R.id.user_name)).check(matches(withText("")));
         onView(withId(R.id.description)).check(matches(withText("")));
         onView(withId(R.id.date_text)).check(matches(withText("")));
-        TextIdlingResource idlingResource = new TextIdlingResource(use_name);
+        TimingIdlingResource idlingResource = new TimingIdlingResource(3000);  // wait dummy network operation
         Espresso.registerIdlingResources(idlingResource);
-        onView(withId(R.id.title)).check(matches(withText("A Quiet Evening")));
+        onView(withId(R.id.title)).check(matches(withText("Sundown on the Oregon Coast")));
         onView(withId(R.id.user_name)).check(matches(withText("Cole Chase Photography")));
-        onView(withId(R.id.description)).check(matches(withText("I was treated to this brilliant sunset on my recent trip to Oregon.  This photo was captured in Ecola State Park which is one of my favorite places to visit on the coast. The deactivated Tillamook Rock Lighthouse is seen on the small island in the distance.  Comments &amp; views are always appreciated. Thanks for looking &amp; have a wonderful Sunday!")));
-        onView(withId(R.id.date_text)).check(matches(withText("2015-08-02 22:40:28")));
+        onView(withId(R.id.description)).check(matches(startsWith("I was treated to this")));
+        onView(withId(R.id.date_text)).check(matches(withText("Posted on 2015-08-02 22:40:28")));
+        onView(withId(R.id.comment_parent)).check(matches(withChildOn(0, "C'est magnifique !")));
+        onView(withId(R.id.comment_parent)).check(matches(withChildOn(1, "A wonderful moment")));
+        onView(withId(R.id.comment_parent)).check(matches(withChildOn(2, "beautiful capture Cole")));
+        onView(withId(R.id.comment_parent)).check(matches(withChildOn(3, "See All 35 Comments")));
+        Espresso.unregisterIdlingResources(idlingResource);
+    }
+
+    @Test
+    public void testDescriptionExpand() {
+        setupMockServer(null);
+        activityRule.launchActivity(intent);
+        TimingIdlingResource idlingResource = new TimingIdlingResource(3000);  // wait dummy network operation
+        Espresso.registerIdlingResources(idlingResource);
+        onView(withId(R.id.description)).check(matches(withLines(3)));
+        onView(withId(R.id.description)).perform(click());
+        onView(withId(R.id.description)).check(matches(withLines(9)));
+        Espresso.unregisterIdlingResources(idlingResource);
+    }
+
+    @Test
+    public void goUserPageFromComment() {
+        setupMockServer(null);
+        activityRule.launchActivity(intent);
+        TimingIdlingResource idlingResource = new TimingIdlingResource(3000);  // wait dummy network operation
+        Espresso.registerIdlingResources(idlingResource);
+        onView(withId(R.id.comment_parent)).perform(clickComment());
+        Espresso.unregisterIdlingResources(idlingResource);
+        Instrumentation.ActivityMonitor receiverActivityMonitor =
+                InstrumentationRegistry.getInstrumentation().addMonitor(UserActivity.class.getName(), null, false);
+        Activity activity = receiverActivityMonitor.waitForActivityWithTimeout(1000);
+        assertEquals("Launched Activity is not UserActivity", UserActivity.class, activity.getClass());
+        onView(withText("¡! Nature B■x !¡")).check(matches(isDisplayed()));
+        pressBack();
+        SystemClock.sleep(2000);
+    }
+
+    public static Matcher<View> withChildOn(final int position, final String comment) {
+        final Matcher<String> textMatcher = is(comment);
+        checkNotNull(textMatcher);
+        return new BoundedMatcher<View, LinearLayout>(LinearLayout.class) {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with child on:");
+                textMatcher.describeTo(description);
+            }
+
+            @Override
+            protected boolean matchesSafely(LinearLayout linearLayout) {
+                LinearLayout parent = (LinearLayout)linearLayout.getChildAt(position);
+                TextView textView = (TextView)parent.findViewById(R.id.comment_text);
+                return textMatcher.matches(textView.getText().toString());
+            }
+        };
+    }
+
+    public static Matcher<View> withLines(final int lines) {
+        final Matcher<Integer> lineMatcher = is(lines);
+        return new BoundedMatcher<View, TextView>(TextView.class) {
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with lines : ");
+                lineMatcher.describeTo(description);
+            }
+
+            @Override
+            protected boolean matchesSafely(TextView textView) {
+                return lines == textView.getLayout().getLineCount();
+            }
+        };
+    }
+
+    public static ViewAction clickComment() {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(LinearLayout.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return "click comment:";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                LinearLayout parent = (LinearLayout)view;
+                parent.getChildAt(0).performClick();
+            }
+        };
     }
 
 }

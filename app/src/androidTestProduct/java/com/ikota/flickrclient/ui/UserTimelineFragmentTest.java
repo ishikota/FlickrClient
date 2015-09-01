@@ -46,6 +46,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anyOf;
 
 @RunWith(AndroidJUnit4.class)
 public class UserTimelineFragmentTest extends ActivityInstrumentationTestCase2<UserActivity>{
@@ -157,13 +158,14 @@ public class UserTimelineFragmentTest extends ActivityInstrumentationTestCase2<U
     public void commentSave() {
         setupMockServer(null);
         UserActivity activity = activityRule.launchActivity(intent);
-        String target = "hoge hoge";
+        String target1 = "hoge hoge";
+        String target2 = "Hoge hoge";
         startCommentDialog(activity);
-        onView(withId(R.id.comment_edit)).perform(typeText(target));
+        onView(withId(R.id.comment_edit)).perform(typeText(target2));
         pressBack();pressBack();  // close IME, finish dialog
         SystemClock.sleep(2000);
         startCommentDialog(activity);
-        onView(withId(R.id.comment_edit)).check(matches(withText(target)));
+        onView(withId(R.id.comment_edit)).check(matches(anyOf(withText(target1), withText(target2))));
     }
 
     @Test

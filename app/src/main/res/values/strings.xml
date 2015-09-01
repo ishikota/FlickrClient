@@ -42,6 +42,9 @@
     <string name="comment_prefix">comment to</string>
     <string name="comment_hint">Comment here</string>
     <string name="comment">Comment</string>
+    <string name="no_comment">No Comment</string>
+    <string name="comment_summary_prefix">See All</string>
+    <string name="comment_summary_suffix">Comments</string>
 
 
 </resources>

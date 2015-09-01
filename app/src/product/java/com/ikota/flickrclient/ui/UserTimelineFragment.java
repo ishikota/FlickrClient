@@ -70,7 +70,7 @@ public class UserTimelineFragment extends UserBaseFragment{
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
             Resources r = getResources();
-            File dist = ImageUtils.savePicture(mAppContext, bitmap, true);
+            File dist = ImageUtils.savePicture(mAppContext, bitmap, true).second;
             if (dist != null) {
                 Uri uri = Uri.fromFile(dist);
                 Intent intent = new Intent(Intent.ACTION_SEND);

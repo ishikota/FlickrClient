@@ -8,8 +8,4 @@
     <string name="comment1">Looking good</string>
     <string name="comment2">yes, at least mine</string>
     <string name="comment3">life would be complete.</string>
-    <string name="comment_summary_prefix">See All</string>
-    <string name="comment_summary_suffix">Comments</string>
-    <string name="no_comment">No Comment</string>
-
 </resources>

@@ -12,6 +12,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
 
 import com.ikota.flickrclient.R;
@@ -71,7 +72,7 @@ public class ImageUtils {
         return pictureFile;
     }
 
-    public static File savePicture(Context context, Bitmap bmp, boolean if_register_to_gallery) {
+    public static Pair<Boolean, File> savePicture(Context context, Bitmap bmp, boolean if_register_to_gallery) {
         boolean flg = true;
         FileOutputStream fos = null;
         File pictureFile = getOutputMediaFile();
@@ -97,15 +98,7 @@ public class ImageUtils {
                 e.printStackTrace();
             }
         }
-
-        if(context!=null) {
-            String message;
-            if (flg) message = context.getResources().getString(R.string.save_success);
-            else message = context.getResources().getString(R.string.save_failed);
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-        }
-
-        return pictureFile;
+        return new Pair<>(flg, pictureFile);
     }
 
     /** Create a file Uri for saving an image */
@@ -162,7 +155,7 @@ public class ImageUtils {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                 Resources r = context.getResources();
-                File dist = ImageUtils.savePicture(context, bitmap, true);
+                File dist = ImageUtils.savePicture(context, bitmap, true).second;
                 if (dist != null) {
                     Uri uri = Uri.fromFile(dist);
                     Intent intent = new Intent(Intent.ACTION_SEND);

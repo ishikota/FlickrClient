@@ -4,9 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include android:id="@+id/image"
-        layout="@layout/detail_trans_share" />
-
     <FrameLayout android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,0 +1,273 @@
+package com.ikota.flickrclient.ui;
+
+import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.support.v7.graphics.Palette;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.ikota.flickrclient.R;
+import com.ikota.flickrclient.data.model.CommentList;
+import com.ikota.flickrclient.data.model.ListData;
+import com.ikota.flickrclient.data.model.PhotoInfo;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+
+public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+
+    public interface OnClickCallback {
+        void onUserClicked(View v, PhotoInfo.Owner owner);
+    }
+
+    private AndroidApplication mAppContenxt;
+    private ListData.Photo mSimpleData;
+    private PhotoInfo mDetailData;
+    private String mCacheSize;
+    private LayoutInflater mInflater;
+    private OnClickCallback mCallback;
+
+    public ImageDetailAdapter(AndroidApplication app, ListData.Photo data, String cache_size,
+                              OnClickCallback listener) {
+        mAppContenxt = app;
+        mSimpleData = data;
+        mCacheSize = cache_size;
+        mInflater = (LayoutInflater) mAppContenxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mCallback = listener;
+    }
+
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v;
+        switch (viewType) {
+            case 0:
+                v = mInflater.inflate(R.layout.row_image_detail, parent, false);
+                ContentViewHolder vh = new ContentViewHolder(v);
+                vh.text_description.setTag(false);  // if expanded
+                vh.text_description.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        boolean expanded = (boolean) view.getTag();
+                        int max_line = expanded ? 3 : 100;
+                        ((TextView)view).setMaxLines(max_line);
+                        view.setTag(!expanded);
+                    }
+                });
+                return vh;
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if(position == 0) {
+            ContentViewHolder vh = (ContentViewHolder)holder;
+            if(mDetailData==null) {
+                setSimpleData(vh, mSimpleData);
+                loadComments(vh, mSimpleData.id);
+                loadDetailData(vh);
+            } else {
+                setDetailData(vh, mDetailData);
+            }
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return 1;
+    }
+
+    private void setSimpleData(final ContentViewHolder vh, final ListData.Photo data) {
+        // load cached image and change title color
+        Target target = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bmp, Picasso.LoadedFrom from) {
+                adjustViewHeight(vh.image_main, getScreenWidth(), bmp.getWidth(), bmp.getHeight());
+                vh.image_main.setImageBitmap(bmp);
+                vh.text_title.setText(data.title);
+                adjustColorScheme(vh.text_title, bmp);
+            }
+
+            @Override public void onBitmapFailed(Drawable errorDrawable) {}
+
+            @Override public void onPrepareLoad(Drawable placeHolderDrawable) {}
+        };
+        String url = data.generatePhotoURL(mCacheSize);
+        Picasso.with(mAppContenxt).load(url).into(target);
+        vh.text_title.setText(data.title);
+    }
+
+    private int getScreenWidth() {
+        int display_mode = mAppContenxt.getResources().getConfiguration().orientation;
+        if(display_mode == Configuration.ORIENTATION_PORTRAIT) {
+            return mAppContenxt.SCREEN_WIDTH;
+        } else {
+            int statusbar_height = (int)mAppContenxt.getResources().getDimension(R.dimen.status_bar_height);
+            return mAppContenxt.SCREEN_HEIGHT + statusbar_height;
+        }
+    }
+
+    private void adjustViewHeight(View target, int disp_w, int img_w, int img_h) {
+        if(img_w == 0 || img_h == 0) return;
+        target.getLayoutParams().width = disp_w;
+        target.getLayoutParams().height = (int) (disp_w * (double)img_h/img_w);
+    }
+
+    private void adjustColorScheme(final TextView title, Bitmap image) {
+        Palette.PaletteAsyncListener listener = new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                Palette.Swatch vibrant = palette.getVibrantSwatch();
+                if (vibrant != null) {
+                    title.setBackgroundColor(vibrant.getRgb());
+                    title.setTextColor(vibrant.getTitleTextColor());
+                }
+            }
+        };
+        Palette.from(image).generate(listener);
+    }
+
+    private void loadDetailData(final ContentViewHolder vh) {
+        mAppContenxt.api().getPhotoInfo(mSimpleData.id, new Callback<PhotoInfo>() {
+
+            @Override
+            public void success(PhotoInfo photoInfo, Response response) {
+                mDetailData = photoInfo;
+                setDetailData(vh, mDetailData);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                String message = mAppContenxt.getResources().getString(R.string.network_problem_message);
+                Toast.makeText(mAppContenxt, message, Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
+
+    private void setDetailData(final ContentViewHolder vh, final PhotoInfo data) {
+        // load item and user images
+        Target target = new Target() {
+
+            @Override
+            public void onBitmapLoaded(Bitmap bmp, Picasso.LoadedFrom from) {
+                adjustViewHeight(vh.image_main, getScreenWidth(), bmp.getWidth(), bmp.getHeight());
+                vh.image_main.setImageBitmap(bmp);  // prevent load animation again
+            }
+
+            @Override public void onBitmapFailed(Drawable errorDrawable) {}
+
+            @Override public void onPrepareLoad(Drawable placeHolderDrawable) {}
+
+        };
+        Picasso.with(mAppContenxt).load(data.photo.generatePhotoURL("b")).into(target);
+        Picasso.with(mAppContenxt).load(data.photo.owner.generateOwnerIconURL()).into(vh.image_user);
+
+        // set text data
+        vh.text_title.setText(data.photo.title._content);
+        vh.text_description.setText(data.photo.description._content);
+        vh.text_date.setText("Posted on " + data.photo.dates.taken);
+        vh.text_username.setText(data.photo.owner.username);
+        vh.image_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCallback.onUserClicked(view, data.photo.owner);
+            }
+        });
+    }
+
+    private void loadComments(final ContentViewHolder vh, String photo_id) {
+        mAppContenxt.api().getCommentList(photo_id, new Callback<CommentList>() {
+
+            @Override
+            public void success(CommentList commentList, Response response) {
+                int size = commentList.comments.comment.size();
+                if (size > 0) {
+                    vh.comment_parent.removeAllViews();  // remove no-comment view
+                    for (int i = 0; i < Math.min(3, size); i++) {
+                        CommentList.Comment comment = commentList.comments.comment.get(i);
+                        View child = createCommentView(vh.comment_parent, comment);
+                        vh.comment_parent.addView(child);
+                    }
+                }
+                if (size > 3) {
+                    vh.comment_parent.addView(createSummaryView(vh.comment_parent, size));
+                }
+            }
+
+            @Override public void failure(RetrofitError error) {}
+
+        });
+    }
+
+    private View createCommentView(LinearLayout parent, final CommentList.Comment comment) {
+        final View v = mInflater.inflate(R.layout.comment_row, parent, false);
+
+        ((TextView) v.findViewById(R.id.comment_text)).setText(comment._content);
+
+        Picasso.with(mAppContenxt)
+                .load(generateOwnerIconURL(comment.author))
+                .into((ImageView) v.findViewById(R.id.user_icon));
+
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PhotoInfo.Owner owner = new PhotoInfo.Owner();
+                owner.nsid = comment.author;
+                owner.iconserver = comment.iconserver;
+                owner.iconfarm = String.valueOf(comment.iconfarm);
+                owner.username = comment.authorname;
+                mCallback.onUserClicked(view, owner);
+            }
+        });
+
+        return v;
+    }
+
+    private View createSummaryView(LinearLayout parent, int size) {
+        Resources r = mAppContenxt.getResources();
+        View v = mInflater.inflate(R.layout.comment_row, parent, false);
+        ImageView icon = (ImageView)v.findViewById(R.id.user_icon);
+        icon.setImageResource(R.drawable.ic_trending_flat_black_18dp);
+        icon.setAlpha(0.5f);
+        String summary = r.getString(R.string.comment_summary_prefix)+" "+size+" "+r.getString(R.string.comment_summary_suffix);
+        ((TextView)v.findViewById(R.id.comment_text)).setText(summary);
+        return v;
+    }
+
+    private String generateOwnerIconURL(String nsid) {
+        return "https://flickr.com/buddyicons/"+nsid+".jpg";
+    }
+
+    public static class ContentViewHolder extends RecyclerView.ViewHolder {
+        public ImageView image_main, image_user;
+        public TextView text_title, text_description, text_username, text_date;
+        public LinearLayout comment_parent;
+        public ContentViewHolder(View v) {
+            super(v);
+            image_main = (ImageView)v.findViewById(R.id.image);
+            image_user = (ImageView)v.findViewById(R.id.user_icon);
+            text_title = (TextView)v.findViewById(R.id.title);
+            text_description = (TextView)v.findViewById(R.id.description);
+            text_username = (TextView)v.findViewById(R.id.user_name);
+            text_date = (TextView)v.findViewById(R.id.date_text);
+            comment_parent = (LinearLayout)v.findViewById(R.id.comment_parent);
+        }
+    }
+
+}

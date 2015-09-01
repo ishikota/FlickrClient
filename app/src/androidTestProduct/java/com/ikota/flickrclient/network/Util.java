@@ -15,6 +15,7 @@ public class Util {
         {put(FlickrURL.PEOPLE_INFO, DataHolder.PEOPLE_INFO);}
         {put(FlickrURL.PUBLIC_PHOTO, DataHolder.PEOPLE_PUBLIC_PHOTO);}
         {put(FlickrURL.PEOPLE_FAVORITE, DataHolder.PEOPLE_FAVORITE);}
+        {put(FlickrURL.COMMENT_LIST, DataHolder.COMMENT_LIST_JSON);}
     };
 
 }
