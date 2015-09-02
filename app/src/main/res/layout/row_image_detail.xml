@@ -155,8 +155,10 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
+                android:text="@string/no_comment"
                 android:textColor="@android:color/tertiary_text_light"
-                android:gravity="center_vertical"/>
+                android:gravity="center_vertical"
+                android:contentDescription="@string/no_comment"/>
 
         </LinearLayout>
 

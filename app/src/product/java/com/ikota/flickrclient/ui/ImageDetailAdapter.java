@@ -199,6 +199,7 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             @Override
             public void success(CommentList commentList, Response response) {
+                if(commentList.comments.comment == null) return;  // no-comment case
                 int size = commentList.comments.comment.size();
                 if (size > 0) {
                     vh.comment_parent.removeAllViews();  // remove no-comment view

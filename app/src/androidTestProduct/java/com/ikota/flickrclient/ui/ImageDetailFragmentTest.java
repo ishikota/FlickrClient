@@ -23,6 +23,7 @@ import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.DataHolder;
 import com.ikota.flickrclient.di.DummyAPIModule;
 import com.ikota.flickrclient.network.Util;
+import com.ikota.flickrclient.network.retrofit.FlickrURL;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -44,6 +45,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.core.deps.guava.base.Preconditions.checkNotNull;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -152,6 +154,16 @@ public class ImageDetailFragmentTest extends ActivityInstrumentationTestCase2<Im
         onView(withText("¡! Nature B■x !¡")).check(matches(isDisplayed()));
         pressBack();
         SystemClock.sleep(2000);
+    }
+
+    @Test
+    public void nullCommentHandling() {
+        HashMap<String,String> map = new HashMap<>();
+        map.put(FlickrURL.COMMENT_LIST, "{\"comments\":{\"photo_id\":\"21043155476\"},\"stat\":\"ok\"}");
+        setupMockServer(map);
+        activityRule.launchActivity(intent);
+        SystemClock.sleep(3000);
+        onView(withContentDescription("No Comment")).check(matches(withText(R.string.no_comment)));
     }
 
     public static Matcher<View> withChildOn(final int position, final String comment) {
