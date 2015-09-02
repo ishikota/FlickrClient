@@ -36,8 +36,13 @@ public class ImageDetailFragment extends Fragment{
         mRecyclerView.setAdapter(new ImageDetailAdapter(mAppContext, new ImageAdapter.OnClickCallback() {
             @Override
             public void onClick(View v, ListData.Photo data) {
-                Intent intent = new Intent(getActivity(), UserActivity.class);
-                startActivity(intent);
+                if (v.getTag() == null) {
+                    Intent intent = new Intent(getActivity(), UserActivity.class);
+                    startActivity(intent);
+                } else {
+                    Intent intent = new Intent(getActivity(), CommentListActivity.class);
+                    startActivity(intent);
+                }
             }
         }));
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

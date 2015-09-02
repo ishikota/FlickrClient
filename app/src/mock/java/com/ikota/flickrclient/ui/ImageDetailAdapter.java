@@ -135,6 +135,13 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         icon.setAlpha(0.5f);
         String summary = r.getString(R.string.comment_summary_prefix)+" 56 "+r.getString(R.string.comment_summary_suffix);
         ((TextView)v.findViewById(R.id.comment_text)).setText(summary);
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setTag("GO CommentActivity!!");
+                mCallback.onClick(view, null);
+            }
+        });
         return v;
     }
 }

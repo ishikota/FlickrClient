@@ -28,9 +28,11 @@
             android:padding="8dp">
 
             <TextView
+                android:id="@+id/title_prefix"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/comment_prefix"
+                android:textColor="@android:color/secondary_text_light"
                 android:textSize="12sp"/>
 
             <TextView
@@ -39,6 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:textStyle="bold"
+                android:textColor="@android:color/secondary_text_light"
                 android:lines="1"
                 android:ellipsize="end"/>
 
@@ -51,6 +54,7 @@
         android:background="#E0E0E0"/>
 
     <LinearLayout
+        android:id="@+id/edit_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

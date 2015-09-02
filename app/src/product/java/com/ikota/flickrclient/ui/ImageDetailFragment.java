@@ -28,7 +28,6 @@ public class ImageDetailFragment extends Fragment {
     }
 
     private AndroidApplication mAppContext;
-    ListData.Photo mData;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,7 +48,7 @@ public class ImageDetailFragment extends Fragment {
         Gson gson = new Gson();
         String json = getArguments().getString(ImageDetailActivity.EXTRA_CONTENT);
         String size = getArguments().getString(ImageDetailActivity.EXTRA_CACHE_SIZE);
-        mData = gson.fromJson(json, ListData.Photo.class);
+        ListData.Photo mData = gson.fromJson(json, ListData.Photo.class);
 
         View root = inflater.inflate(R.layout.fragment_image_detail, container, false);
         RecyclerView mRecyclerView = (RecyclerView) root.findViewById(android.R.id.list);
@@ -61,6 +60,10 @@ public class ImageDetailFragment extends Fragment {
                     public void onUserClicked(View v, PhotoInfo.Owner owner) {
                         Intent intent = UserActivity.createIntent(getActivity(), owner);
                         startActivity(intent);
+                    }
+                    @Override
+                    public void onCommentClicked(String url, String title, String json) {
+                        startActivity(CommentListActivity.createIntent(mAppContext, url, title, json));
                     }
                 }));
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

@@ -68,7 +68,7 @@ public class ImageDetailFragmentTest extends ActivityInstrumentationTestCase2<Im
             false);   // launchActivity. False so we can customize the intent per test method
 
     private void setupMockServer(HashMap<String, String> override_map) {
-        HashMap<String, String> map = Util.RESPONSE_MAP;
+        HashMap<String, String> map = new HashMap<>(Util.RESPONSE_MAP);
 
         if(override_map!=null) {
             for (String key : override_map.keySet()) {

@@ -53,6 +53,7 @@ public class ImageDetailActivity extends BaseActivity{
     static Bus sTabEventBus = new Bus();
 
     private int mToolbarAlpha = 255;
+    private int mToolbarColor;
     private ListData.Photo mData;
     private ImageView mFavoIcon;
     private TextView mFavoText;
@@ -73,6 +74,7 @@ public class ImageDetailActivity extends BaseActivity{
         setClickListener();
 
         if (savedInstanceState == null) {
+            mToolbarColor = getResources().getColor(R.color.primary);
             String tag = ImageDetailFragment.class.getSimpleName();
             String size = getIntent().getStringExtra(EXTRA_CACHE_SIZE);
             getSupportFragmentManager().beginTransaction()
@@ -102,7 +104,7 @@ public class ImageDetailActivity extends BaseActivity{
         // change actionbar alpha with RecyclerView scroll
         if(mActionBarToolbar!=null) {  // nullpo occured when config changes
             mToolbarAlpha += event.dy;
-            mToolbarAlpha = Math.max(0, Math.min(255, mToolbarAlpha));
+            mToolbarAlpha = Math.max(0, Math.min(200, mToolbarAlpha));
             mActionBarToolbar.getBackground().mutate().setAlpha(mToolbarAlpha);
         }
     }
@@ -111,6 +113,17 @@ public class ImageDetailActivity extends BaseActivity{
         final int dy;
         public ScrollEvent(int dy) {
             this.dy = dy;
+        }
+    }
+
+    @Subscribe
+    public void receiveToolbarColor(PaletteEvent event) {
+    }
+
+    static class PaletteEvent {
+        final int color;
+        public PaletteEvent(int color) {
+            this.color = color;
         }
     }
 

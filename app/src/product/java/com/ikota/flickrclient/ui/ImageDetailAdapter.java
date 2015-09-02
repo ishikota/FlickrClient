@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.model.CommentList;
 import com.ikota.flickrclient.data.model.ListData;
@@ -31,6 +32,7 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public interface OnClickCallback {
         void onUserClicked(View v, PhotoInfo.Owner owner);
+        void onCommentClicked(String url, String title, String json);
     }
 
     private AndroidApplication mAppContenxt;
@@ -126,6 +128,11 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     title.setBackgroundColor(vibrant.getRgb());
                     title.setTextColor(vibrant.getTitleTextColor());
                 }
+                Palette.Swatch muted = palette.getMutedSwatch();
+                if(muted!=null) {
+                    ImageDetailActivity.sTabEventBus
+                            .post(new ImageDetailActivity.PaletteEvent(muted.getRgb()));
+                }
             }
         };
         Palette.from(image).generate(listener);
@@ -198,7 +205,7 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         mAppContenxt.api().getCommentList(photo_id, new Callback<CommentList>() {
 
             @Override
-            public void success(CommentList commentList, Response response) {
+            public void success(final CommentList commentList, Response response) {
                 if(commentList.comments.comment == null) return;  // no-comment case
                 int size = commentList.comments.comment.size();
                 if (size > 0) {
@@ -210,7 +217,18 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     }
                 }
                 if (size > 3) {
-                    vh.comment_parent.addView(createSummaryView(vh.comment_parent, size));
+                    View v = createSummaryView(vh.comment_parent, size);
+                    v.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Gson gson = new Gson();
+                            String url = mSimpleData.generatePhotoURL(mCacheSize);
+                            String title = mSimpleData.title;
+                            String json = gson.toJson(commentList);
+                            mCallback.onCommentClicked(url, title, json);
+                        }
+                    });
+                    vh.comment_parent.addView(v);
                 }
             }
 
