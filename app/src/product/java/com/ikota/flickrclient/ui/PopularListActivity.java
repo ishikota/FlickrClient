@@ -1,12 +1,15 @@
 package com.ikota.flickrclient.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.ikota.flickrclient.R;
+import com.ikota.flickrclient.data.model.PhotoInfo;
 import com.ikota.flickrclient.di.PopularListModule;
+import com.ikota.flickrclient.util.FlickrUtil;
 
 import dagger.ObjectGraph;
 
@@ -41,6 +44,11 @@ public class PopularListActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_my_page) {
+            PhotoInfo.Owner owner = FlickrUtil.getKota();
+            Intent intent = UserActivity.createIntent(PopularListActivity.this, owner);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 }

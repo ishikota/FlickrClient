@@ -12,6 +12,7 @@
 
     <!-- menu actions -->
     <string name="action_settings">Settings</string>
+    <string name="action_my_page">MyPage</string>
     <string name="action_download">Download</string>
     <string name="action_share">Share</string>
 
