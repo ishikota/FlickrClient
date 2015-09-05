@@ -61,6 +61,7 @@ public class BaseActivity extends AppCompatActivity{
             mActionBarToolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
             if (mActionBarToolbar != null) {
                 mActionBarToolbar.setTitle("");
+                mActionBarToolbar.setNavigationIcon(R.drawable.ic_flickr);
                 setSupportActionBar(mActionBarToolbar);
             }
         }
