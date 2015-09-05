@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -64,7 +65,7 @@ public class ImageListFragment extends Fragment {
     private ArrayList<ListData.Photo> mItemList;
 
     protected ProgressBar mProgress;
-    private View mEmptyView;
+    protected TextView mEmptyView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     protected boolean end_flg;
@@ -133,7 +134,7 @@ public class ImageListFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_image_list, container, false);
 
         mRecyclerView = (RecyclerView) root.findViewById(android.R.id.list);
-        mEmptyView = root.findViewById(android.R.id.empty);
+        mEmptyView = (TextView)root.findViewById(android.R.id.empty);
         mProgress = (ProgressBar) root.findViewById(R.id.progress);
         mSwipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.swipe_refresh);
 

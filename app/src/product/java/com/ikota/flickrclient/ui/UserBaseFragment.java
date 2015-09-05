@@ -18,6 +18,7 @@ public class UserBaseFragment extends ImageListFragment implements UserTabImpl{
         View root = super.onCreateView(inflater, container, savedInstanceState);
         int padding = (int)getResources().getDimension(R.dimen.user_header_padding);
         mRecyclerView.setPadding(0, padding, 0, 0);
+        mEmptyView.setText("");
         return root;
     }
 

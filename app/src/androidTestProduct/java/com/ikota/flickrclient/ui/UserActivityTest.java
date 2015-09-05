@@ -11,6 +11,7 @@ import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.contrib.RecyclerViewActions;
+import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +28,7 @@ import com.ikota.flickrclient.data.DataHolder;
 import com.ikota.flickrclient.data.model.PhotoInfo;
 import com.ikota.flickrclient.di.DummyAPIModule;
 import com.ikota.flickrclient.network.Util;
+import com.ikota.flickrclient.network.retrofit.FlickrURL;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -50,6 +52,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.core.deps.guava.base.Preconditions.checkNotNull;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
+import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.ikota.flickrclient.OrientationChangeAction.orientationLandscape;
@@ -235,6 +238,22 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
         Espresso.registerIdlingResources(ti);
         onView(withId(R.id.tab_layout)).check(matches(withY(is(expected))));
         Espresso.unregisterIdlingResources(ti);
+    }
+
+    @Test
+    public void noTextEmptyView() {
+        HashMap<String, String> map = new HashMap<>();
+        String empty_response = "{\"photos\":{\"page\":1,\"pages\":25,\"perpage\":20,\"total\":500,\"photo\":[],\"stat\":\"ok\"}";
+        map.put(FlickrURL.PEOPLE_FAVORITE, empty_response);
+        map.put(FlickrURL.PUBLIC_PHOTO, DataHolder.PEOPLE_PUBLIC_PHOTO);
+        setupMockServer(map);
+        // go list and tap to go detail
+        activityRule.launchActivity(intent);
+        onView(withText(R.string.tab_title_2)).perform(click());
+        TimingIdlingResource idlingResource = new TimingIdlingResource(3000);
+        Espresso.registerIdlingResources(idlingResource);
+        onView(allOf(withId(android.R.id.empty), withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))).check(matches(withText("")));
+        Espresso.unregisterIdlingResources(idlingResource);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
