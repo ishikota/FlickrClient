@@ -1,9 +1,9 @@
 package com.ikota.flickrclient.ui;
 
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Toast;
 
 import com.ikota.flickrclient.data.model.ListData;
 
@@ -18,8 +18,10 @@ public class SearchFragment extends ImageListFragment {
         final ImageAdapter.OnClickCallback super_callback = super.getItemClickListener();
         return new OnSearchClickCallback() {
             @Override
-            public void onTagClicked(String title) {
-                Toast.makeText(getActivity(), title, Toast.LENGTH_SHORT).show();
+            public void onTagClicked(String query) {
+                Intent intent = new Intent(getActivity(), TagListActivity.class);
+                intent.putExtra(TagListActivity.EXTRA_TAG, query);
+                startActivity(intent);
             }
 
             @Override

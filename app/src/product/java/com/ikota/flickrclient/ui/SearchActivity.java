@@ -3,6 +3,7 @@ package com.ikota.flickrclient.ui;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
@@ -78,11 +79,9 @@ public class SearchActivity extends BaseActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override public boolean onQueryTextSubmit(String query) {
                 if(!query.isEmpty()) {
-//                    Intent intent = new Intent(SearchActivity.this, TagListActivity.class);
-//                    intent.putExtra(TagListActivity.EXTRA_TAG, query);
-//                    startActivity(intent);
-//                    overridePendingTransition(R.anim.slide_in_from_right, R.anim.fade_out_depth );
-                    Log.i("SearchActivity", query);
+                    Intent intent = new Intent(SearchActivity.this, TagListActivity.class);
+                    intent.putExtra(TagListActivity.EXTRA_TAG, query);
+                    startActivity(intent);
                 }
                 return true;
             }

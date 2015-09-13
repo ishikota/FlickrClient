@@ -245,4 +245,34 @@ public class DataHolder {
             "      { \"score\": 75, \"_content\": \"leicammonochrom\" }\n" +
             "    ] }, \"stat\": \"ok\" }";
 
+    public static final String PHOTOS_BY_TAG = "{ \"photos\": { \"page\": 1, \"pages\": \"204\", \"perpage\": 24, \"total\": \"4882\", \n" +
+            "    \"photo\": [\n" +
+            "      { \"id\": \"21296232326\", \"owner\": \"133982212@N04\", \"secret\": \"11292471cb\", \"server\": \"5662\", \"farm\": 6, \"title\": \"sexy\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20921309510\", \"owner\": \"133982212@N04\", \"secret\": \"de7348ce41\", \"server\": \"720\", \"farm\": 1, \"title\": \"high heels\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"21109407625\", \"owner\": \"133982212@N04\", \"secret\": \"b685a97ff9\", \"server\": \"757\", \"farm\": 1, \"title\": \"hurt bunion in heels\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"21083204806\", \"owner\": \"133982212@N04\", \"secret\": \"a9e1f90fc9\", \"server\": \"737\", \"farm\": 1, \"title\": \"2-2D9578C0-280383-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"21099314072\", \"owner\": \"133982212@N04\", \"secret\": \"f4e08233c7\", \"server\": \"5808\", \"farm\": 6, \"title\": \"2-35AB0250-201145-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"21099314222\", \"owner\": \"133982212@N04\", \"secret\": \"2b3941d580\", \"server\": \"593\", \"farm\": 1, \"title\": \"2-5CFAD50C-274276-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"21109407475\", \"owner\": \"133982212@N04\", \"secret\": \"5cc2a9d471\", \"server\": \"5809\", \"farm\": 6, \"title\": \"2-03CC21C5-280742-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"21117123161\", \"owner\": \"133982212@N04\", \"secret\": \"a7927c0fd7\", \"server\": \"631\", \"farm\": 1, \"title\": \"2-4ECF5959-186663-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20488332573\", \"owner\": \"133982212@N04\", \"secret\": \"8fb437b451\", \"server\": \"5748\", \"farm\": 6, \"title\": \"2-C959C9CA-191809-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20921516368\", \"owner\": \"133982212@N04\", \"secret\": \"271eede329\", \"server\": \"5693\", \"farm\": 6, \"title\": \"4-0B6E836C-202296-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"21117119321\", \"owner\": \"133982212@N04\", \"secret\": \"f43825d8fb\", \"server\": \"5684\", \"farm\": 6, \"title\": \"sexy legs\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"21099309122\", \"owner\": \"133982212@N04\", \"secret\": \"271f9fd494\", \"server\": \"703\", \"farm\": 1, \"title\": \"bare feet\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20488329753\", \"owner\": \"133982212@N04\", \"secret\": \"7e317d9a2b\", \"server\": \"5670\", \"farm\": 6, \"title\": \"4-4D3050F5-280771-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20488329403\", \"owner\": \"133982212@N04\", \"secret\": \"a0b69dfcc4\", \"server\": \"738\", \"farm\": 1, \"title\": \"4-6D4DA019-132448-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20922602079\", \"owner\": \"133982212@N04\", \"secret\": \"be086d7855\", \"server\": \"5828\", \"farm\": 6, \"title\": \"4-5FDBD4E5-182328-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"21099308842\", \"owner\": \"133982212@N04\", \"secret\": \"e178be1ab2\", \"server\": \"569\", \"farm\": 1, \"title\": \"4-5CFAD50C-274276-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20921303100\", \"owner\": \"133982212@N04\", \"secret\": \"c6dcdef86f\", \"server\": \"5706\", \"farm\": 6, \"title\": \"bare feet\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20922601839\", \"owner\": \"133982212@N04\", \"secret\": \"69a26e3875\", \"server\": \"616\", \"farm\": 1, \"title\": \"legs in heels\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20922601719\", \"owner\": \"133982212@N04\", \"secret\": \"fa594fcdf1\", \"server\": \"686\", \"farm\": 1, \"title\": \"high heels\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20488329063\", \"owner\": \"133982212@N04\", \"secret\": \"e4a60d0f04\", \"server\": \"5715\", \"farm\": 6, \"title\": \"4-8E5A9265-256096-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20921513888\", \"owner\": \"133982212@N04\", \"secret\": \"f9a5d5284a\", \"server\": \"5686\", \"farm\": 6, \"title\": \"4-9CC87D7D-271276-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20921513188\", \"owner\": \"133982212@N04\", \"secret\": \"0ebb5acd60\", \"server\": \"579\", \"farm\": 1, \"title\": \"4-27C794C1-255846-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"20921513388\", \"owner\": \"133982212@N04\", \"secret\": \"666b9df535\", \"server\": \"614\", \"farm\": 1, \"title\": \"4-13E0D553-167740-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 },\n" +
+            "      { \"id\": \"21109400635\", \"owner\": \"133982212@N04\", \"secret\": \"f1121bb212\", \"server\": \"648\", \"farm\": 1, \"title\": \"4-025BB7DB-160620-480\", \"ispublic\": 1, \"isfriend\": 0, \"isfamily\": 0 }\n" +
+            "    ] }, \"stat\": \"ok\" }";
+
+
+
 }

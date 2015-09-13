@@ -263,4 +263,27 @@ public class MockClientTest extends ActivityInstrumentationTestCase2<PopularList
         assertEquals(0, lock.getCount());
     }
 
+    @Test
+    public void getPhotosByTag() throws Exception{
+        app.api().getPhotosByTag(1, 24, "feb23", new Callback<ListData>() {
+            @Override
+            public void success(ListData listData, Response response) {
+                assertEquals("ok", listData.stat);
+                assertEquals(1, listData.photos.page);
+                assertEquals(24, listData.photos.perpage);
+                assertEquals(24, listData.photos.photo.size());
+                ListData.Photo photo = listData.photos.photo.get(0);
+                assertEquals("21296232326", photo.id);
+                lock.countDown();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fail("Error on getPhotosByTag API call");
+            }
+        });
+        lock.await(10000, TimeUnit.MILLISECONDS);
+        assertEquals(0, lock.getCount());
+    }
+
 }

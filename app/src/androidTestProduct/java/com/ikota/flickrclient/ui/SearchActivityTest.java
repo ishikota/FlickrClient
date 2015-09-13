@@ -1,5 +1,6 @@
 package com.ikota.flickrclient.ui;
 
+import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
@@ -8,6 +9,7 @@ import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
+import android.view.inputmethod.EditorInfo;
 
 import com.ikota.flickrclient.IdlingResource.TimingIdlingResource;
 import com.ikota.flickrclient.di.DummyAPIModule;
@@ -25,7 +27,10 @@ import java.util.List;
 import dagger.ObjectGraph;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasImeAction;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
@@ -65,6 +70,8 @@ public class SearchActivityTest extends ActivityInstrumentationTestCase2<SearchA
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+        injectInstrumentation(instrumentation);
     }
 
     @Test
@@ -77,6 +84,30 @@ public class SearchActivityTest extends ActivityInstrumentationTestCase2<SearchA
         Espresso.unregisterIdlingResources(idlingResource);
         onView(withId(android.R.id.list)).perform(RecyclerViewActions.scrollToPosition(19));
         onView(withText("leicammonochrom")).check(matches(withText("leicammonochrom")));
+    }
+
+    @Test
+    public void searchAndGo() {
+        setupMockServer(null);
+        activityRule.launchActivity(new Intent());
+
+        // Set up an ActivityMonitor
+        Instrumentation.ActivityMonitor receiverActivityMonitor =
+                getInstrumentation().addMonitor(TagListActivity.class.getName(),null, false);
+
+        onView(withId(android.support.v7.appcompat.R.id.search_src_text)).perform(typeText("hogehoge"));
+        onView(hasImeAction(EditorInfo.IME_ACTION_GO)).perform(pressImeActionButton());
+
+        // assertion to DetailActivity
+        Activity activity = receiverActivityMonitor.waitForActivityWithTimeout(1000);
+        // Remove the ActivityMonitor
+        getInstrumentation().removeMonitor(receiverActivityMonitor);
+        assertNotNull("TagListActivity is not null", activity);
+        assertEquals("Launched Activity is not TagListActivity", TagListActivity.class, activity.getClass());
+
+        Intent intent = activity.getIntent();
+        String tag = intent.getStringExtra(TagListActivity.EXTRA_TAG);
+        assertEquals("hogehoge", tag);
     }
 
 }

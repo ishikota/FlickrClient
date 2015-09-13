@@ -46,4 +46,7 @@ public interface FlickrService {
 
     @GET(METHOD_PREFIX+"flickr.tags.getHotList"+FORMAT_JSON+JSON_CALLBACK+APIKEY_SEARCH_STRING+AUTO_TOKEN_STRING+APISIG_STRING)
     void getHotTagList(Callback<HotTagList> cb);
+
+    @GET(METHOD_PREFIX+"flickr.photos.search"+FORMAT_JSON+JSON_CALLBACK+APIKEY_SEARCH_STRING+AUTO_TOKEN_STRING+APISIG_STRING)
+    void getPhotosByTag(@Query("page") int page, @Query("per_page") int per_page, @Query("tags") String tags, Callback<ListData> cb);
 }

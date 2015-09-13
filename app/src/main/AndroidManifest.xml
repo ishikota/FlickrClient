@@ -25,13 +25,16 @@
 
         <activity
             android:name=".ui.UserActivity"
-            android:label="@string/user"/>
+            android:label="@string/user"
+            android:theme="@style/UserPageTheme"/>
 
         <activity android:name=".ui.WebViewActivity" />
 
         <activity android:name=".ui.CommentListActivity"/>
 
         <activity android:name=".ui.SearchActivity" />
+
+        <activity android:name=".ui.TagListActivity" />
 
         <!-- menu_search -->
         <activity android:name=".ui.SearchableActivity" >
