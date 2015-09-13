@@ -256,6 +256,22 @@ public class UserActivityTest extends ActivityInstrumentationTestCase2<UserActiv
         Espresso.unregisterIdlingResources(idlingResource);
     }
 
+    @Test
+    public void keepTabHeightWhenTabSwitch() {
+        setupMockServer(null);
+        UserActivity activity = activityRule.launchActivity(intent);
+        TimingIdlingResource idlingResource = new TimingIdlingResource(3000);
+        Espresso.registerIdlingResources(idlingResource);
+        onView(allOf(withId(android.R.id.list), withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE))).perform(RecyclerViewActions.scrollToPosition(12));
+        Espresso.unregisterIdlingResources(idlingResource);
+        float expected = activity.findViewById(R.id.tab_layout).getY();
+        onView(withText("FAVORITE")).perform(click());
+        TimingIdlingResource idlingResource1 = new TimingIdlingResource(100);
+        Espresso.registerIdlingResources(idlingResource1);
+        onView(withId(R.id.tab_layout)).check(matches(withY(is(expected))));
+        Espresso.unregisterIdlingResources(idlingResource1);
+    }
+
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private static Matcher<View> withAlpha(final Matcher<Integer> alphaMatcher) {
         checkNotNull(alphaMatcher);

@@ -49,6 +49,9 @@ public class UserActivity extends BaseActivity{
 
     private TabLayout mTabLayout;
     private int mSelectedTabPos = 0;
+    private int tab_pos1 = 0;
+    private int tab_pos2 = 0;
+    private int tab_pos3 = 0;
 
     private int mActionBarHeight;
     private int mTabHeight;
@@ -134,6 +137,7 @@ public class UserActivity extends BaseActivity{
             mActionBarHeight = TypedValue.
                     complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
         }
+        tab_pos1 = tab_pos2 = tab_pos3 = mHeaderPadding - mTabHeight;
     }
 
     private void setupActionBar() {
@@ -262,6 +266,20 @@ public class UserActivity extends BaseActivity{
 
         @Override
         public void onTabSelected(TabLayout.Tab tab) {
+
+            // save current tab position
+            switch (mTag) {
+                case TAG_FRAGMENT_1:
+                    tab_pos1 = (int)mTabLayout.getY();
+                    break;
+                case TAG_FRAGMENT_2:
+                    tab_pos2 = (int)mTabLayout.getY();
+                    break;
+                case TAG_FRAGMENT_3:
+                    tab_pos3 = (int)mTabLayout.getY();
+                    break;
+            }
+
             mSelectedTabPos = tab.getPosition();
             FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction().hide(mDisplayingFragment).commit();
@@ -269,14 +287,20 @@ public class UserActivity extends BaseActivity{
                 case 0:
                     mDisplayingFragment = fragment1;
                     mTag = TAG_FRAGMENT_1;
+                    ((UserBaseFragment)mDisplayingFragment).scrollList(tab_pos1 - (int) mTabLayout.getY());
+                    tab_pos1 = (int)mTabLayout.getY();
                     break;
                 case 1:
                     mDisplayingFragment = fragment2;
                     mTag = TAG_FRAGMENT_2;
+                    ((UserBaseFragment)mDisplayingFragment).scrollList(tab_pos2 - (int) mTabLayout.getY());
+                    tab_pos2 = (int)mTabLayout.getY();
                     break;
                 case 2:
                     mDisplayingFragment = fragment3;
                     mTag = TAG_FRAGMENT_3;
+                    ((UserAboutFragment)mDisplayingFragment).scrollList(tab_pos3 - (int) mTabLayout.getY());
+                    tab_pos3 = (int)mTabLayout.getY();
                     break;
             }
             fm.beginTransaction().show(mDisplayingFragment).commit();

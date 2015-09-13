@@ -161,4 +161,13 @@ public class UserAboutFragment extends Fragment implements UserTabImpl {
         }
     }
 
+    public void scrollList(final int y) {
+        mRecyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.scrollBy(0, y);
+            }
+        }, 30);  // delay is needed to scroll when display new tab
+    }
+
 }
