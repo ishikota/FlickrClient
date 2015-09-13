@@ -221,4 +221,28 @@ public class DataHolder {
             "      { \"id\": \"30134429-20623135501-72157657363931995\", \"author\": \"56777547@N02\", \"authorname\": \"Miss M Schneiderhead\", \"iconserver\": \"8552\", \"iconfarm\": 9, \"datecreate\": \"1439768342\", \"permalink\": \"https:\\/\\/www.flickr.com\\/photos\\/cannon_s5_is\\/20623135501\\/#comment72157657363931995\", \"path_alias\": \"\", \"realname\": \"Marion\", \"_content\": \"Gorgeous! I can see why you love it here. I would like to live in the lighthouse!\" },\n" +
             "    ] }, \"stat\": \"ok\" }";
 
+    public static final String HOT_TAGS = "{ \"hottags\": { \"period\": \"day\", \"count\": 20, \n" +
+            "    \"tag\": [\n" +
+            "      { \"score\": 100, \"_content\": \"feb23\" },\n" +
+            "      { \"score\": 97, \"_content\": \"whitenight\" },\n" +
+            "      { \"score\": 95, \"_content\": \"whitenightmelbourne\" },\n" +
+            "      { \"score\": 94, \"_content\": \"farligt\" },\n" +
+            "      { \"score\": 93, \"_content\": \"avstand\" },\n" +
+            "      { \"score\": 92, \"_content\": \"facedowntuesday\" },\n" +
+            "      { \"score\": 90, \"_content\": \"encuentros\" },\n" +
+            "      { \"score\": 90, \"_content\": \"whenigrowup\" },\n" +
+            "      { \"score\": 90, \"_content\": \"dp3merrill\" },\n" +
+            "      { \"score\": 90, \"_content\": \"whitenightmelb\" },\n" +
+            "      { \"score\": 84, \"_content\": \"fdt\" },\n" +
+            "      { \"score\": 83, \"_content\": \"northplatterealestate\" },\n" +
+            "      { \"score\": 82, \"_content\": \"fencefriday\" },\n" +
+            "      { \"score\": 82, \"_content\": \"benchmonday\" },\n" +
+            "      { \"score\": 82, \"_content\": \"genomskinlig\" },\n" +
+            "      { \"score\": 81, \"_content\": \"myvalentine\" },\n" +
+            "      { \"score\": 79, \"_content\": \"tva\" },\n" +
+            "      { \"score\": 78, \"_content\": \"dp3\" },\n" +
+            "      { \"score\": 76, \"_content\": \"happyvalentines\" },\n" +
+            "      { \"score\": 75, \"_content\": \"leicammonochrom\" }\n" +
+            "    ] }, \"stat\": \"ok\" }";
+
 }

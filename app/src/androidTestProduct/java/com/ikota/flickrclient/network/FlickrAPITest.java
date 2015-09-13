@@ -8,6 +8,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.ikota.flickrclient.data.model.CommentList;
+import com.ikota.flickrclient.data.model.HotTagList;
 import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.data.model.PeopleInfo;
 import com.ikota.flickrclient.data.model.PhotoInfo;
@@ -210,6 +211,26 @@ public class FlickrAPITest extends ActivityInstrumentationTestCase2<PopularListA
             @Override
             public void failure(RetrofitError error) {
 
+            }
+        });
+        lock.await(10000, TimeUnit.MILLISECONDS);
+        assertEquals(0, lock.getCount());
+    }
+
+    @Test
+    public void getHotTagList() throws Exception {
+        app.api().getHotTagList(new Callback<HotTagList>() {
+            @Override
+            public void success(HotTagList hotTagList, Response response) {
+                assertEquals("ok", hotTagList.stat);
+                assertEquals("day", hotTagList.hottags.period);
+                assertEquals(20, hotTagList.hottags.count);
+                lock.countDown();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fail("RetrofitError on getHotTagList API call");
             }
         });
         lock.await(10000, TimeUnit.MILLISECONDS);

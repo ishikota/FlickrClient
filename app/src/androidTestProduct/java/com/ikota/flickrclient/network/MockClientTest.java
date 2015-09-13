@@ -7,6 +7,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.ikota.flickrclient.data.model.CommentList;
+import com.ikota.flickrclient.data.model.HotTagList;
 import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.data.model.PeopleInfo;
 import com.ikota.flickrclient.data.model.PhotoInfo;
@@ -239,6 +240,27 @@ public class MockClientTest extends ActivityInstrumentationTestCase2<PopularList
         assertEquals(PEOPLE_INFO, res);
         res = client.retrieveMethod(METHOD_PREFIX+"flickr.people.getPublicPhotos"+FORMAT_JSON+JSON_CALLBACK+APIKEY_SEARCH_STRING+AUTO_TOKEN_STRING+APISIG_STRING);
         assertEquals(PUBLIC_PHOTO, res);
+    }
+
+    @Test
+    public void test_getHotTagList() throws Exception{
+        app.api().getHotTagList(new Callback<HotTagList>() {
+            @Override
+            public void success(HotTagList hotTagList, Response response) {
+                assertEquals("ok", hotTagList.stat);
+                assertEquals(20, hotTagList.hottags.count);
+                assertEquals(100, hotTagList.hottags.tag.get(0).score);
+                assertEquals("feb23", hotTagList.hottags.tag.get(0)._content);
+                lock.countDown();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                fail("Error om getHotTagList API");
+            }
+        });
+        lock.await(10000, TimeUnit.MILLISECONDS);
+        assertEquals(0, lock.getCount());
     }
 
 }

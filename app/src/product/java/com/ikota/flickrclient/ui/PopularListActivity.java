@@ -48,6 +48,9 @@ public class PopularListActivity extends BaseActivity {
             PhotoInfo.Owner owner = FlickrUtil.getKota();
             Intent intent = UserActivity.createIntent(PopularListActivity.this, owner);
             startActivity(intent);
+        } else if(item.getItemId() == R.id.action_search) {
+            Intent intent = new Intent(PopularListActivity.this, SearchActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

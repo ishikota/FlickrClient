@@ -1,6 +1,7 @@
 package com.ikota.flickrclient.network.retrofit;
 
 import com.ikota.flickrclient.data.model.CommentList;
+import com.ikota.flickrclient.data.model.HotTagList;
 import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.data.model.PeopleInfo;
 import com.ikota.flickrclient.data.model.PhotoInfo;
@@ -42,4 +43,7 @@ public interface FlickrService {
 
     @GET(METHOD_PREFIX+"flickr.photos.comments.getList"+FORMAT_JSON+JSON_CALLBACK+APIKEY_SEARCH_STRING+AUTO_TOKEN_STRING+APISIG_STRING)
     void getCommentList(@Query("photo_id") String photo_id, Callback<CommentList> cb);
+
+    @GET(METHOD_PREFIX+"flickr.tags.getHotList"+FORMAT_JSON+JSON_CALLBACK+APIKEY_SEARCH_STRING+AUTO_TOKEN_STRING+APISIG_STRING)
+    void getHotTagList(Callback<HotTagList> cb);
 }
