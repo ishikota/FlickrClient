@@ -1,4 +1,4 @@
-package com.ikota.flickrclient;
+package com.ikota.flickrclient.util;
 
 /*
  * The MIT License (MIT)

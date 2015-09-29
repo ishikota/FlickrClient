@@ -7,34 +7,23 @@ import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.NoMatchingViewException;
-import android.support.test.espresso.UiController;
-import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
 import android.test.ActivityInstrumentationTestCase2;
-import android.view.View;
 
 import com.google.gson.Gson;
-import com.ikota.flickrclient.IdlingResource.ListCountIdlingResource;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.DataHolder;
 import com.ikota.flickrclient.data.model.PhotoInfo;
-import com.ikota.flickrclient.di.DummyAPIModule;
-import com.ikota.flickrclient.network.Util;
+import com.ikota.flickrclient.util.IdlingResource.ListCountIdlingResource;
+import com.ikota.flickrclient.util.TestUtil;
 
-import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
-import dagger.ObjectGraph;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
@@ -45,6 +34,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.ikota.flickrclient.util.CustomActions.clickChildViewWithId;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anyOf;
 
@@ -64,26 +54,6 @@ public class UserTimelineFragmentTest extends ActivityInstrumentationTestCase2<U
             true,     // initialTouchMode
             false);   // launchActivity. False so we can customize the intent per test method
 
-    private void setupMockServer(HashMap<String, String> override_map) {
-        HashMap<String, String> map = new HashMap<>(Util.RESPONSE_MAP);
-
-        if(override_map!=null) {
-            for (String key : override_map.keySet()) {
-                map.put(key, override_map.get(key));
-            }
-        }
-
-        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
-        AndroidApplication app =
-                (AndroidApplication) instrumentation.getTargetContext().getApplicationContext();
-
-        // setup objectGraph to inject Mock API
-        List modules = Collections.singletonList(new DummyAPIModule(map));
-        ObjectGraph graph = ObjectGraph.create(modules.toArray());
-        app.setObjectGraph(graph);
-        app.getObjectGraph().inject(app);
-    }
-
     @Before
     public void setUp() throws Exception{
         super.setUp();
@@ -98,9 +68,10 @@ public class UserTimelineFragmentTest extends ActivityInstrumentationTestCase2<U
         intent.putExtra(UserActivity.EXTRA_CONTENT, json);
     }
 
+    /** This test sometimes fails. I seems that some other test affect this test result. */
     @Test
     public void setupViews() {
-        setupMockServer(null);
+        TestUtil.setupMockServer(null);
         UserActivity activity = activityRule.launchActivity(intent);
         String favorite = context.getResources().getString(R.string.tab_title_2);
         onView(withText(favorite)).perform(click());
@@ -131,7 +102,7 @@ public class UserTimelineFragmentTest extends ActivityInstrumentationTestCase2<U
 
     @Test
     public void commentPost() {
-        setupMockServer(null);
+        TestUtil.setupMockServer(null);
         UserActivity activity = activityRule.launchActivity(intent);
         startCommentDialog(activity);
         onView(withId(R.id.title)).check(matches(withText("Evening mirror")));
@@ -144,7 +115,7 @@ public class UserTimelineFragmentTest extends ActivityInstrumentationTestCase2<U
 
     @Test(expected = NoMatchingViewException.class)
     public void emptyCommentPost() {
-        setupMockServer(null);
+        TestUtil.setupMockServer(null);
         UserActivity activity = activityRule.launchActivity(intent);
         startCommentDialog(activity);
         onView(withId(R.id.title)).check(matches(withText("Evening mirror")));
@@ -156,7 +127,7 @@ public class UserTimelineFragmentTest extends ActivityInstrumentationTestCase2<U
 
     @Test
     public void commentSave() {
-        setupMockServer(null);
+        TestUtil.setupMockServer(null);
         UserActivity activity = activityRule.launchActivity(intent);
         String target1 = "hoge hoge";
         String target2 = "Hoge hoge";
@@ -170,7 +141,7 @@ public class UserTimelineFragmentTest extends ActivityInstrumentationTestCase2<U
 
     @Test
     public void commentPost_draftDelete() {
-        setupMockServer(null);
+        TestUtil.setupMockServer(null);
         UserActivity activity = activityRule.launchActivity(intent);
         String target = "hoge hoge";
         startCommentDialog(activity);
@@ -181,26 +152,4 @@ public class UserTimelineFragmentTest extends ActivityInstrumentationTestCase2<U
         onView(withId(R.id.comment_edit)).check(matches(withText("")));
     }
 
-    public static ViewAction clickChildViewWithId(final int id) {
-        return new ViewAction() {
-            @Override
-            public Matcher<View> getConstraints() {
-                return null;
-            }
-
-            @Override
-            public String getDescription() {
-                return "Click child view with id:";
-            }
-
-            @Override
-            public void perform(UiController uiController, View view) {
-                View child_view = view.findViewById(id);
-                if(child_view!=null) {
-                    child_view.performClick();
-                }
-            }
-        };
-
-    }
 }

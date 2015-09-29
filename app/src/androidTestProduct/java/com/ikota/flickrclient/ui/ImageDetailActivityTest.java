@@ -10,19 +10,12 @@ import android.test.ActivityInstrumentationTestCase2;
 
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.DataHolder;
-import com.ikota.flickrclient.di.DummyAPIModule;
-import com.ikota.flickrclient.network.Util;
+import com.ikota.flickrclient.util.TestUtil;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
-import dagger.ObjectGraph;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -45,26 +38,6 @@ public class ImageDetailActivityTest extends ActivityInstrumentationTestCase2<Im
             true,     // initialTouchMode
             false);   // launchActivity. False so we can customize the intent per test method
 
-    private void setupMockServer(HashMap<String, String> override_map) {
-        HashMap<String, String> map = Util.RESPONSE_MAP;
-
-        if(override_map!=null) {
-            for (String key : override_map.keySet()) {
-                map.put(key, override_map.get(key));
-            }
-        }
-
-        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
-        AndroidApplication app =
-                (AndroidApplication) instrumentation.getTargetContext().getApplicationContext();
-
-        // setup objectGraph to inject Mock API
-        List modules = Collections.singletonList(new DummyAPIModule(map));
-        ObjectGraph graph = ObjectGraph.create(modules.toArray());
-        app.setObjectGraph(graph);
-        app.getObjectGraph().inject(app);
-    }
-
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -77,7 +50,7 @@ public class ImageDetailActivityTest extends ActivityInstrumentationTestCase2<Im
 
     @Test
     public void clickFavo() {
-        setupMockServer(null);
+        TestUtil.setupMockServer(null);
         activityRule.launchActivity(intent);
         onView(withId(R.id.favorite_num)).check(matches(withText("644")));
         onView(withId(R.id.ic_favorite)).perform(click());
@@ -86,7 +59,7 @@ public class ImageDetailActivityTest extends ActivityInstrumentationTestCase2<Im
 
     @Test
     public void clickComment() {
-        setupMockServer(null);
+        TestUtil.setupMockServer(null);
         activityRule.launchActivity(intent);
         onView(withId(R.id.ic_comment)).perform(click());
         onView(withId(R.id.title)).check(matches(withText("A Quiet Evening")));
@@ -94,7 +67,7 @@ public class ImageDetailActivityTest extends ActivityInstrumentationTestCase2<Im
 
     @Test
     public void clickDownload() {
-        setupMockServer(null);
+        TestUtil.setupMockServer(null);
         activityRule.launchActivity(intent);
         onView(withId(R.id.ic_download)).perform(click());
         onView(withText("Loading...")).check(matches(withText("Loading...")));
