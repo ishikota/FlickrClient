@@ -3,6 +3,8 @@ package com.ikota.flickrclient.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,11 +12,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.data.model.PhotoInfo;
+import com.ikota.flickrclient.util.NetUtils;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -37,6 +41,8 @@ public class ImageDetailFragment extends Fragment {
 
     private AndroidApplication mAppContext;
     private ArrayList<ListData.Photo> mItemList = new ArrayList<>();
+    private RecyclerView.Adapter mAdapter;
+
     private String mRelatedTag;
     private boolean busy = false;
     private final int ITEM_PER_PAGE = 24;
@@ -75,27 +81,39 @@ public class ImageDetailFragment extends Fragment {
         ListData.Photo mData = gson.fromJson(json, ListData.Photo.class);
 
         // list related
-        ImageDetailAdapter adapter = new ImageDetailAdapter(mAppContext, mItemList, mData, size,
-                new ImageDetailAdapter.OnClickCallback() {
-                    @Override
-                    public void onUserClicked(View v, PhotoInfo.Owner owner) {
-                        Intent intent = UserActivity.createIntent(getActivity(), owner);
-                        startActivity(intent);
-                    }
+        if(mAdapter == null) {
+            mAdapter = new ImageDetailAdapter(mAppContext, mItemList, mData, size,
+                    new ImageDetailAdapter.OnClickCallback() {
+                        @Override
+                        public void onClick(View v, ListData.Photo data) {
+                            boolean is_wifi = NetUtils.isWifiConnected(getActivity());
+                            String size = ListData.Photo.getProperSize(mAppContext.SCREEN_WIDTH / 2, is_wifi);
+                            ImageDetailActivity.launch(getActivity(), data, (ImageView) v, size);
+                        }
 
-                    @Override
-                    public void onCommentClicked(String url, String title, String json) {
-                        startActivity(CommentListActivity.createIntent(mAppContext, url, title, json));
-                    }}
-        );
-        GridLayoutManager manager = new GridLayoutManager(mAppContext, 2);
-        manager = addSpanSizeLookup(mAppContext, manager,adapter);
+                        @Override
+                        public void onUserClicked(View v, PhotoInfo.Owner owner) {
+                            Intent intent = UserActivity.createIntent(getActivity(), owner);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onCommentClicked(String url, String title, String json) {
+                            startActivity(CommentListActivity.createIntent(mAppContext, url, title, json));
+                        }
+                    }
+            );
+        }
+
+        int column_num = getProperColumnNum(getResources());
+        GridLayoutManager manager = new GridLayoutManager(mAppContext, column_num);
+        manager = addSpanSizeLookup(mAppContext, manager,mAdapter);
 
         View root = inflater.inflate(R.layout.fragment_image_detail, container, false);
         RecyclerView mRecyclerView = (RecyclerView) root.findViewById(android.R.id.list);
         mRecyclerView.setHasFixedSize(false);
         mRecyclerView.setLayoutManager(manager);
-        mRecyclerView.setAdapter(adapter);
+        mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -118,6 +136,11 @@ public class ImageDetailFragment extends Fragment {
         return root;
     }
 
+    private int getProperColumnNum(Resources r) {
+        int display_mode = r.getConfiguration().orientation;
+        return display_mode == Configuration.ORIENTATION_PORTRAIT ? 2 : 3;
+    }
+
     private GridLayoutManager addSpanSizeLookup(
             Context context, GridLayoutManager original, final RecyclerView.Adapter adapter) {
 
@@ -127,7 +150,7 @@ public class ImageDetailFragment extends Fragment {
             public int getSpanSize(int position) {
                 switch (adapter.getItemViewType(position)) {
                     case ImageDetailAdapter.TYPE_HEADER:
-                        return 2;
+                        return getProperColumnNum(getResources());
                     case ImageDetailAdapter.TYPE_ITEM:
                         return 1;
                     default:

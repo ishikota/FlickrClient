@@ -32,7 +32,7 @@ import retrofit.client.Response;
 
 public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-    public interface OnClickCallback {
+    public interface OnClickCallback extends ImageAdapter.OnClickCallback{
         void onUserClicked(View v, PhotoInfo.Owner owner);
         void onCommentClicked(String url, String title, String json);
     }
@@ -96,6 +96,15 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     .placeholder(R.drawable.loading_default)
                     .error(R.drawable.ic_image_broken)
                     .into(vh.imageview);
+            vh.imageview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = (Integer) v.getTag(R.integer.list_pos_key);
+                    if (mCallback != null) {
+                        mCallback.onClick(v, mDataset.get(position));
+                    }
+                }
+            });
         }
     }
 

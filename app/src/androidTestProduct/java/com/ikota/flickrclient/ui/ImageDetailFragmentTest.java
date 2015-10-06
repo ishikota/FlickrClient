@@ -9,23 +9,29 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
+import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.test.ActivityInstrumentationTestCase2;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ikota.flickrclient.util.IdlingResource.ListCountIdlingResource;
 import com.ikota.flickrclient.util.IdlingResource.TimingIdlingResource;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.DataHolder;
 import com.ikota.flickrclient.network.retrofit.FlickrURL;
+import com.ikota.flickrclient.util.OrientationChangeAction;
 import com.ikota.flickrclient.util.TestUtil;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,9 +42,11 @@ import java.util.HashMap;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -65,6 +73,7 @@ public class ImageDetailFragmentTest extends ActivityInstrumentationTestCase2<Im
     public void setUp() throws Exception {
         super.setUp();
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+        injectInstrumentation(instrumentation);  // need to use ActivityMonitor
         Context context = instrumentation.getTargetContext();
         intent = new Intent(context, ImageDetailActivity.class);
         intent.putExtra(ImageDetailActivity.EXTRA_CONTENT, DataHolder.LIST_ITEM_JSON);
@@ -138,6 +147,63 @@ public class ImageDetailFragmentTest extends ActivityInstrumentationTestCase2<Im
         activityRule.launchActivity(intent);
         SystemClock.sleep(3000);
         onView(withContentDescription("No Comment")).check(matches(withText(R.string.no_comment)));
+    }
+
+    @Test
+    public void clickRelatedImageAndGoDetail() throws Exception {
+        TestUtil.setupMockServer(null);
+        ImageDetailActivity activity = activityRule.launchActivity(intent);
+        ImageDetailFragment fragment = (ImageDetailFragment)activity.getSupportFragmentManager()
+                .findFragmentByTag(ImageDetailFragment.class.getSimpleName());
+        @SuppressWarnings("ConstantConditions")
+        RecyclerView recyclerView = (RecyclerView)fragment.getView().findViewById(android.R.id.list);
+
+        ListCountIdlingResource idlingResource = new ListCountIdlingResource(recyclerView, 2);
+        Espresso.registerIdlingResources(idlingResource);
+        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(5, scrollTo()));
+        Espresso.unregisterIdlingResources(idlingResource);
+
+        Instrumentation.ActivityMonitor receiverActivityMonitor =
+                getInstrumentation().addMonitor(ImageDetailActivity.class.getName(), null, false);
+        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
+        Activity detail_activity = receiverActivityMonitor.waitForActivityWithTimeout(1000);
+        getInstrumentation().removeMonitor(receiverActivityMonitor);
+        assertNotNull("Failed to go detail page of related item", detail_activity);
+
+        String args = detail_activity.getIntent().getStringExtra(ImageDetailActivity.EXTRA_CONTENT);
+        JSONObject jo = new JSONObject(args);
+        assertEquals("20921309510", jo.getString("id"));
+
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    @Test
+    public void checkColumnNumInDifferentOrientation() {
+        TestUtil.setupMockServer(null);
+        ImageDetailActivity activity = activityRule.launchActivity(intent);
+        ImageDetailFragment fragment = (ImageDetailFragment)activity.getSupportFragmentManager()
+                .findFragmentByTag(ImageDetailFragment.class.getSimpleName());
+        RecyclerView recyclerView = (RecyclerView)fragment.getView().findViewById(android.R.id.list);
+
+        ListCountIdlingResource idlingResource = new ListCountIdlingResource(recyclerView, 2);
+        Espresso.registerIdlingResources(idlingResource);
+        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(5, scrollTo()));
+        Espresso.unregisterIdlingResources(idlingResource);
+
+        int portrait_column = ((GridLayoutManager)recyclerView.getLayoutManager()).getSpanCount();
+        assertEquals(2, portrait_column);
+
+        onView(isRoot()).perform(OrientationChangeAction.orientationLandscape());
+        SystemClock.sleep(3000);
+        fragment = (ImageDetailFragment)activity.getSupportFragmentManager()
+                .findFragmentByTag(ImageDetailFragment.class.getSimpleName());
+        recyclerView = (RecyclerView)fragment.getView().findViewById(android.R.id.list);
+
+        int landscape_column = ((GridLayoutManager)recyclerView.getLayoutManager()).getSpanCount();
+        assertEquals(3, landscape_column);
+
+        onView(isRoot()).perform(OrientationChangeAction.orientationPortrait());
+        SystemClock.sleep(2000);
     }
 
     public static Matcher<View> withLines(final int lines) {
