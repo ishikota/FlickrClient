@@ -53,7 +53,6 @@ public class ImageDetailActivity extends BaseActivity{
     static Bus sTabEventBus = new Bus();
 
     private int mToolbarAlpha = 255;
-    private int mToolbarColor;
     private ListData.Photo mData;
     private ImageView mFavoIcon;
     private TextView mFavoText;
@@ -74,7 +73,6 @@ public class ImageDetailActivity extends BaseActivity{
         setClickListener();
 
         if (savedInstanceState == null) {
-            mToolbarColor = getResources().getColor(R.color.primary);
             String tag = ImageDetailFragment.class.getSimpleName();
             String size = getIntent().getStringExtra(EXTRA_CACHE_SIZE);
             getSupportFragmentManager().beginTransaction()

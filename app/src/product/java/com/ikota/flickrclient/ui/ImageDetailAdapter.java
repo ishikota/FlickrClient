@@ -23,6 +23,8 @@ import com.ikota.flickrclient.data.model.PhotoInfo;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.util.ArrayList;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -35,20 +37,25 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         void onCommentClicked(String url, String title, String json);
     }
 
-    private AndroidApplication mAppContenxt;
+    private AndroidApplication mAppContext;
     private ListData.Photo mSimpleData;
     private PhotoInfo mDetailData;
     private String mCacheSize;
     private LayoutInflater mInflater;
     private OnClickCallback mCallback;
 
+    static final int TYPE_HEADER = 0;
+    static final int TYPE_ITEM = 1;
+    private ArrayList<ListData.Photo> mItemList;
+
     public ImageDetailAdapter(AndroidApplication app, ListData.Photo data, String cache_size,
                               OnClickCallback listener) {
-        mAppContenxt = app;
+        mAppContext = app;
         mSimpleData = data;
         mCacheSize = cache_size;
-        mInflater = (LayoutInflater) mAppContenxt.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mInflater = (LayoutInflater) mAppContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mCallback = listener;
+        mItemList = new ArrayList<>();
     }
 
 
@@ -56,9 +63,12 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
         switch (viewType) {
-            case 0:
+            case TYPE_HEADER:
                 v = mInflater.inflate(R.layout.row_image_detail, parent, false);
                 return new ContentViewHolder(v);
+            case TYPE_ITEM:
+                v = mInflater.inflate(R.layout.row_image_list, parent, false);
+                return new ImageAdapter.ViewHolder(v);
             default:
                 return null;
         }
@@ -75,12 +85,28 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             } else {
                 setDetailData(vh, mDetailData);
             }
+        } else {
+            ImageAdapter.ViewHolder vh = (ImageAdapter.ViewHolder)holder;
+            vh.imageview.setTag(R.integer.list_pos_key, position);
+
+            ListData.Photo item = mItemList.get(position-1);
+            String url = item.generatePhotoURL(vh.imageview.getWidth(), false);
+            Picasso.with(mAppContext)
+                    .load(url)
+                    .placeholder(R.drawable.loading_default)
+                    .error(R.drawable.ic_image_broken)
+                    .into(vh.imageview);
         }
     }
 
     @Override
     public int getItemCount() {
-        return 1;
+        return mItemList.isEmpty() ? 1 : mItemList.size() + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position == 0 ? TYPE_HEADER : TYPE_ITEM;
     }
 
     private void setSimpleData(final ContentViewHolder vh, final ListData.Photo data) {
@@ -99,17 +125,17 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             @Override public void onPrepareLoad(Drawable placeHolderDrawable) {}
         };
         String url = data.generatePhotoURL(mCacheSize);
-        Picasso.with(mAppContenxt).load(url).into(target);
+        Picasso.with(mAppContext).load(url).into(target);
         vh.text_title.setText(data.title);
     }
 
     private int getScreenWidth() {
-        int display_mode = mAppContenxt.getResources().getConfiguration().orientation;
+        int display_mode = mAppContext.getResources().getConfiguration().orientation;
         if(display_mode == Configuration.ORIENTATION_PORTRAIT) {
-            return mAppContenxt.SCREEN_WIDTH;
+            return mAppContext.SCREEN_WIDTH;
         } else {
-            int statusbar_height = (int)mAppContenxt.getResources().getDimension(R.dimen.status_bar_height);
-            return mAppContenxt.SCREEN_HEIGHT + statusbar_height;
+            int statusbar_height = (int) mAppContext.getResources().getDimension(R.dimen.status_bar_height);
+            return mAppContext.SCREEN_HEIGHT + statusbar_height;
         }
     }
 
@@ -139,7 +165,7 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private void loadDetailData(final ContentViewHolder vh) {
-        mAppContenxt.api().getPhotoInfo(mSimpleData.id, new Callback<PhotoInfo>() {
+        mAppContext.api().getPhotoInfo(mSimpleData.id, new Callback<PhotoInfo>() {
 
             @Override
             public void success(PhotoInfo photoInfo, Response response) {
@@ -149,8 +175,8 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             @Override
             public void failure(RetrofitError error) {
-                String message = mAppContenxt.getResources().getString(R.string.network_problem_message);
-                Toast.makeText(mAppContenxt, message, Toast.LENGTH_SHORT).show();
+                String message = mAppContext.getResources().getString(R.string.network_problem_message);
+                Toast.makeText(mAppContext, message, Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -171,8 +197,8 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             @Override public void onPrepareLoad(Drawable placeHolderDrawable) {}
 
         };
-        Picasso.with(mAppContenxt).load(data.photo.generatePhotoURL("b")).into(target);
-        Picasso.with(mAppContenxt).load(data.photo.owner.generateOwnerIconURL()).into(vh.image_user);
+        Picasso.with(mAppContext).load(data.photo.generatePhotoURL("b")).into(target);
+        Picasso.with(mAppContext).load(data.photo.owner.generateOwnerIconURL()).into(vh.image_user);
 
         // set text data
         vh.text_title.setText(data.photo.title._content);
@@ -199,10 +225,23 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 }
             });
         }
+        mAppContext.api().getPhotosByTag(0, 24, data.photo.tags.tag.get(0)._content, new Callback<ListData>() {
+            @Override
+            public void success(ListData listData, Response response) {
+                for(ListData.Photo photo : listData.photos.photo) {
+                    mItemList.add(photo);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
     }
 
     private void loadComments(final ContentViewHolder vh, String photo_id) {
-        mAppContenxt.api().getCommentList(photo_id, new Callback<CommentList>() {
+        mAppContext.api().getCommentList(photo_id, new Callback<CommentList>() {
 
             @Override
             public void success(final CommentList commentList, Response response) {
@@ -242,7 +281,7 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         ((TextView) v.findViewById(R.id.comment_text)).setText(comment._content);
 
-        Picasso.with(mAppContenxt)
+        Picasso.with(mAppContext)
                 .load(generateOwnerIconURL(comment.author))
                 .into((ImageView) v.findViewById(R.id.user_icon));
 
@@ -262,7 +301,7 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private View createSummaryView(LinearLayout parent, int size) {
-        Resources r = mAppContenxt.getResources();
+        Resources r = mAppContext.getResources();
         View v = mInflater.inflate(R.layout.comment_row, parent, false);
         ImageView icon = (ImageView)v.findViewById(R.id.user_icon);
         icon.setImageResource(R.drawable.ic_trending_flat_black_18dp);

@@ -1,10 +1,11 @@
 package com.ikota.flickrclient.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,22 +51,28 @@ public class ImageDetailFragment extends Fragment {
         String size = getArguments().getString(ImageDetailActivity.EXTRA_CACHE_SIZE);
         ListData.Photo mData = gson.fromJson(json, ListData.Photo.class);
 
-        View root = inflater.inflate(R.layout.fragment_image_detail, container, false);
-        RecyclerView mRecyclerView = (RecyclerView) root.findViewById(android.R.id.list);
-        mRecyclerView.setHasFixedSize(false);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mAppContext));
-        mRecyclerView.setAdapter(new ImageDetailAdapter(mAppContext, mData, size,
+        // list related
+        ImageDetailAdapter adapter = new ImageDetailAdapter(mAppContext, mData, size,
                 new ImageDetailAdapter.OnClickCallback() {
                     @Override
                     public void onUserClicked(View v, PhotoInfo.Owner owner) {
                         Intent intent = UserActivity.createIntent(getActivity(), owner);
                         startActivity(intent);
                     }
+
                     @Override
                     public void onCommentClicked(String url, String title, String json) {
                         startActivity(CommentListActivity.createIntent(mAppContext, url, title, json));
-                    }
-                }));
+                    }}
+        );
+        GridLayoutManager manager = new GridLayoutManager(mAppContext, 2);
+        manager = addSpanSizeLookup(mAppContext, manager,adapter);
+
+        View root = inflater.inflate(R.layout.fragment_image_detail, container, false);
+        RecyclerView mRecyclerView = (RecyclerView) root.findViewById(android.R.id.list);
+        mRecyclerView.setHasFixedSize(false);
+        mRecyclerView.setLayoutManager(manager);
+        mRecyclerView.setAdapter(adapter);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -75,6 +82,26 @@ public class ImageDetailFragment extends Fragment {
         });
 
         return root;
+    }
+
+    private GridLayoutManager addSpanSizeLookup(
+            Context context, GridLayoutManager original, final RecyclerView.Adapter adapter) {
+
+        GridLayoutManager manager = new GridLayoutManager(context, original.getSpanCount());
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                switch (adapter.getItemViewType(position)) {
+                    case ImageDetailAdapter.TYPE_HEADER:
+                        return 2;
+                    case ImageDetailAdapter.TYPE_ITEM:
+                        return 1;
+                    default:
+                        return -1;
+                }
+            }
+        });
+        return manager;
     }
 
 }
