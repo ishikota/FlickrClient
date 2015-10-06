@@ -49,5 +49,6 @@
     <string name="comment_summary_suffix">Comments</string>
     <string name="search_hint">Search…</string>
     <string name="related_images">Related Images</string>
+    <string name="no_related_images">No Related Images</string>
 
 </resources>

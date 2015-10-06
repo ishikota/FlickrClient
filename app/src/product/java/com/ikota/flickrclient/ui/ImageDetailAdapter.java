@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -87,7 +88,7 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
         } else {
             ImageAdapter.ViewHolder vh = (ImageAdapter.ViewHolder)holder;
-            vh.imageview.setTag(R.integer.list_pos_key, position);
+            vh.imageview.setTag(R.integer.list_pos_key, position-1);
 
             ListData.Photo item = mDataset.get(position-1);
             String url = item.generatePhotoURL(vh.imageview.getWidth(), false);
@@ -236,8 +237,14 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         // notify related tag to Fragment and start loading images
-        String tag = data.photo.tags.tag.get(0)._content;
-        ImageDetailActivity.sTabEventBus.post(new ImageDetailFragment.RelatedTagEvent(tag));
+        if(data.photo.tags.tag.isEmpty()) {
+            vh.text_related.setText(mAppContext.getResources().getString(R.string.no_related_images));
+            vh.related_progress.setVisibility(View.GONE);
+        } else {
+            String tag = data.photo.tags.tag.get(0)._content;
+            ProgressBar progress = vh.related_progress;
+            ImageDetailActivity.sTabEventBus.post(new ImageDetailFragment.RelatedTagEvent(tag, progress));
+        }
     }
 
     private void loadComments(final ContentViewHolder vh, String photo_id) {
@@ -317,8 +324,9 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     public static class ContentViewHolder extends RecyclerView.ViewHolder {
         public ImageView image_main, image_user, ic_ellip;
-        public TextView text_title, text_date, text_description, text_username;
+        public TextView text_title, text_date, text_description, text_username, text_related;
         public LinearLayout description_parent, comment_parent;
+        public ProgressBar related_progress;
         public ContentViewHolder(View v) {
             super(v);
             image_main = (ImageView)v.findViewById(R.id.image);
@@ -328,8 +336,10 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             text_date = (TextView)v.findViewById(R.id.date_text);
             text_description = (TextView)v.findViewById(R.id.description);
             text_username = (TextView)v.findViewById(R.id.user_name);
+            text_related = (TextView)v.findViewById(R.id.related_title);
             description_parent = (LinearLayout)v.findViewById(R.id.description_parent);
             comment_parent = (LinearLayout)v.findViewById(R.id.comment_parent);
+            related_progress = (ProgressBar)v.findViewById(R.id.related_progress);
         }
     }
 

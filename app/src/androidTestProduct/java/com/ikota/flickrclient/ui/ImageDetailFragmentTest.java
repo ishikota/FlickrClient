@@ -21,11 +21,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.ikota.flickrclient.util.IdlingResource.ListCountIdlingResource;
-import com.ikota.flickrclient.util.IdlingResource.TimingIdlingResource;
+import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.DataHolder;
+import com.ikota.flickrclient.data.model.PhotoInfo;
 import com.ikota.flickrclient.network.retrofit.FlickrURL;
+import com.ikota.flickrclient.util.IdlingResource.ListCountIdlingResource;
+import com.ikota.flickrclient.util.IdlingResource.TimingIdlingResource;
 import com.ikota.flickrclient.util.OrientationChangeAction;
 import com.ikota.flickrclient.util.TestUtil;
 
@@ -37,6 +39,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -165,7 +168,7 @@ public class ImageDetailFragmentTest extends ActivityInstrumentationTestCase2<Im
 
         Instrumentation.ActivityMonitor receiverActivityMonitor =
                 getInstrumentation().addMonitor(ImageDetailActivity.class.getName(), null, false);
-        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
+        onView(withId(android.R.id.list)).perform(RecyclerViewActions.actionOnItemAtPosition(2, click()));
         Activity detail_activity = receiverActivityMonitor.waitForActivityWithTimeout(1000);
         getInstrumentation().removeMonitor(receiverActivityMonitor);
         assertNotNull("Failed to go detail page of related item", detail_activity);
@@ -204,6 +207,23 @@ public class ImageDetailFragmentTest extends ActivityInstrumentationTestCase2<Im
 
         onView(isRoot()).perform(OrientationChangeAction.orientationPortrait());
         SystemClock.sleep(2000);
+    }
+
+    @Test
+    public void when_no_tag_attached() {
+        Gson gson = new Gson();
+        PhotoInfo info = gson.fromJson(DataHolder.DETAIL_JSON, PhotoInfo.class);
+        info.photo.tags.tag = new ArrayList<>();
+        String no_tag_detail = gson.toJson(info);
+        HashMap<String, String> map = new HashMap<>();
+        map.put(FlickrURL.PHOTO_INFO, no_tag_detail);
+
+        TestUtil.setupMockServer(map);
+        activityRule.launchActivity(intent);
+        onView(withId(R.id.related_progress)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        SystemClock.sleep(5000);
+        onView(withId(R.id.related_progress)).check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
+        onView(withId(R.id.related_title)).check(matches(withText(R.string.no_related_images)));
     }
 
     public static Matcher<View> withLines(final int lines) {

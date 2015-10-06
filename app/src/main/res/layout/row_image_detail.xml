@@ -168,7 +168,12 @@
         android:layout_height="1dp"
         android:background="#E0E0E0" />
 
-    <TextView
+    <ProgressBar android:id="@+id/related_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView android:id="@+id/related_title"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:text="@string/related_images"

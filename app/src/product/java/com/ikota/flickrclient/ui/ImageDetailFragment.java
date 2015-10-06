@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
@@ -43,7 +44,7 @@ public class ImageDetailFragment extends Fragment {
     private ArrayList<ListData.Photo> mItemList = new ArrayList<>();
     private RecyclerView.Adapter mAdapter;
 
-    private String mRelatedTag;
+    private RelatedTagEvent mRelatedEvent;
     private boolean busy = false;
     private final int ITEM_PER_PAGE = 24;
 
@@ -162,16 +163,18 @@ public class ImageDetailFragment extends Fragment {
     }
 
     private void loadRelatedImages(int page) {
-        if(mRelatedTag == null) return;
+        if(mRelatedEvent == null) return;
         // start loading
         busy = true;
-        mAppContext.api().getPhotosByTag(page, ITEM_PER_PAGE, mRelatedTag, new Callback<ListData>() {
+
+        mAppContext.api().getPhotosByTag(page, ITEM_PER_PAGE, mRelatedEvent.tag, new Callback<ListData>() {
             @Override
             public void success(ListData listData, Response response) {
                 for(ListData.Photo photo : listData.photos.photo) {
                     mItemList.add(photo);
                 }
                 busy = false;
+                mRelatedEvent.progress.setVisibility(View.GONE);
             }
 
             @Override
@@ -183,14 +186,16 @@ public class ImageDetailFragment extends Fragment {
 
     @Subscribe
     public void receiveRelatedImageData(RelatedTagEvent e) {
-        mRelatedTag = e.tag;
+        mRelatedEvent = e;
         loadRelatedImages(0);
     }
 
     static final class RelatedTagEvent {
         final String tag;
-        public RelatedTagEvent(String tag) {
+        final ProgressBar progress;
+        public RelatedTagEvent(String tag, ProgressBar progress) {
             this.tag = tag;
+            this.progress = progress;
         }
     }
 
