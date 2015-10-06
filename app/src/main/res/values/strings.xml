@@ -48,4 +48,6 @@
     <string name="comment_summary_prefix">See All</string>
     <string name="comment_summary_suffix">Comments</string>
     <string name="search_hint">Search…</string>
+    <string name="related_images">Related Images</string>
+
 </resources>

@@ -166,10 +166,16 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#EEEEEE" />
+        android:background="#E0E0E0" />
 
-    <View
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="56dp" />
+        android:layout_height="56dp"
+        android:text="@string/related_images"
+        android:textColor="@android:color/tertiary_text_light"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:background="#EEEEEE"/>
 
 </LinearLayout>
