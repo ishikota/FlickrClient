@@ -37,6 +37,9 @@ public class ImageDetailFragment extends Fragment {
 
     private AndroidApplication mAppContext;
     private ArrayList<ListData.Photo> mItemList = new ArrayList<>();
+    private String mRelatedTag;
+    private boolean busy = false;
+    private final int ITEM_PER_PAGE = 24;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,6 +100,17 @@ public class ImageDetailFragment extends Fragment {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                // load next related images page
+                GridLayoutManager layoutManager = (GridLayoutManager)recyclerView.getLayoutManager();
+                int totalItemCount = layoutManager.getItemCount()-1;
+                int firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+
+                if (!busy && totalItemCount - firstVisibleItem <= ITEM_PER_PAGE) {
+                    int page = totalItemCount / ITEM_PER_PAGE;
+                    if(isAdded()) loadRelatedImages(page);
+                }
+
+                // change actionbar alpha
                 ImageDetailActivity.sTabEventBus.post(new ImageDetailActivity.ScrollEvent(dy));
             }
         });
@@ -124,14 +138,17 @@ public class ImageDetailFragment extends Fragment {
         return manager;
     }
 
-    @Subscribe
-    public void receiveRelatedImageData(RelatedTagEvent e) {
-        mAppContext.api().getPhotosByTag(0, 24, e.tag, new Callback<ListData>() {
+    private void loadRelatedImages(int page) {
+        if(mRelatedTag == null) return;
+        // start loading
+        busy = true;
+        mAppContext.api().getPhotosByTag(page, ITEM_PER_PAGE, mRelatedTag, new Callback<ListData>() {
             @Override
             public void success(ListData listData, Response response) {
                 for(ListData.Photo photo : listData.photos.photo) {
                     mItemList.add(photo);
                 }
+                busy = false;
             }
 
             @Override
@@ -139,6 +156,12 @@ public class ImageDetailFragment extends Fragment {
 
             }
         });
+    }
+
+    @Subscribe
+    public void receiveRelatedImageData(RelatedTagEvent e) {
+        mRelatedTag = e.tag;
+        loadRelatedImages(0);
     }
 
     static final class RelatedTagEvent {
