@@ -15,6 +15,13 @@ import com.google.gson.Gson;
 import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.data.model.PhotoInfo;
+import com.squareup.otto.Subscribe;
+
+import java.util.ArrayList;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 
 public class ImageDetailFragment extends Fragment {
@@ -29,6 +36,7 @@ public class ImageDetailFragment extends Fragment {
     }
 
     private AndroidApplication mAppContext;
+    private ArrayList<ListData.Photo> mItemList = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +51,18 @@ public class ImageDetailFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        ImageDetailActivity.sTabEventBus.register(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ImageDetailActivity.sTabEventBus.unregister(this);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // setup content
@@ -52,7 +72,7 @@ public class ImageDetailFragment extends Fragment {
         ListData.Photo mData = gson.fromJson(json, ListData.Photo.class);
 
         // list related
-        ImageDetailAdapter adapter = new ImageDetailAdapter(mAppContext, mData, size,
+        ImageDetailAdapter adapter = new ImageDetailAdapter(mAppContext, mItemList, mData, size,
                 new ImageDetailAdapter.OnClickCallback() {
                     @Override
                     public void onUserClicked(View v, PhotoInfo.Owner owner) {
@@ -102,6 +122,30 @@ public class ImageDetailFragment extends Fragment {
             }
         });
         return manager;
+    }
+
+    @Subscribe
+    public void receiveRelatedImageData(RelatedTagEvent e) {
+        mAppContext.api().getPhotosByTag(0, 24, e.tag, new Callback<ListData>() {
+            @Override
+            public void success(ListData listData, Response response) {
+                for(ListData.Photo photo : listData.photos.photo) {
+                    mItemList.add(photo);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+    static final class RelatedTagEvent {
+        final String tag;
+        public RelatedTagEvent(String tag) {
+            this.tag = tag;
+        }
     }
 
 }

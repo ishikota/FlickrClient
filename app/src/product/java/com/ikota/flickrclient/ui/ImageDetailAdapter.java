@@ -23,7 +23,7 @@ import com.ikota.flickrclient.data.model.PhotoInfo;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -38,6 +38,7 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     private AndroidApplication mAppContext;
+    private List<ListData.Photo> mDataset;
     private ListData.Photo mSimpleData;
     private PhotoInfo mDetailData;
     private String mCacheSize;
@@ -46,16 +47,15 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     static final int TYPE_HEADER = 0;
     static final int TYPE_ITEM = 1;
-    private ArrayList<ListData.Photo> mItemList;
 
-    public ImageDetailAdapter(AndroidApplication app, ListData.Photo data, String cache_size,
+    public ImageDetailAdapter(AndroidApplication app, List<ListData.Photo> myDataset, ListData.Photo data, String cache_size,
                               OnClickCallback listener) {
         mAppContext = app;
+        mDataset = myDataset;
         mSimpleData = data;
         mCacheSize = cache_size;
         mInflater = (LayoutInflater) mAppContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mCallback = listener;
-        mItemList = new ArrayList<>();
     }
 
 
@@ -89,7 +89,7 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ImageAdapter.ViewHolder vh = (ImageAdapter.ViewHolder)holder;
             vh.imageview.setTag(R.integer.list_pos_key, position);
 
-            ListData.Photo item = mItemList.get(position-1);
+            ListData.Photo item = mDataset.get(position-1);
             String url = item.generatePhotoURL(vh.imageview.getWidth(), false);
             Picasso.with(mAppContext)
                     .load(url)
@@ -101,7 +101,7 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public int getItemCount() {
-        return mItemList.isEmpty() ? 1 : mItemList.size() + 1;
+        return mDataset.isEmpty() ? 1 : mDataset.size() + 1;
     }
 
     @Override
@@ -225,19 +225,10 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 }
             });
         }
-        mAppContext.api().getPhotosByTag(0, 24, data.photo.tags.tag.get(0)._content, new Callback<ListData>() {
-            @Override
-            public void success(ListData listData, Response response) {
-                for(ListData.Photo photo : listData.photos.photo) {
-                    mItemList.add(photo);
-                }
-            }
 
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
+        // notify related tag to Fragment and start loading images
+        String tag = data.photo.tags.tag.get(0)._content;
+        ImageDetailActivity.sTabEventBus.post(new ImageDetailFragment.RelatedTagEvent(tag));
     }
 
     private void loadComments(final ContentViewHolder vh, String photo_id) {
