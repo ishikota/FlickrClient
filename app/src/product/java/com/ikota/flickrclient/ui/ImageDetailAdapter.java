@@ -21,6 +21,7 @@ import com.ikota.flickrclient.R;
 import com.ikota.flickrclient.data.model.CommentList;
 import com.ikota.flickrclient.data.model.ListData;
 import com.ikota.flickrclient.data.model.PhotoInfo;
+import com.ikota.flickrclient.util.NetUtils;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -49,6 +50,8 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     static final int TYPE_HEADER = 0;
     static final int TYPE_ITEM = 1;
 
+    private final boolean IS_WIFI_CONNECTED;
+
     public ImageDetailAdapter(AndroidApplication app, List<ListData.Photo> myDataset, ListData.Photo data, String cache_size,
                               OnClickCallback listener) {
         mAppContext = app;
@@ -57,6 +60,7 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         mCacheSize = cache_size;
         mInflater = (LayoutInflater) mAppContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mCallback = listener;
+        IS_WIFI_CONNECTED = NetUtils.isWifiConnected(app);
     }
 
 
@@ -90,8 +94,9 @@ public class ImageDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ImageAdapter.ViewHolder vh = (ImageAdapter.ViewHolder)holder;
             vh.imageview.setTag(R.integer.list_pos_key, position-1);
 
-            ListData.Photo item = mDataset.get(position-1);
-            String url = item.generatePhotoURL(vh.imageview.getWidth(), false);
+            ListData.Photo item = mDataset.get(position - 1);
+            String size = ListData.Photo.getProperSize(mAppContext.SCREEN_WIDTH / 2, IS_WIFI_CONNECTED);
+            String url = item.generatePhotoURL(size);
             Picasso.with(mAppContext)
                     .load(url)
                     .placeholder(R.drawable.loading_default)
